@@ -1,4 +1,4 @@
-# LineageOS 23.2 for Xiaomi lapis
+# Xiaomi Redmi Note 15 Pro 5G — LineageOS 23.2 / Android 16 (lapis)
 
 Unofficial **Android 16 / LineageOS 23.2** build recipe and device fixes for the
 **Xiaomi Redmi Note 15 Pro 5G (codename `lapis`) with an unlocked bootloader**. Check the codename, not just the retail
@@ -11,7 +11,7 @@ source-built Xiaomi kernel/vendor distribution. The tested firmware baseline is
 The initial release uses public Android test signing keys, not private production
 release keys. Bootloader locking and official OTA updates are not supported.
 
-## Build
+## Build LineageOS for Xiaomi Redmi Note 15 Pro 5G
 
 Use Linux x86_64, Python 3.12+ (or 3.11 with tarfile extraction-filter support),
 JDK 17, and Android build dependencies. See [host setup](docs/BUILD.md).
@@ -20,8 +20,8 @@ build intermediates and archived images. A second full clean-host build has not
 been completed; the scripts and patch replay have automated checks.
 
 ```sh
-git clone https://github.com/dobrianskyi/lineageos-lapis.git
-cd lineageos-lapis
+git clone https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos.git
+cd xiaomi-redmi-note-15-pro-5g-lineageos
 export JAVA_HOME=/path/to/your/jdk-17  # omit if javac already selects JDK 17
 ./prepare.sh
 ./build.sh --gapps minimal --jobs 12
@@ -81,7 +81,7 @@ no post-install root modules are required. Details and remaining tests:
 
 ## Downloads and installation
 
-Download the experimental image and checksums from [Releases](https://github.com/dobrianskyi/lineageos-lapis/releases).
+Download the experimental image and checksums from [Releases](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases).
 The initial release is **GApps minimal**. Verify checksums before decompression
 and flashing. Read [installation prerequisites](docs/INSTALL.md); there is no
 universal one-click flashing script. Source builds do not flash the phone.
