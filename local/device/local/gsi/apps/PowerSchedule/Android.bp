@@ -1,0 +1,20 @@
+android_app {
+    name: "LapisPowerSchedule",
+    srcs: ["src/**/*.java"],
+    certificate: "platform",
+    privileged: true,
+    platform_apis: true,
+    system_ext_specific: true,
+    jni_libs: ["liblapis_power_rtc"],
+    use_embedded_native_libs: true,
+    compile_multilib: "64",
+    optimize: { enabled: false },
+}
+
+cc_library_shared {
+    name: "liblapis_power_rtc",
+    srcs: ["rtc.cpp"],
+    system_ext_specific: true,
+    header_libs: ["jni_headers"],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}

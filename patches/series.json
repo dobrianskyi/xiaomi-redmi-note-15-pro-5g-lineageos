@@ -1,0 +1,82 @@
+[
+  {
+    "project": "hardware/interfaces",
+    "base": "13d687a84c834af855bfb314b853b8372a7aa6d9",
+    "patch": "hardware_interfaces/0001-restore-vibrator-hidl-declarations.patch"
+  },
+  {
+    "project": "device/phh/treble",
+    "base": "91031960bf9f5ccf4e0af412db12138b7e26bd5b",
+    "patch": "device_phh_treble/0001-drop-obsolete-healthd-vr.patch"
+  },
+  {
+    "project": "vendor/hardware_overlay",
+    "base": "bb0bbb9e1314e5312f718ca1d3ea320137d14370",
+    "patch": "vendor_hardware_overlay/0001-use-trebleapp-components.patch"
+  },
+  {
+    "project": "device/phh/treble",
+    "base": "91031960bf9f5ccf4e0af412db12138b7e26bd5b",
+    "patch": "device_phh_treble/0002-use-lineage-charger-resources.patch"
+  },
+  {
+    "project": "vendor/magisk",
+    "base": "d8056f8032a0f60f365ddfe5e9fccd7eaf3a655d",
+    "patch": "vendor_magisk/0001-use-clang-alignment-builtin.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0001-add-media-volume-slider.patch"
+  },
+  {
+    "project": "system/core",
+    "base": "0e96ff13d90df568ddd788bb02b3ddb6e3641528",
+    "patch": "system_core/0001-import-device-ueventd-config.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0002-lapis-fingerprint-lifecycle.patch"
+  },
+  {
+    "project": "device/phh/treble",
+    "base": "91031960bf9f5ccf4e0af412db12138b7e26bd5b",
+    "patch": "device_phh_treble/0003-lapis-call-volume-events.patch"
+  },
+  {
+    "project": "device/phh/treble",
+    "base": "91031960bf9f5ccf4e0af412db12138b7e26bd5b",
+    "patch": "device_phh_treble/0004-isolate-lapis-board-defaults.patch"
+  },
+  {
+    "project": "frameworks/native",
+    "base": "9568531f9be7ae65f260699811f32ec4e461de6e",
+    "patch": "frameworks_native/0001-lapis-backlight-events.patch"
+  },
+  {
+    "project": "device/phh/treble",
+    "base": "91031960bf9f5ccf4e0af412db12138b7e26bd5b",
+    "patch": "device_phh_treble/0005-lapis-voip-speaker-gain.patch"
+  },
+  {
+    "project": "device/lineage/sepolicy",
+    "base": "0a9e75292f0ed1a83c31a311b1b32367a9faff75",
+    "patch": "device_lineage_sepolicy/0001-lapis-use-stock-camera-property-context.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0003-theme-media-volume-slider.patch"
+  },
+  {
+    "project": "packages/apps/Launcher3",
+    "base": "ee25ab865b59ecda9c8fd6f901e80b48d7b789ea",
+    "patch": "packages_apps_Launcher3/0001-optional-home-swipe-notifications.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0004-lockscreen-top-edge-shade.patch"
+  }
+]

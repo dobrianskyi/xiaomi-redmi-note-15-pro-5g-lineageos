@@ -1,0 +1,4 @@
+<resources>
+    <!-- Geometry from lapis stock HyperOS device overlays, captured 2026-09-14. -->
+    <dimen name="rounded_corner_content_padding">84px</dimen>
+</resources>

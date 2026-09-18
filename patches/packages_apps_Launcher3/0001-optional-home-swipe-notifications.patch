@@ -1,0 +1,66 @@
+From: Lapis bring-up <lapis@localhost>
+Subject: [PATCH] launcher: make workspace notification swipe optional
+
+diff --git a/quickstep/src/com/android/launcher3/uioverrides/touchcontrollers/StatusBarTouchController.java b/quickstep/src/com/android/launcher3/uioverrides/touchcontrollers/StatusBarTouchController.java
+index e06a57d..2506546 100644
+--- a/quickstep/src/com/android/launcher3/uioverrides/touchcontrollers/StatusBarTouchController.java
++++ b/quickstep/src/com/android/launcher3/uioverrides/touchcontrollers/StatusBarTouchController.java
+@@ -35,6 +35,7 @@ import android.view.WindowManager;
+ 
+ import com.android.launcher3.AbstractFloatingView;
+ import com.android.launcher3.BaseActivity;
++import com.android.launcher3.LauncherPrefs;
+ import com.android.launcher3.DeviceProfile;
+ import com.android.launcher3.util.TouchController;
+ import com.android.quickstep.SystemUiProxy;
+@@ -155,7 +156,8 @@ public class StatusBarTouchController implements TouchController {
+     }
+ 
+     private boolean canInterceptTouch(MotionEvent ev) {
+-        if (isTrackpadScroll(ev) || !mIsEnabledCheck.get()
++        if (!LauncherPrefs.SWIPE_DOWN_NOTIFICATIONS.get(mLauncher.asContext())
++                || isTrackpadScroll(ev) || !mIsEnabledCheck.get()
+                 || AbstractFloatingView.getTopOpenViewWithType(mLauncher,
+                 AbstractFloatingView.TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW) != null || (
+                 shouldEnableMouseInteractionChanges(mLauncher.asContext())
+diff --git a/res/values/lineage_strings.xml b/res/values/lineage_strings.xml
+index c6f8f2e..98ae84b 100644
+--- a/res/values/lineage_strings.xml
++++ b/res/values/lineage_strings.xml
+@@ -73,4 +73,6 @@
+     <string name="tapered_rect_shape_title">Tapered rect</string>
+     <string name="teardrop_shape_title">Teardrop</string>
+     <string name="rounded_rect_shape_title">Rounded rect</string>
++    <string name="pref_swipe_down_notifications_title">Swipe down for notifications</string>
++    <string name="pref_swipe_down_notifications_summary">Open notifications by swiping down anywhere on the home screen</string>
+ </resources>
+diff --git a/res/xml/launcher_preferences.xml b/res/xml/launcher_preferences.xml
+index c5a1420..0106e14 100644
+--- a/res/xml/launcher_preferences.xml
++++ b/res/xml/launcher_preferences.xml
+@@ -33,6 +33,13 @@
+         android:title="@string/pref_sleep_gesture_title"
+         android:summary="@string/pref_sleep_gesture_summary" />
+ 
++    <SwitchPreferenceCompat
++        android:defaultValue="false"
++        android:key="pref_swipe_down_notifications"
++        android:persistent="true"
++        android:title="@string/pref_swipe_down_notifications_title"
++        android:summary="@string/pref_swipe_down_notifications_summary" />
++
+     <com.android.launcher3.settings.NotificationDotsPreference
+         android:key="pref_icon_badging"
+         android:title="@string/notification_dots_title"
+diff --git a/src/com/android/launcher3/LauncherPrefs.kt b/src/com/android/launcher3/LauncherPrefs.kt
+index 0295ae7..440cf7b 100644
+--- a/src/com/android/launcher3/LauncherPrefs.kt
++++ b/src/com/android/launcher3/LauncherPrefs.kt
+@@ -254,6 +254,7 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
+         @JvmField val SHOW_DESKTOP_LABELS = backedUpItem("pref_desktop_show_labels", true)
+         @JvmField val SHOW_DRAWER_LABELS = backedUpItem("pref_drawer_show_labels", true)
+         @JvmField val SLEEP_GESTURE = backedUpItem("pref_sleep_gesture", false)
++        @JvmField val SWIPE_DOWN_NOTIFICATIONS = backedUpItem("pref_swipe_down_notifications", false)
+         @JvmField
+         val PROMISE_ICON_IDS = nonRestorableItem(InstallSessionHelper.PROMISE_ICON_IDS, "")
+         @JvmField val WORK_EDU_STEP = backedUpItem("showed_work_profile_edu", 0)

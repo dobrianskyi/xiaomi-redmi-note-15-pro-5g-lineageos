@@ -1,0 +1,148 @@
+From 1a5c23fa988b322f28e18fc9ce14528c59f178e8 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Thu, 17 Sep 2026 14:16:15 +0300
+Subject: [PATCH] surfaceflinger: apply lapis panel brightness on composer
+ events
+
+Change-Id: I78d842efc9acd9bf9883724dc15b10326e664b68
+---
+ services/surfaceflinger/Android.bp            |  1 +
+ .../DisplayHardware/HWComposer.cpp            |  8 ++-
+ .../DisplayHardware/LapisBacklight.cpp        | 57 +++++++++++++++++++
+ .../DisplayHardware/LapisBacklight.h          |  7 +++
+ 4 files changed, 72 insertions(+), 1 deletion(-)
+ create mode 100644 services/surfaceflinger/DisplayHardware/LapisBacklight.cpp
+ create mode 100644 services/surfaceflinger/DisplayHardware/LapisBacklight.h
+
+diff --git a/services/surfaceflinger/Android.bp b/services/surfaceflinger/Android.bp
+index d39f7ad..ebab050 100644
+--- a/services/surfaceflinger/Android.bp
++++ b/services/surfaceflinger/Android.bp
+@@ -189,6 +189,7 @@ filegroup {
+         "DisplayHardware/FramebufferSurface.cpp",
+         "DisplayHardware/HWC2.cpp",
+         "DisplayHardware/HWComposer.cpp",
++        "DisplayHardware/LapisBacklight.cpp",
+         "DisplayHardware/HidlComposerHal.cpp",
+         "DisplayHardware/VirtualDisplay/LegacyVirtualDisplaySurface.cpp",
+         "DisplayHardware/VirtualDisplay/SinkSurfaceHelper.cpp",
+diff --git a/services/surfaceflinger/DisplayHardware/HWComposer.cpp b/services/surfaceflinger/DisplayHardware/HWComposer.cpp
+index f732d25..5d0f89e 100644
+--- a/services/surfaceflinger/DisplayHardware/HWComposer.cpp
++++ b/services/surfaceflinger/DisplayHardware/HWComposer.cpp
+@@ -41,6 +41,7 @@
+ #include "../SurfaceFlingerProperties.h"
+ #include "ComposerHal.h"
+ #include "HWC2.h"
++#include "LapisBacklight.h"
+ 
+ #define LOG_HWC_DISPLAY_ERROR(hwcDisplayId, msg) \
+     ALOGE("%s failed for HWC display %" PRIu64 ": %s", __FUNCTION__, hwcDisplayId, msg)
+@@ -713,6 +714,9 @@ status_t HWComposer::setPowerMode(PhysicalDisplayId displayId, hal::PowerMode mo
+                 if (error != hal::Error::NONE) {
+                     LOG_HWC_ERROR(("setPowerMode(" + to_string(mode) + ")").c_str(), error,
+                                   displayId);
++                } else if (mode == hal::PowerMode::ON
++                           && hwcDisplay->getId() == mPrimaryHwcDisplayId) {
++                    restoreLapisBacklight();
+                 }
+             }
+             break;
+@@ -898,8 +902,9 @@ ftl::Future<status_t> HWComposer::setDisplayBrightness(
+     RETURN_IF_INVALID_DISPLAY(displayId, ftl::yield<status_t>(BAD_INDEX));
+     auto& display = mDisplayData[displayId].hwcDisplay;
+ 
++    const bool primary = display->getId() == mPrimaryHwcDisplayId;
+     return display->setDisplayBrightness(brightness, brightnessNits, options)
+-            .then([displayId](hal::Error error) -> status_t {
++            .then([displayId, primary, brightness](hal::Error error) -> status_t {
+                 if (error == hal::Error::UNSUPPORTED) {
+                     RETURN_IF_HWC_ERROR(error, displayId, INVALID_OPERATION);
+                 }
+@@ -907,6 +912,7 @@ ftl::Future<status_t> HWComposer::setDisplayBrightness(
+                     RETURN_IF_HWC_ERROR(error, displayId, BAD_VALUE);
+                 }
+                 RETURN_IF_HWC_ERROR(error, displayId, UNKNOWN_ERROR);
++                if (primary) setLapisBacklight(brightness);
+                 return NO_ERROR;
+             });
+ }
+diff --git a/services/surfaceflinger/DisplayHardware/LapisBacklight.cpp b/services/surfaceflinger/DisplayHardware/LapisBacklight.cpp
+new file mode 100644
+index 0000000..f720f6c
+--- /dev/null
++++ b/services/surfaceflinger/DisplayHardware/LapisBacklight.cpp
+@@ -0,0 +1,57 @@
++/* SPDX-License-Identifier: Apache-2.0 */
++#include "LapisBacklight.h"
++
++#include <android-base/file.h>
++#include <android-base/properties.h>
++#include <android-base/strings.h>
++#include <log/log.h>
++
++#include <algorithm>
++#include <cmath>
++#include <mutex>
++#include <optional>
++#include <string>
++
++namespace android {
++namespace {
++std::mutex sMutex;
++std::optional<int> sLevel;
++bool sPanelVerified = false;
++bool sWriteFailed = false;
++constexpr const char* kPanel = "/sys/class/mi_display/disp-DSI-0/panel_info";
++constexpr const char* kBacklight = "/sys/class/mi_display/disp-DSI-0/backlight";
++
++bool supported() {
++    static const bool lapis = base::GetProperty("ro.product.vendor.device", "") == "lapis";
++    if (!lapis) return false;
++    if (!sPanelVerified) {
++        std::string panel;
++        sPanelVerified = base::ReadFileToString(kPanel, &panel)
++                && base::Trim(panel) == "panel_name=dsi_p16_42_02_0a_dsc_vdo";
++    }
++    return sPanelVerified;
++}
++
++void apply() {
++    if (!sLevel || !supported()) return;
++    // This panel's vendor Composer updates the LED accounting but needs the
++    // Xiaomi panel command as well. Invoke it on brightness/power events only.
++    const bool failed = !base::WriteStringToFile(std::to_string(*sLevel), kBacklight);
++    if (failed && !sWriteFailed) ALOGE("Lapis panel backlight update failed");
++    sWriteFailed = failed;
++}
++} // namespace
++
++void setLapisBacklight(float brightness) {
++    if (!std::isfinite(brightness) || brightness < -1.0f || brightness > 1.0f) return;
++    std::lock_guard lock(sMutex);
++    // Composer brightness is normalized panel backlight; -1 is backlight off.
++    sLevel = static_cast<int>(std::lround(std::max(0.0f, brightness) * 16383.0f));
++    apply();
++}
++
++void restoreLapisBacklight() {
++    std::lock_guard lock(sMutex);
++    apply();
++}
++} // namespace android
+diff --git a/services/surfaceflinger/DisplayHardware/LapisBacklight.h b/services/surfaceflinger/DisplayHardware/LapisBacklight.h
+new file mode 100644
+index 0000000..5528e80
+--- /dev/null
++++ b/services/surfaceflinger/DisplayHardware/LapisBacklight.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: Apache-2.0 */
++#pragma once
++
++namespace android {
++void setLapisBacklight(float brightness);
++void restoreLapisBacklight();
++} // namespace android
+-- 
+2.55.0
+

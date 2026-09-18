@@ -1,0 +1,9 @@
+<resources>
+    <!-- Geometry from lapis stock HyperOS device overlays, captured 2026-09-14. -->
+    <dimen name="rounded_corner_radius">156px</dimen>
+    <dimen name="rounded_corner_radius_top">156px</dimen>
+    <dimen name="rounded_corner_radius_bottom">156px</dimen>
+    <dimen name="status_bar_height_default">152px</dimen>
+    <dimen name="status_bar_height_portrait">152px</dimen>
+    <string name="config_mainBuiltInDisplayCutout" translatable="false">M 0,0 H -33 V 152 H 33 V 0 H 0 Z</string>
+</resources>

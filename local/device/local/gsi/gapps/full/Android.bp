@@ -1,0 +1,7 @@
+prebuilt_etc {
+    name: "lapis-sysconfig-gapps-full.xml",
+    src: "sysconfig.xml",
+    filename: "lapis-gapps-full.xml",
+    relative_install_path: "sysconfig",
+    product_specific: true,
+}

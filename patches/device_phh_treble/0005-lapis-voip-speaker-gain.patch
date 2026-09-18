@@ -1,0 +1,27 @@
+From 5a5dd6ce902b1b5db1f1882953fa8472e1aec4eb Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Thu, 17 Sep 2026 15:08:33 +0300
+Subject: [PATCH] lapis: apply bounded speaker gain to VoIP calls
+
+---
+ .../mediatek/incallservice/LapisCallVolumeController.java     | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/app/InCallService/src/org/lineageos/mediatek/incallservice/LapisCallVolumeController.java b/app/InCallService/src/org/lineageos/mediatek/incallservice/LapisCallVolumeController.java
+index 847d523..39d02d1 100644
+--- a/app/InCallService/src/org/lineageos/mediatek/incallservice/LapisCallVolumeController.java
++++ b/app/InCallService/src/org/lineageos/mediatek/incallservice/LapisCallVolumeController.java
+@@ -55,7 +55,9 @@ final class LapisCallVolumeController {
+ 
+     private void apply() {
+         // AudioSystem uses internal device bitmasks, not AudioDeviceInfo type IDs.
+-        if (mClosed || mAudio.getMode() != AudioManager.MODE_IN_CALL
++        int mode = mAudio.getMode();
++        if (mClosed || (mode != AudioManager.MODE_IN_CALL
++                && mode != AudioManager.MODE_IN_COMMUNICATION)
+                 || AudioSystem.getDevicesForStream(AudioSystem.STREAM_VOICE_CALL)
+                         != AudioSystem.DEVICE_OUT_SPEAKER) {
+             return;
+-- 
+2.55.0
+

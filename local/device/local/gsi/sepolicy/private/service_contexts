@@ -1,0 +1,9 @@
+# The stock vendor owns IXiaomiFingerprint/default and labels it
+# vendor_hal_fingerprint_service_xiaomi. Do not relabel it here: conflicting
+# entries abort servicemanager before Android can boot. Stock vendor policy
+# already permits system_server to find this service and call the HAL.
+
+# The pinned MediaTek IMS APK publishes these Binder services from radio.
+# Match the existing PHH labels without inheriting its generic policy rules.
+mwis    u:object_r:radio_service:s0
+mtkIms  u:object_r:radio_service:s0

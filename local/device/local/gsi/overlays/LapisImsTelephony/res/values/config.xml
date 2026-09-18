@@ -1,0 +1,3 @@
+<resources>
+    <string name="config_ims_mmtel_package" translatable="false">com.mediatek.ims</string>
+</resources>

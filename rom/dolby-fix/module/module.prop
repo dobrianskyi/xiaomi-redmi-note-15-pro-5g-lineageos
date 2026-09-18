@@ -1,0 +1,6 @@
+id=lapis_dolby_control
+name=Lapis Dolby Control
+version=0.3
+versionCode=6
+author=Local
+description=Adjustable Dolby GEQ for lapis; controlled by local.lapis.dolby

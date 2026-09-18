@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lineageos.overlay.lapis.gmsminimal">
+    <application android:hasCode="false" />
+    <overlay android:targetPackage="android" android:isStatic="true" android:priority="1337" />
+</manifest>

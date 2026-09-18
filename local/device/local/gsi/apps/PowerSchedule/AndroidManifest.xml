@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lineageos.powerschedule" android:sharedUserId="android.uid.system"
+    android:versionCode="5" android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="35" android:targetSdkVersion="36" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REBOOT" />
+    <application android:label="Power schedule" android:theme="@android:style/Theme.DeviceDefault.DayNight"
+        android:allowBackup="false" android:directBootAware="true"
+        android:defaultToDeviceProtectedStorage="true">
+        <activity android:name=".MainActivity" android:enabled="false" android:exported="true"
+            android:permission="android.permission.REBOOT">
+            <intent-filter>
+                <action android:name="com.android.settings.action.EXTRA_SETTINGS" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.category" android:value="com.android.settings.category.ia.battery" />
+            <meta-data android:name="com.android.settings.title" android:value="Power schedule" />
+            <meta-data android:name="com.android.settings.summary" android:value="Turn your phone on or off at scheduled times" />
+            <meta-data android:name="com.android.settings.profile" android:value="primary_profile_only" />
+        </activity>
+        <receiver android:name=".ScheduleReceiver" android:exported="false" android:directBootAware="true">
+            <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

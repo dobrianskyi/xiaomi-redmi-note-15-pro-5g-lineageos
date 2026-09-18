@@ -1,0 +1,24 @@
+From e522e72053daa0e6bf8c9aa74f29ba40ce02610f Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Thu, 17 Sep 2026 14:16:15 +0300
+Subject: [PATCH] build: isolate lapis from generic PHH board overrides
+
+---
+ tdgsi_arm64_ab/BoardConfig.mk | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tdgsi_arm64_ab/BoardConfig.mk b/tdgsi_arm64_ab/BoardConfig.mk
+index 2fddc52..970ce26 100644
+--- a/tdgsi_arm64_ab/BoardConfig.mk
++++ b/tdgsi_arm64_ab/BoardConfig.mk
+@@ -1,5 +1,7 @@
+ include build/make/target/board/generic_arm64/BoardConfig.mk
++ifneq ($(TARGET_PRODUCT),lineage_gsi_lapis)
+ include device/phh/treble/board-base.mk
++endif
+ 
+ ifeq ($(BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE),)
+ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2147483648
+-- 
+2.55.0
+

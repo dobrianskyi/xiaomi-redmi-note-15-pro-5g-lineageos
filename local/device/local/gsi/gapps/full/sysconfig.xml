@@ -1,0 +1,5 @@
+<config>
+    <feature name="com.google.android.feature.CONTEXTUAL_SEARCH" />
+    <feature name="com.google.android.feature.GOOGLE_BUILD" />
+    <feature name="com.google.android.feature.GOOGLE_EXPERIENCE" />
+</config>

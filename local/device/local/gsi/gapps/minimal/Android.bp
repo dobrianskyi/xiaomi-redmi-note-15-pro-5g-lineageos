@@ -1,0 +1,14 @@
+prebuilt_etc {
+    name: "lapis-gapps-minimal.rc",
+    src: "gapps.rc",
+    filename: "lapis-gapps-minimal.rc",
+    relative_install_path: "init",
+    product_specific: true,
+}
+prebuilt_etc {
+    name: "lapis-sysconfig-gapps-minimal.xml",
+    src: "sysconfig.xml",
+    filename: "lapis-gapps-minimal.xml",
+    relative_install_path: "sysconfig",
+    product_specific: true,
+}

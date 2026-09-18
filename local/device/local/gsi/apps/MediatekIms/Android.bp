@@ -1,0 +1,39 @@
+// APK source and hash are pinned in research/mediatek-ims.json.
+// Keep the removed Clearcut API local to the legacy IMS APK, not the boot classpath.
+java_library {
+    name: "lapis-ims-legacy-metrics",
+    srcs: ["compat/**/*.java"],
+    sdk_version: "current",
+    min_sdk_version: "26",
+    compile_dex: true,
+}
+
+java_genrule {
+    name: "lapis-ims-compatible-apk",
+    srcs: ["ims.apk", ":lapis-ims-legacy-metrics"],
+    tools: ["zip2zip", "merge_zips"],
+    out: ["ims-compatible.apk"],
+    cmd: "$(location zip2zip) -i $(location :lapis-ims-legacy-metrics) " +
+        "-o $(genDir)/metrics.zip classes.dex:classes2.dex && " +
+        "$(location merge_zips) $(out) $(location ims.apk) $(genDir)/metrics.zip",
+}
+
+android_app_import {
+    name: "LapisMtkIms",
+    apk: ":lapis-ims-compatible-apk",
+    certificate: "platform",
+    privileged: true,
+    system_ext_specific: true,
+    optional_uses_libs: ["com.mediatek.ims.oemplugin", "com.mediatek.ims.plugin"],
+    dex_preopt: {
+        enabled: false,
+    },
+    required: ["privapp-permissions-lapis-ims.xml"],
+}
+
+prebuilt_etc {
+    name: "privapp-permissions-lapis-ims.xml",
+    src: "privapp-permissions-lapis-ims.xml",
+    sub_dir: "permissions",
+    system_ext_specific: true,
+}

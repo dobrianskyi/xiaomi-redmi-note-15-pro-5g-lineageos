@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.lapis.udfps.geometry" android:versionCode="1" android:versionName="0.1">
+<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="29" />
+<overlay android:targetPackage="com.android.systemui" android:isStatic="true" android:priority="999" />
+<application android:hasCode="false" android:label="Lapis UDFPS geometry" />
+</manifest>

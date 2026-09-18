@@ -1,0 +1,237 @@
+From e54e26e4ee4ccd4b53ac7a2aee3709a6239c07d8 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Thu, 17 Sep 2026 14:16:15 +0300
+Subject: [PATCH] fingerprint: drive lapis Xiaomi AIDL states from overlay
+ lifecycle
+
+Change-Id: Idc8211f960a7127cd35201b7a3f20ca005e3045e
+---
+ services/core/Android.bp                      |   1 +
+ .../sensors/LapisFingerprintExtension.java    | 161 ++++++++++++++++++
+ .../biometrics/sensors/SensorOverlays.java    |   9 +
+ 3 files changed, 171 insertions(+)
+ create mode 100644 services/core/java/com/android/server/biometrics/sensors/LapisFingerprintExtension.java
+
+diff --git a/services/core/Android.bp b/services/core/Android.bp
+index e08be355a..e0998b0bb 100644
+--- a/services/core/Android.bp
++++ b/services/core/Android.bp
+@@ -179,6 +179,7 @@ java_library_static {
+     ],
+ 
+     static_libs: [
++        "vendor.xiaomi.hardware.fingerprintextension-V1-java",
+         "android.frameworks.vibrator-V1-java", // AIDL
+         "android.frameworks.devicestate-V1-java", // AIDL
+         "android.hardware.authsecret-V1.0-java",
+diff --git a/services/core/java/com/android/server/biometrics/sensors/LapisFingerprintExtension.java b/services/core/java/com/android/server/biometrics/sensors/LapisFingerprintExtension.java
+new file mode 100644
+index 000000000..563542a43
+--- /dev/null
++++ b/services/core/java/com/android/server/biometrics/sensors/LapisFingerprintExtension.java
+@@ -0,0 +1,161 @@
++/* SPDX-License-Identifier: Apache-2.0 */
++package com.android.server.biometrics.sensors;
++
++import android.content.Context;
++import android.hardware.biometrics.BiometricRequestConstants;
++import android.hardware.display.DisplayManager;
++import android.os.Handler;
++import android.os.HandlerThread;
++import android.os.IBinder;
++import android.os.IServiceCallback;
++import android.os.RemoteException;
++import android.os.ServiceManager;
++import android.os.SystemProperties;
++import android.util.Slog;
++import android.view.Display;
++
++import vendor.xiaomi.hardware.fingerprintextension.IXiaomiFingerprint;
++
++/** Supplies the lapis FodEngine states from the framework operation lifecycle. */
++final class LapisFingerprintExtension {
++    private static final String TAG = "LapisFingerprint";
++    private static final String SERVICE = IXiaomiFingerprint.DESCRIPTOR + "/default";
++    private static LapisFingerprintExtension sInstance;
++    private final Handler mHandler;
++    private final DisplayManager mDisplays;
++    // All mutable state below is confined to mHandler.
++    private Object mOwner;
++    private int mOperation = 2;
++    private int mPower = -1;
++    private IXiaomiFingerprint mVendor;
++
++    static synchronized LapisFingerprintExtension get(Context context, int sensorId) {
++        if (sensorId != 5
++                || !"lapis".equals(SystemProperties.get("ro.product.vendor.device"))) {
++            return null;
++        }
++        if (sInstance == null) {
++            sInstance = new LapisFingerprintExtension(context);
++        }
++        return sInstance;
++    }
++
++    private LapisFingerprintExtension(Context context) {
++        HandlerThread thread = new HandlerThread(TAG);
++        thread.start();
++        mHandler = new Handler(thread.getLooper());
++        mDisplays = context.getSystemService(DisplayManager.class);
++        mDisplays.registerDisplayListener(new DisplayManager.DisplayListener() {
++            @Override public void onDisplayAdded(int id) { changed(id); }
++            @Override public void onDisplayRemoved(int id) { changed(id); }
++            @Override public void onDisplayChanged(int id) { changed(id); }
++            private void changed(int id) {
++                if (id == Display.DEFAULT_DISPLAY && power() != mPower) {
++                    apply();
++                }
++            }
++        }, mHandler);
++        mHandler.post(() -> {
++            try {
++                ServiceManager.registerForNotifications(SERVICE, new IServiceCallback.Stub() {
++                    @Override public void onRegistration(String name, IBinder binder) {
++                        mHandler.post(() -> connect(binder));
++                    }
++                });
++            } catch (RemoteException | RuntimeException e) {
++                Slog.e(TAG, "Cannot observe fingerprint extension registration", e);
++            }
++            connect(ServiceManager.checkService(SERVICE));
++        });
++    }
++
++    void show(Object owner, int reason) {
++        int operation;
++        switch (reason) {
++            case BiometricRequestConstants.REASON_ENROLL_FIND_SENSOR:
++            case BiometricRequestConstants.REASON_ENROLL_ENROLLING:
++                operation = 1;
++                break;
++            case BiometricRequestConstants.REASON_AUTH_BP:
++            case BiometricRequestConstants.REASON_AUTH_KEYGUARD:
++            case BiometricRequestConstants.REASON_AUTH_OTHER:
++            case BiometricRequestConstants.REASON_AUTH_SETTINGS:
++                operation = 3;
++                break;
++            default:
++                return;
++        }
++        mHandler.post(() -> {
++            mOwner = owner;
++            mOperation = operation;
++            if (mVendor == null) {
++                connect(ServiceManager.checkService(SERVICE));
++            } else {
++                apply();
++            }
++        });
++    }
++
++    void hide(Object owner) {
++        mHandler.post(() -> {
++            // A late completion from an old client must not stop its successor.
++            if (mOwner == owner) {
++                mOwner = null;
++                mOperation = 2;
++                apply();
++            }
++        });
++    }
++
++    private int power() {
++        Display display = mDisplays.getDisplay(Display.DEFAULT_DISPLAY);
++        int state = display == null ? Display.STATE_OFF : display.getState();
++        if (state == Display.STATE_ON || state == Display.STATE_ON_SUSPEND) return 2;
++        if (state == Display.STATE_DOZE || state == Display.STATE_DOZE_SUSPEND) return 1;
++        return 0;
++    }
++
++    private void connect(IBinder binder) {
++        if (binder == null || (mVendor != null && mVendor.asBinder() == binder)) return;
++        try {
++            IXiaomiFingerprint vendor = IXiaomiFingerprint.Stub.asInterface(binder);
++            if (vendor.getInterfaceVersion() < 1) return;
++            binder.linkToDeath(() -> mHandler.post(() -> {
++                if (mVendor != null && mVendor.asBinder() == binder) {
++                    mVendor = null;
++                }
++            }), 0);
++            mVendor = vendor;
++            // Replay the current operation when the vendor process restarts.
++            apply();
++        } catch (RemoteException | RuntimeException e) {
++            Slog.w(TAG, "Cannot connect to fingerprint extension", e);
++        }
++    }
++
++    private void command(int command, int value) throws RemoteException {
++        int result = mVendor.extCmd(command, value);
++        if (result < 0) {
++            Slog.w(TAG, "Fingerprint extension command " + command + " failed: " + result);
++        }
++    }
++
++    private void apply() {
++        mPower = power();
++        if (mVendor == null) return;
++        try {
++            if (mOwner == null) {
++                command(1, 0); // Animation absent.
++                command(4, 2); // Fingerprint operation idle.
++            } else {
++                command(2, 0); // No stock color-fade animation.
++                command(3, mPower);
++                command(4, mOperation);
++                command(1, 1); // UDFPS overlay present.
++            }
++        } catch (RemoteException | RuntimeException e) {
++            Slog.w(TAG, "Fingerprint extension update failed", e);
++            mVendor = null;
++        }
++    }
++}
+diff --git a/services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java b/services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java
+index f5a2f3473..72c9445b0 100644
+--- a/services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java
++++ b/services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java
+@@ -40,6 +40,7 @@ import java.util.function.Consumer;
+ public final class SensorOverlays {
+ 
+     private static final String TAG = "SensorOverlays";
++    @Nullable private LapisFingerprintExtension mLapisExtension;
+ 
+     @NonNull private final Optional<IUdfpsOverlayController> mUdfpsOverlayController;
+ 
+@@ -62,6 +63,10 @@ public final class SensorOverlays {
+     public void show(int sensorId, @BiometricRequestConstants.RequestReason int reason,
+             @NonNull AcquisitionClient<?> client) {
+         if (mUdfpsOverlayController.isPresent()) {
++            mLapisExtension = LapisFingerprintExtension.get(client.getContext(), sensorId);
++            if (mLapisExtension != null) {
++                mLapisExtension.show(this, reason);
++            }
+             final IUdfpsOverlayControllerCallback callback =
+                     new IUdfpsOverlayControllerCallback.Stub() {
+                         @Override
+@@ -74,6 +79,7 @@ public final class SensorOverlays {
+                 mUdfpsOverlayController.get().showUdfpsOverlay(
+                         client.getRequestId(), sensorId, reason, callback);
+             } catch (RemoteException e) {
++                if (mLapisExtension != null) mLapisExtension.hide(this);
+                 Slog.e(TAG, "Remote exception when showing the UDFPS overlay", e);
+             }
+         }
+@@ -85,6 +91,9 @@ public final class SensorOverlays {
+      * @param sensorId sensor id
+      */
+     public void hide(int sensorId) {
++        if (mLapisExtension != null) {
++            mLapisExtension.hide(this);
++        }
+         if (mUdfpsOverlayController.isPresent()) {
+             try {
+                 mUdfpsOverlayController.get().hideUdfpsOverlay(sensorId);
+-- 
+2.55.0
+

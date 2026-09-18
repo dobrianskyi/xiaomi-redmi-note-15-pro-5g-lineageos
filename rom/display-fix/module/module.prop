@@ -1,0 +1,6 @@
+id=lapis_backlight_bridge
+name=lapis display brightness bridge (experimental)
+version=0.1
+versionCode=1
+author=Local lapis diagnostics
+description=Mirrors MediaTek brightness to Xiaomi panel backlight; brightness/wake workaround for the tested lapis GSI. Use alongside the separately tested FOD workaround on the documented reference GSI.

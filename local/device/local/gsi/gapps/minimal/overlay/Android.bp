@@ -1,0 +1,4 @@
+runtime_resource_overlay {
+    name: "LapisGmsMinimalOverlay",
+    product_specific: true,
+}

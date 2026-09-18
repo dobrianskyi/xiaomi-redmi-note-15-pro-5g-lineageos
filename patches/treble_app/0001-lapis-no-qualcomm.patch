@@ -1,0 +1,219 @@
+diff --git a/app/build.gradle b/app/build.gradle
+index 4c3e6dd..19cf6fb 100644
+--- a/app/build.gradle
++++ b/app/build.gradle
+@@ -28,7 +28,7 @@ android {
+ }
+ 
+ dependencies {
+-    compileOnly fileTree(dir: 'libs', include: '*.jar')
++    compileOnly fileTree(dir: 'libs', include: '*.jar', exclude: 'vendor.qti.*.jar')
+     implementation files('libs/vendor.hct.hardware.gesturewake-V1.0-java.jar')
+     implementation files('libs/vendor.ims.zenmotion-V1.0-java.jar')
+     implementation files('libs/vendor.xiaomi.hw.touchfeature-V1-java.jar')
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index 25d3277..49cf717 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ -25,8 +25,6 @@
+         <uses-library android:name="android.hidl.manager.V1_0" android:required="false" />
+         <uses-library android:name="vendor.huawei.hardware.biometrics.fingerprint.V2_1" android:required="false"/>
+         <uses-library android:name="vendor.huawei.hardware.tp.V1_0" android:required="false"/>
+-        <uses-library android:name="vendor.qti.hardware.radio.am.V1_0" android:required="false"/>
+-        <uses-library android:name="vendor.qti.qcril.am.V1_0" android:required="false"/>
+ 
+         <service android:name=".EntryService" />
+         <service android:name=".NubiaAutoFanControlService" />
+diff --git a/app/src/main/java/me/phh/treble/app/EntryService.kt b/app/src/main/java/me/phh/treble/app/EntryService.kt
+index f6c501b..e2c00c4 100644
+--- a/app/src/main/java/me/phh/treble/app/EntryService.kt
++++ b/app/src/main/java/me/phh/treble/app/EntryService.kt
+@@ -38,7 +38,6 @@ class EntryService: Service() {
+ 
+         thread {
+             tryC { Tools.startup(this) }
+-            tryC { QtiAudio.startup(this) }
+             tryC { Lenovo.startup(this) }
+             tryC { OnePlus.startup(this) }
+             tryC { Oppo.startup(this) }
+@@ -50,7 +49,6 @@ class EntryService: Service() {
+             tryC { Transsion.startup(this) }
+             tryC { Xiaomi.startup(this) }
+             tryC { Asus.startup(this) }
+-            tryC { Qualcomm.startup(this) }
+             tryC { Vsmart.startup(this) }
+             tryC { Nubia.startup(this) }
+             tryC { Ims.startup(this) }
+diff --git a/app/src/main/java/me/phh/treble/app/Ims.kt b/app/src/main/java/me/phh/treble/app/Ims.kt
+index 1dc9880..555a516 100644
+--- a/app/src/main/java/me/phh/treble/app/Ims.kt
++++ b/app/src/main/java/me/phh/treble/app/Ims.kt
+@@ -73,12 +73,9 @@ object Ims: EntryStartup {
+             .find { i -> mHidlService.get("vendor.mediatek.hardware.mtkradioex@3.0::IMtkRadioEx", i) != null } != null
+     val gotMtkAidl = mAllSlots
+             .find { i -> ServiceManager.getService("vendor.mediatek.hardware.mtkradioex.ims.IMtkRadioExIms/" + i) != null } != null
+-    val gotQcomHidl = mAllSlots
+-            .find { i -> mHidlService.get("vendor.qti.hardware.radio.ims@1.0::IImsRadio", i) != null } != null
+-    val gotQcomHidlMoto = gotQcomHidl
+-            && SystemProperties.get("ro.product.vendor.brand", "N/A").equals("motorola")
+-    val gotQcomAidl = mAllSlots
+-            .find { i -> ServiceManager.getService("vendor.qti.hardware.radio.ims.IImsRadio/" + i) != null } != null
++    val gotQcomHidl = false
++    val gotQcomHidlMoto = false
++    val gotQcomAidl = false
+     val gotSLSI = mAllSlots
+             .find { i -> mHidlService.get("vendor.samsung_slsi.telephony.hardware.radio@1.0::IOemSamsungslsi", i) != null } != null
+     val gotSPRD = mAllSlots
+diff --git a/app/src/main/java/me/phh/treble/app/QtiAudio.kt b/app/src/main/java/me/phh/treble/app/QtiAudio.kt
+deleted file mode 100644
+index b3d6ecb..0000000
+--- a/app/src/main/java/me/phh/treble/app/QtiAudio.kt
++++ /dev/null
+@@ -1,64 +0,0 @@
+-package me.phh.treble.app
+-
+-import android.content.Context
+-import android.content.Intent
+-import android.content.pm.PackageManager
+-import android.net.Uri
+-import android.os.SystemProperties
+-import android.os.UserHandle
+-import android.util.Log
+-import dalvik.system.PathClassLoader
+-import kotlin.concurrent.thread
+-
+-class QtiAudio: EntryStartup {
+-    fun handleDynIms(ctxt: Context, pkgName: String, property: String) {
+-            Log.d("PHH", "Checking IMS status $pkgName $property")
+-            val installed = ctxt.packageManager.getInstalledPackages(0).find { it.packageName == pkgName } != null
+-            val imsRroProperty = property
+-            Log.d("PHH", "CAF IMS $installed installed")
+-            if(installed) {
+-                SystemProperties.set(imsRroProperty, "true")
+-                val replaceIntent =
+-                        Intent(Intent.ACTION_PACKAGE_CHANGED)
+-                                .setData(Uri.parse("package:$pkgName"))
+-                                .putExtra(Intent.EXTRA_UID, 0)
+-                                .putExtra(Intent.EXTRA_DONT_KILL_APP, false)
+-                                .putExtra(Intent.EXTRA_CHANGED_COMPONENT_NAME_LIST, emptyArray<String>())
+-                ctxt.sendBroadcastAsUser(replaceIntent, UserHandle.SYSTEM)
+-            } else {
+-                SystemProperties.set(imsRroProperty, "false")
+-            }
+-    }
+-
+-    override fun startup(ctxt: Context) {
+-        thread {
+-            for(slot in listOf("slot1", "slot2", "default")) {
+-                try {
+-                    val svc = vendor.qti.hardware.radio.am.V1_0.IQcRilAudio.getService(slot)
+-                    isQualcommDevice = true
+-                    Log.d("PHH", "isQualcommDevice set by vendor.qti.hardware.radio.am HIDL")
+-                } catch (e: Exception) {
+-                    Log.d("PHH", "Failed setting vendor.qti.hardware.radio.am $slot cb $e")
+-                }
+-
+-                try {
+-                    val svc = vendor.qti.qcril.am.V1_0.IQcRilAudio.getService(slot)
+-                    isQualcommDevice = true
+-                    Log.d("PHH", "isQualcommDevice set by vendor.qti.qcril.am HIDL")
+-                } catch (e: Exception) {
+-                    Log.d("PHH", "Failed setting vendor.qti.hardware.radio.am $slot cb $e")
+-                }
+-            }
+-
+-            Thread.sleep(30*1000);
+-            handleDynIms(ctxt, "org.codeaurora.ims", "persist.sys.phh.ims.caf")
+-            handleDynIms(ctxt, "com.shannon.imsservice", "persist.sys.phh.ims.sec")
+-        }
+-    }
+-    companion object: EntryStartup {
+-        var isQualcommDevice = false
+-        override fun startup(ctxt: Context) {
+-            QtiAudio().startup(ctxt)
+-        }
+-    }
+-}
+diff --git a/app/src/main/java/me/phh/treble/app/Qualcomm.kt b/app/src/main/java/me/phh/treble/app/Qualcomm.kt
+deleted file mode 100644
+index 7e09cff..0000000
+--- a/app/src/main/java/me/phh/treble/app/Qualcomm.kt
++++ /dev/null
+@@ -1,42 +0,0 @@
+-package me.phh.treble.app
+-
+-import android.content.Context
+-import android.content.SharedPreferences
+-import android.preference.PreferenceManager
+-import android.util.Log
+-import java.io.File
+-import java.lang.Exception
+-
+-object Qualcomm: EntryStartup {
+-    val spListener = SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
+-        when(key) {
+-            QualcommSettings.alternateAudiopolicy -> {
+-                val b = sp.getBoolean(key, false)
+-                val value = if(b) "1" else "0"
+-                Misc.safeSetprop("persist.sys.phh.caf.audio_policy", value)
+-            }
+-            QualcommSettings.alternateMediaprofile -> {
+-                val b = sp.getBoolean(key, false)
+-                val value = if(b) "true" else "false"
+-                Misc.safeSetprop("persist.sys.phh.caf.media_profile", value)
+-            }
+-            QualcommSettings.disableSoundVolumeEffect -> {
+-                val b = sp.getBoolean(key, false)
+-                val value = if(b) "1" else "0"
+-                Misc.safeSetprop("persist.sys.phh.disable_soundvolume_effect", value)
+-            }
+-            QualcommSettings.disableStereoVoip -> {
+-                val b = sp.getBoolean(key, false)
+-                val value = if(b) "true" else "false"
+-                Misc.safeSetprop("persist.sys.phh.disable_stereo_voip", value)
+-            }
+-        }
+-    }
+-
+-    override fun startup(ctxt: Context) {
+-        if(!QualcommSettings.enabled()) return
+-        Log.d("PHH", "Starting Qualcomm service")
+-        val sp = PreferenceManager.getDefaultSharedPreferences(ctxt)
+-        sp.registerOnSharedPreferenceChangeListener(spListener)
+-    }
+-}
+diff --git a/app/src/main/java/me/phh/treble/app/QualcommSettings.kt b/app/src/main/java/me/phh/treble/app/QualcommSettings.kt
+index c266dc0..b0e7266 100644
+--- a/app/src/main/java/me/phh/treble/app/QualcommSettings.kt
++++ b/app/src/main/java/me/phh/treble/app/QualcommSettings.kt
+@@ -9,7 +9,7 @@ object QualcommSettings : Settings {
+     val disableSoundVolumeEffect = "key_qualcomm_disable_soundvolume_effect"
+     val disableStereoVoip = "key_qualcomm_disable_stereo_voip"
+ 
+-    override fun enabled() = QtiAudio.isQualcommDevice || SystemProperties.get("ro.hardware", "N/A") == "qcom"
++    override fun enabled() = false
+ }
+ 
+ class QualcommSettingsFragment : SettingsFragment() {
+diff --git a/build.gradle b/build.gradle
+index c78fd6f..5f6d509 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -2,7 +2,7 @@ buildscript {
+     ext.kotlin_version = '1.8.0'
+     repositories {
+         google()
+-        jcenter()
++        mavenCentral()
+     }
+     dependencies {
+         classpath 'com.android.tools.build:gradle:7.4.2'
+@@ -13,7 +13,7 @@ buildscript {
+ allprojects {
+     repositories {
+         google()
+-        jcenter()
++        mavenCentral()
+     }
+ }
+ 

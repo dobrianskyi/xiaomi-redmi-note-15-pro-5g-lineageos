@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<manifest>
+  <remote name="bringup-github" fetch="https://github.com/" />
+  <remote name="bringup-gitlab" fetch="https://gitlab.com/" />
+  <project path="device/phh/treble" name="TrebleDroid/device_phh_treble" remote="bringup-github" revision="android-16.0" />
+  <project path="vendor/hardware_overlay" name="TrebleDroid/vendor_hardware_overlay" remote="bringup-github" revision="pie" />
+  <project path="vendor/vndk-tests" name="phhusson/vendor_vndk-tests" remote="bringup-github" revision="master" />
+  <project path="vendor/interfaces" name="TrebleDroid/vendor_interfaces" remote="bringup-github" revision="android-16.0" />
+  <project path="vendor/lptools" name="phhusson/vendor_lptools" remote="bringup-github" revision="master" />
+  <project path="vendor/magisk" name="phhusson/vendor_magisk" remote="bringup-github" revision="android-10.0" />
+  <project path="packages/apps/QcRilAm" name="AndyCGYan/android_packages_apps_QcRilAm" remote="bringup-github" revision="master" />
+</manifest>

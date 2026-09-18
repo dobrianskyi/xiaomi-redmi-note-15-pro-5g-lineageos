@@ -1,0 +1,14 @@
+{
+  "package": "com.mediatek.ims",
+  "version_name": "13",
+  "version_code": 33,
+  "url": "https://treble.phh.me/ims-mtk-u-resigned.apk",
+  "sha256": "2ea638def3891b3105f16ea0151a36b1295f24349ff61ac4ea5929fe3650b04e",
+  "source_certificate_sha256": "9f6b1facddf4da61b0dd7a0cc08e07fe99938c2d0842b2cefd819c63e1c072f3",
+  "phone_match": "Downloaded APK byte-identical to working phone package captured 2026-09-17",
+  "splits": [
+    "base"
+  ],
+  "build_signing": "Re-signed with this ROM platform key for android.uid.phone; original APK stays unchanged",
+  "license_status": "Proprietary reference binary; redistribution terms not established; excluded from Git"
+}

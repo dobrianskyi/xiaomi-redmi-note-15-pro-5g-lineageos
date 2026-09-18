@@ -1,0 +1,30 @@
+From: Lapis Bringup <lapis@localhost>
+Subject: [PATCH] SystemUI: use the QS theme for media volume slider views
+
+Compose supplies the base SystemUI context, which lacks onShadeActive.
+Inflating the slider drawable with it aborts SystemUI repeatedly after setup.
+Wrap the view context in the existing QS theme and use it for child views
+and drawables, preserving the media-only slider and dynamic theme colors.
+
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+index de92660f6..c99c6b3ce 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+@@ -12,6 +12,7 @@ import android.content.IntentFilter;
+ import android.media.AudioManager;
+ import android.os.UserHandle;
+ import android.os.UserManager;
++import android.view.ContextThemeWrapper;
+ import android.widget.LinearLayout;
+ import android.widget.SeekBar;
+ import android.widget.TextView;
+@@ -31,7 +32,8 @@ public class MediaVolumeSliderView extends LinearLayout {
+     };
+ 
+     public MediaVolumeSliderView(Context context) {
+-        super(context);
++        super(new ContextThemeWrapper(context, R.style.Theme_SystemUI_QuickSettings));
++        context = getContext();
+         mAudioManager = context.getSystemService(AudioManager.class);
+         setOrientation(VERTICAL);
+         TextView label = new TextView(context);

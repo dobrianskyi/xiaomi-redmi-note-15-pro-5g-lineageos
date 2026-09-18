@@ -1,0 +1,9 @@
+android_app {
+    name: "LapisDolby",
+    srcs: ["src/**/*.java"],
+    resource_dirs: ["res"],
+    certificate: "platform",
+    platform_apis: true,
+    system_ext_specific: true,
+    optimize: { enabled: false },
+}

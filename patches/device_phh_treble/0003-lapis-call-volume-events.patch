@@ -1,0 +1,148 @@
+From 961e5810888ff836919536f5961eedb81120fb30 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Thu, 17 Sep 2026 14:16:15 +0300
+Subject: [PATCH] audio: bound lapis call speaker gain on mode route and volume
+ events
+
+---
+ app/InCallService/AndroidManifest.xml         |  3 +
+ .../LapisCallVolumeController.java            | 78 +++++++++++++++++++
+ .../incallservice/VolumeChangeService.java    | 11 +++
+ 3 files changed, 92 insertions(+)
+ create mode 100644 app/InCallService/src/org/lineageos/mediatek/incallservice/LapisCallVolumeController.java
+
+diff --git a/app/InCallService/AndroidManifest.xml b/app/InCallService/AndroidManifest.xml
+index cb5c2bc..4262ff6 100644
+--- a/app/InCallService/AndroidManifest.xml
++++ b/app/InCallService/AndroidManifest.xml
+@@ -5,6 +5,9 @@
+     android:versionName="1.0"
+     android:sharedUserId="android.uid.system">
+ 
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_ROUTING" />
++
+     <application
+         android:label="@string/app_name"
+         android:persistent="true">
+diff --git a/app/InCallService/src/org/lineageos/mediatek/incallservice/LapisCallVolumeController.java b/app/InCallService/src/org/lineageos/mediatek/incallservice/LapisCallVolumeController.java
+new file mode 100644
+index 0000000..847d523
+--- /dev/null
++++ b/app/InCallService/src/org/lineageos/mediatek/incallservice/LapisCallVolumeController.java
+@@ -0,0 +1,78 @@
++/* SPDX-License-Identifier: Apache-2.0 */
++package org.lineageos.mediatek.incallservice;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++import android.media.AudioManager;
++import android.media.AudioSystem;
++import android.os.Handler;
++import android.os.Looper;
++import android.util.Log;
++
++/** Reapply the verified lapis speaker gain after native call routing settles. */
++final class LapisCallVolumeController {
++    private boolean mClosed;
++    private final Context mContext;
++    private final AudioManager mAudio;
++    private final Handler mHandler = new Handler(Looper.getMainLooper());
++    private final Runnable mApply = this::apply;
++    private final AudioManager.OnModeChangedListener mMode = mode -> schedule();
++    private final AudioManager.OnCommunicationDeviceChangedListener mRoute = device -> schedule();
++    private final BroadcastReceiver mVolume = new BroadcastReceiver() {
++        @Override public void onReceive(Context context, Intent intent) {
++            if (intent.getIntExtra(AudioManager.EXTRA_VOLUME_STREAM_TYPE, -1)
++                    == AudioManager.STREAM_VOICE_CALL) {
++                schedule();
++            }
++        }
++    };
++
++    LapisCallVolumeController(Context context) {
++        mContext = context;
++        mAudio = context.getSystemService(AudioManager.class);
++        mAudio.addOnModeChangedListener(context.getMainExecutor(), mMode);
++        mAudio.addOnCommunicationDeviceChangedListener(context.getMainExecutor(), mRoute);
++        context.registerReceiver(mVolume, new IntentFilter(AudioManager.VOLUME_CHANGED_ACTION),
++                Context.RECEIVER_NOT_EXPORTED);
++        schedule();
++    }
++
++    private void schedule() {
++        if (mClosed) return;
++        mHandler.removeCallbacks(mApply);
++        // The former working module applied at ticks 1 and 3 of a 250ms cycle.
++        // Bound retries to actual mode, route or volume changes; never poll.
++        mHandler.postDelayed(mApply, 250);
++        mHandler.postDelayed(mApply, 750);
++    }
++
++    static int gainForVolume(int volume) {
++        int level = Math.max(0, Math.min(11, volume));
++        return Math.min(11, (int) Math.round(15.0 / Math.log(12.0) * Math.log(level + 1.0)));
++    }
++
++    private void apply() {
++        // AudioSystem uses internal device bitmasks, not AudioDeviceInfo type IDs.
++        if (mClosed || mAudio.getMode() != AudioManager.MODE_IN_CALL
++                || AudioSystem.getDevicesForStream(AudioSystem.STREAM_VOICE_CALL)
++                        != AudioSystem.DEVICE_OUT_SPEAKER) {
++            return;
++        }
++        int gain = gainForVolume(mAudio.getStreamVolume(AudioManager.STREAM_VOICE_CALL));
++        int result = AudioSystem.setParameters("volumeDevice=" + AudioSystem.DEVICE_OUT_SPEAKER
++                + ";volumeIndex=" + gain + ";volumeStreamType=" + AudioSystem.STREAM_VOICE_CALL);
++        if (result != AudioSystem.SUCCESS) {
++            Log.w("LapisCallVolume", "Vendor gain update failed: " + result);
++        }
++    }
++
++    void close() {
++        mClosed = true;
++        mHandler.removeCallbacks(mApply);
++        mAudio.removeOnModeChangedListener(mMode);
++        mAudio.removeOnCommunicationDeviceChangedListener(mRoute);
++        mContext.unregisterReceiver(mVolume);
++    }
++}
+diff --git a/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeService.java b/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeService.java
+index 0870315..39c3e9e 100644
+--- a/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeService.java
++++ b/app/InCallService/src/org/lineageos/mediatek/incallservice/VolumeChangeService.java
+@@ -16,6 +16,7 @@ import android.util.Log;
+ public class VolumeChangeService extends Service {
+     public static final String LOG_TAG = "MediatekInCallService";
+ 
++    private LapisCallVolumeController mLapisController;
+     private Context mContext;
+     private VolumeChangeReceiver mVolumeChangeReceiver;
+     private CallStateListener mCallStateListener;
+@@ -27,11 +28,21 @@ public class VolumeChangeService extends Service {
+ 
+     @Override
+     public void onDestroy() {
++        if (mLapisController != null) {
++            mLapisController.close();
++            mLapisController = null;
++        }
+         super.onDestroy();
+     }
+ 
+     @Override
+     public int onStartCommand(Intent intent, int flags, int startid) {
++        if ("lapis".equals(android.os.SystemProperties.get("ro.product.vendor.device"))) {
++            if (mLapisController == null) {
++                mLapisController = new LapisCallVolumeController(this);
++            }
++            return START_STICKY;
++        }
+         mContext = this;
+ 
+         AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+-- 
+2.55.0
+

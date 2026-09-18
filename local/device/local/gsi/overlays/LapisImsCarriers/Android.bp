@@ -1,0 +1,8 @@
+runtime_resource_overlay {
+    name: "LapisImsCarriers",
+    system_ext_specific: true,
+    certificate: "platform",
+    sdk_version: "current",
+    // CarrierConfig compares MCC/MNC as strings: keep "03" and "06" intact.
+    aaptflags: ["--keep-raw-values"],
+}

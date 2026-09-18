@@ -1,0 +1,25 @@
+From 9d37f2e35eb4f934b26f711cffae55c78ffed527 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Thu, 17 Sep 2026 10:59:45 +0300
+Subject: [PATCH] resetprop: use Clang alignment builtin with current Bionic
+
+---
+ Magisk/native/jni/systemproperties/prop_area.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Magisk/native/jni/systemproperties/prop_area.cpp b/Magisk/native/jni/systemproperties/prop_area.cpp
+index b834935..cb84545 100644
+--- a/Magisk/native/jni/systemproperties/prop_area.cpp
++++ b/Magisk/native/jni/systemproperties/prop_area.cpp
+@@ -147,7 +147,7 @@ prop_area* prop_area::map_prop_area(const char* filename) {
+ }
+ 
+ void* prop_area::allocate_obj(const size_t size, uint_least32_t* const off) {
+-  const size_t aligned = __BIONIC_ALIGN(size, sizeof(uint_least32_t));
++  const size_t aligned = __builtin_align_up(size, sizeof(uint_least32_t));
+   if (bytes_used_ + aligned > pa_data_size_) {
+     return nullptr;
+   }
+-- 
+2.55.0
+

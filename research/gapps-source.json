@@ -1,0 +1,7 @@
+{
+  "provider": "MindTheGapps",
+  "android": "16",
+  "branch": "baklava",
+  "url": "https://github.com/MindTheGapps/vendor_gapps.git",
+  "revision": "39bd3a09640efb81234cdbd8ab98ab71541d5d46"
+}

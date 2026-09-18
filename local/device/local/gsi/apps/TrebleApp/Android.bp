@@ -1,0 +1,10 @@
+// Source revision and preparation are pinned in scripts/prepare-trebleapp.py.
+android_app_import {
+    name: "LapisTrebleApp",
+    apk: "app.apk",
+    certificate: "platform",
+    privileged: true,
+    overrides: ["TrebleApp"],
+    enforce_uses_libs: false,
+    dex_preopt: { enabled: false },
+}

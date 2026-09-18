@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lineageos.overlay.lapis.lapisimstelephony">
+    <overlay android:targetPackage="com.android.phone"
+        android:requiredSystemPropertyName="ro.product.vendor.device"
+        android:requiredSystemPropertyValue="lapis"
+        android:isStatic="true" android:priority="999" />
+    <application android:hasCode="false" />
+</manifest>

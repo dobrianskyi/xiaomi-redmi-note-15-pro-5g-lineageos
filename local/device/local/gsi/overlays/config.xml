@@ -1,0 +1,11 @@
+<config>
+    <overlay package="android.gsi.overlay" mutable="false" enabled="true" />
+    <overlay package="com.android.systemui.gsi.overlay" mutable="false" enabled="true" />
+    <overlay package="org.lineageos.overlay.lapis.udfps" mutable="false" enabled="true" />
+    <overlay package="org.lineageos.overlay.lapis.lapisimsframework" mutable="false" enabled="true" />
+    <overlay package="org.lineageos.overlay.lapis.lapisimstelephony" mutable="false" enabled="true" />
+    <overlay package="org.lineageos.overlay.lapis.lapisimscarriers" mutable="false" enabled="true" />
+    <overlay package="org.lineageos.overlay.lapis.shadegestures" mutable="false" enabled="true" />
+    <overlay package="org.lineageos.overlay.lapis.lapisdisplaygeometry" mutable="false" enabled="true" />
+    <overlay package="org.lineageos.overlay.lapis.lapisstatusbargeometry" mutable="false" enabled="true" />
+</config>

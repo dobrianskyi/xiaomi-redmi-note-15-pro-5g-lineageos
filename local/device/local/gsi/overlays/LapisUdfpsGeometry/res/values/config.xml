@@ -1,0 +1,5 @@
+<resources>
+    <!-- Micrometers per pixel: 25400 / stock physical xDpi 447.023.
+         Corrects icon sizing only; does not change biometric matching. -->
+    <item name="pixel_pitch" type="dimen" format="float">56.820343</item>
+</resources>

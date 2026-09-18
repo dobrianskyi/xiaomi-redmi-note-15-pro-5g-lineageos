@@ -1,0 +1,7 @@
+# The stock kernel advertises DEVNAME=mi_display/disp_feature. Preserve it
+# during coldboot so vendor display/FOD clients can open the expected node.
+subsystem mi_display
+    devname uevent_devname
+    dirname /dev
+
+/dev/mi_display/disp_feature 0660 system system

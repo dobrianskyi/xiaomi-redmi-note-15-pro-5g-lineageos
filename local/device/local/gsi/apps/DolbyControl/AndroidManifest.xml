@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lineageos.dolby" android:versionCode="7" android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="35" android:targetSdkVersion="36" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_ROUTING" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <application android:name=".DolbyApplication" android:label="Dolby audio"
+        android:theme="@android:style/Theme.DeviceDefault.DayNight" android:allowBackup="false"
+        android:persistent="true" android:directBootAware="true"
+        android:defaultToDeviceProtectedStorage="true" android:icon="@mipmap/ic_launcher">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <receiver android:name=".BootReceiver" android:exported="false">
+            <intent-filter><action android:name="android.intent.action.BOOT_COMPLETED" /></intent-filter>
+        </receiver>
+    </application>
+</manifest>

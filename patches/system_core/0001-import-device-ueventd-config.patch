@@ -1,0 +1,24 @@
+From 653f252e89c86a2bf35babff5e965ababbdef825 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Thu, 17 Sep 2026 13:51:23 +0300
+Subject: [PATCH] ueventd: import device-specific system node configuration
+
+Change-Id: Idb82e2f9d18b933eba3ee4a392f11faaec5e3f8b
+---
+ rootdir/ueventd.rc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/rootdir/ueventd.rc b/rootdir/ueventd.rc
+index 2ff86a5..3432244 100644
+--- a/rootdir/ueventd.rc
++++ b/rootdir/ueventd.rc
+@@ -1,5 +1,6 @@
+ import /vendor/etc/ueventd.rc
+ import /odm/etc/ueventd.rc
++import /system/etc/ueventd/${ro.product.vendor.device}.rc
+ 
+ firmware_directories /etc/firmware/ /odm/firmware/ /vendor/firmware/ /firmware/image/
+ uevent_socket_rcvbuf_size 16M
+-- 
+2.55.0
+

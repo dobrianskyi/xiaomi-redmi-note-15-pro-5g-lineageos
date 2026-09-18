@@ -1,0 +1,344 @@
+From ff180a8c61f8c50626c740a452861cb25a84caa0 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Thu, 17 Sep 2026 13:15:42 +0300
+Subject: [PATCH] SystemUI: add a media volume slider to quick settings
+
+Change-Id: Ic5a03f9221b035dc243c0d01497f12b72b05e0d6
+---
+ .../media_volume_progress_drawable.xml        |  38 ++++++
+ .../media_volume_progress_full_drawable.xml   |  47 ++++++++
+ .../res/values/strings_media_volume.xml       |   4 +
+ .../systemui/qs/MediaVolumeSliderView.java    | 113 ++++++++++++++++++
+ .../src/com/android/systemui/qs/QSPanel.java  |  14 +++
+ .../systemui/qs/QSPanelController.java        |   4 +-
+ .../qs/composefragment/QSFragmentCompose.kt   |  24 ++--
+ 7 files changed, 234 insertions(+), 10 deletions(-)
+ create mode 100644 packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
+ create mode 100644 packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
+ create mode 100644 packages/SystemUI/res/values/strings_media_volume.xml
+ create mode 100644 packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+
+diff --git a/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml b/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
+new file mode 100644
+index 000000000..ac0a80d55
+--- /dev/null
++++ b/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
+@@ -0,0 +1,38 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++  ~ Copyright (C) 2020 The Android Open Source Project
++  ~
++  ~ Licensed under the Apache License, Version 2.0 (the "License");
++  ~ you may not use this file except in compliance with the License.
++  ~ You may obtain a copy of the License at
++  ~
++  ~      http://www.apache.org/licenses/LICENSE-2.0
++  ~
++  ~ Unless required by applicable law or agreed to in writing, software
++  ~ distributed under the License is distributed on an "AS IS" BASIS,
++  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  ~ See the License for the specific language governing permissions and
++  ~ limitations under the License.
++  -->
++<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
++            android:paddingMode="stack" >
++    <item android:id="@android:id/background"
++        android:gravity="center_vertical|fill_horizontal">
++        <inset
++            android:insetLeft="@dimen/rounded_slider_track_inset"
++            android:insetRight="@dimen/rounded_slider_track_inset" >
++            <shape>
++                <size android:height="@dimen/rounded_slider_track_width" />
++                <corners android:radius="@dimen/rounded_slider_track_corner_radius" />
++                <solid android:color="@color/brightness_slider_track" />
++            </shape>
++        </inset>
++    </item>
++    <item android:id="@android:id/progress"
++          android:gravity="center_vertical|fill_horizontal">
++            <com.android.systemui.util.BrightnessProgressDrawable
++                android:drawable="@drawable/media_volume_progress_full_drawable"
++            />
++    </item>
++</layer-list>
+\ No newline at end of file
+diff --git a/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml b/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
+new file mode 100644
+index 000000000..e613fefe2
+--- /dev/null
++++ b/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
+@@ -0,0 +1,47 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++  ~ Copyright (C) 2020 The Android Open Source Project
++  ~
++  ~ Licensed under the Apache License, Version 2.0 (the "License");
++  ~ you may not use this file except in compliance with the License.
++  ~ You may obtain a copy of the License at
++  ~
++  ~      http://www.apache.org/licenses/LICENSE-2.0
++  ~
++  ~ Unless required by applicable law or agreed to in writing, software
++  ~ distributed under the License is distributed on an "AS IS" BASIS,
++  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  ~ See the License for the specific language governing permissions and
++  ~ limitations under the License.
++  -->
++
++<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:priv-android="http://schemas.android.com/apk/prv/res/android"
++    android:autoMirrored="true">
++    <item android:id="@+id/slider_foreground"
++        android:height="@dimen/rounded_slider_height">
++        <shape>
++            <size android:height="@dimen/rounded_slider_height" />
++            <solid android:color="?attr/shadeActive" />
++            <corners android:radius="@dimen/rounded_slider_corner_radius"/>
++        </shape>
++    </item>
++    <item>
++        <shape>
++            <corners android:radius="@dimen/rounded_slider_corner_radius" />
++            <size android:height="@dimen/rounded_slider_height" />
++            <solid android:color="@color/brightness_slider_overlay_color" />
++        </shape>
++    </item>
++    <item
++        android:id="@+id/slider_icon"
++        android:gravity="center_vertical|right"
++        android:height="@dimen/rounded_slider_icon_size"
++        android:width="@dimen/rounded_slider_icon_size"
++        android:right="@dimen/rounded_slider_icon_inset">
++        <com.android.systemui.util.AlphaTintDrawableWrapper
++            android:drawable="@drawable/ic_volume_media"
++            android:tint="?attr/onShadeActive"
++        />
++    </item>
++</layer-list>
+\ No newline at end of file
+diff --git a/packages/SystemUI/res/values/strings_media_volume.xml b/packages/SystemUI/res/values/strings_media_volume.xml
+new file mode 100644
+index 000000000..0e5b74017
+--- /dev/null
++++ b/packages/SystemUI/res/values/strings_media_volume.xml
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <string name="qs_media_volume_label" translatable="false">Media volume</string>
++</resources>
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+new file mode 100644
+index 000000000..de92660f6
+--- /dev/null
++++ b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+@@ -0,0 +1,113 @@
++/*
++ * Copyright (C) 2026 The LineageOS Project
++ * SPDX-License-Identifier: Apache-2.0
++ */
++package com.android.systemui.qs;
++
++import android.app.ActivityManager;
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++import android.media.AudioManager;
++import android.os.UserHandle;
++import android.os.UserManager;
++import android.widget.LinearLayout;
++import android.widget.SeekBar;
++import android.widget.TextView;
++
++import com.android.systemui.res.R;
++
++/** Media-only volume control shared by the View and Compose quick settings panels. */
++public class MediaVolumeSliderView extends LinearLayout {
++    private final AudioManager mAudioManager;
++    private final SeekBar mSlider;
++    private boolean mTracking;
++    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
++        @Override
++        public void onReceive(Context context, Intent intent) {
++            refresh();
++        }
++    };
++
++    public MediaVolumeSliderView(Context context) {
++        super(context);
++        mAudioManager = context.getSystemService(AudioManager.class);
++        setOrientation(VERTICAL);
++        TextView label = new TextView(context);
++        label.setText(R.string.qs_media_volume_label);
++        label.setTextAppearance(android.R.style.TextAppearance_Material_Small);
++        android.content.res.TypedArray colors = context.obtainStyledAttributes(
++                new int[] {R.attr.onShadeInactive});
++        label.setTextColor(colors.getColor(0, android.graphics.Color.WHITE));
++        colors.recycle();
++        int inset = getResources().getDimensionPixelSize(R.dimen.rounded_slider_icon_inset);
++        label.setPaddingRelative(inset, 0, inset, 0);
++        addView(label);
++        mSlider = new SeekBar(context);
++        mSlider.setContentDescription(context.getString(R.string.qs_media_volume_label));
++        mSlider.setThumb(null);
++        mSlider.setTickMark(null);
++        mSlider.setSplitTrack(false);
++        mSlider.setProgressTintList(null);
++        mSlider.setProgressBackgroundTintList(null);
++        mSlider.setPadding(0, 0, 0, 0);
++        mSlider.setProgressDrawable(context.getDrawable(R.drawable.media_volume_progress_drawable));
++        addView(mSlider, new LayoutParams(LayoutParams.MATCH_PARENT,
++                getResources().getDimensionPixelSize(R.dimen.brightness_mirror_height)));
++        mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
++            @Override
++            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
++                if (fromUser && seekBar.isEnabled()) {
++                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress,
++                            AudioManager.FLAG_SHOW_UI_WARNINGS);
++                    if (!mTracking) refresh();
++                }
++            }
++
++            @Override
++            public void onStartTrackingTouch(SeekBar seekBar) {
++                mTracking = true;
++                getParent().requestDisallowInterceptTouchEvent(true);
++            }
++
++            @Override
++            public void onStopTrackingTouch(SeekBar seekBar) {
++                mTracking = false;
++                getParent().requestDisallowInterceptTouchEvent(false);
++                refresh();
++            }
++        });
++    }
++
++    @Override
++    protected void onAttachedToWindow() {
++        super.onAttachedToWindow();
++        IntentFilter filter = new IntentFilter(AudioManager.VOLUME_CHANGED_ACTION);
++        filter.addAction(AudioManager.STREAM_DEVICES_CHANGED_ACTION);
++        filter.addAction(AudioManager.STREAM_MUTE_CHANGED_ACTION);
++        filter.addAction(Intent.ACTION_USER_SWITCHED);
++        filter.addAction(UserManager.ACTION_USER_RESTRICTIONS_CHANGED);
++        getContext().registerReceiverAsUser(mReceiver, UserHandle.ALL, filter, null, null,
++                Context.RECEIVER_EXPORTED);
++        refresh();
++    }
++
++    @Override
++    protected void onDetachedFromWindow() {
++        getContext().unregisterReceiver(mReceiver);
++        mTracking = false;
++        super.onDetachedFromWindow();
++    }
++
++    private void refresh() {
++        boolean restricted = getContext().getSystemService(UserManager.class).hasUserRestriction(
++                UserManager.DISALLOW_ADJUST_VOLUME, UserHandle.of(ActivityManager.getCurrentUser()));
++        mSlider.setEnabled(!mAudioManager.isVolumeFixed() && !restricted);
++        mSlider.setMin(mAudioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC));
++        mSlider.setMax(mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
++        if (!mTracking) {
++            mSlider.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
++        }
++    }
++}
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
+index 602f59373..edf669df0 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
+@@ -72,6 +72,8 @@ public class QSPanel extends LinearLayout implements Tunable {
+     @Nullable
+     protected View mBrightnessView;
+     @Nullable
++    private View mMediaVolumeView;
++    @Nullable
+     protected BrightnessSliderController mToggleSliderController;
+ 
+     /** Whether or not the QS media player feature is enabled. */
+@@ -230,6 +232,18 @@ public class QSPanel extends LinearLayout implements Tunable {
+         }
+     }
+ 
++    public void addMediaVolumeSlider() {
++        if (mMediaVolumeView != null) {
++            removeView(mMediaVolumeView);
++            mChildrenLayoutTop.remove(mMediaVolumeView);
++            mMovableContentStartIndex--;
++        }
++        mMediaVolumeView = new MediaVolumeSliderView(mContext);
++        addView(mMediaVolumeView, mMovableContentStartIndex,
++                new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
++        mMovableContentStartIndex++;
++    }
++
+     /** */
+     public QSTileLayout getOrCreateTileLayout() {
+         if (mTileLayout == null) {
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanelController.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanelController.java
+index fddef2ed6..d3fdf20bb 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/QSPanelController.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanelController.java
+@@ -118,6 +118,8 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
+         mBrightnessSliderController = brightnessSliderFactory.create(getContext(), mView);
+         mView.setBrightnessView(mBrightnessSliderController.getRootView());
+ 
++        mView.addMediaVolumeSlider();
++
+         mBrightnessController = brightnessControllerFactory.create(mBrightnessSliderController);
+         mBrightnessMirrorHandler = new BrightnessMirrorHandler(mBrightnessController);
+         mStatusBarKeyguardViewManager = statusBarKeyguardViewManager;
+@@ -196,6 +198,7 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
+                 mBrightnessSliderControllerFactory.create(getContext(), mView);
+         mView.setBrightnessView(mBrightnessSliderController.getRootView());
+         mBrightnessController = mBrightnessControllerFactory.create(mBrightnessSliderController);
++        mView.addMediaVolumeSlider();
+         mBrightnessMirrorHandler.setBrightnessController(mBrightnessController);
+         mBrightnessSliderController.init();
+         if (mListening) {
+@@ -308,4 +311,3 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
+         return mView.getBottom();
+     }
+ }
+-
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/composefragment/QSFragmentCompose.kt b/packages/SystemUI/src/com/android/systemui/qs/composefragment/QSFragmentCompose.kt
+index 84ee87b42..3adc12afb 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/composefragment/QSFragmentCompose.kt
++++ b/packages/SystemUI/src/com/android/systemui/qs/composefragment/QSFragmentCompose.kt
+@@ -976,15 +976,21 @@ constructor(
+                 }
+             )
+         ) {
+-            AlwaysDarkMode {
+-                BrightnessSliderContainer(
+-                    viewModel =
+-                        viewModel.containerViewModel.brightnessSliderViewModel,
+-                    containerColors =
+-                        ContainerColors(
+-                            Color.Transparent,
+-                            ContainerColors.defaultContainerColor,
+-                        ),
++            Column {
++                AlwaysDarkMode {
++                    BrightnessSliderContainer(
++                        viewModel =
++                            viewModel.containerViewModel.brightnessSliderViewModel,
++                        containerColors =
++                            ContainerColors(
++                                Color.Transparent,
++                                ContainerColors.defaultContainerColor,
++                            ),
++                        modifier = Modifier.fillMaxWidth(),
++                    )
++                }
++                androidx.compose.ui.viewinterop.AndroidView(
++                    factory = { com.android.systemui.qs.MediaVolumeSliderView(it) },
+                     modifier = Modifier.fillMaxWidth(),
+                 )
+             }
+-- 
+2.55.0
+

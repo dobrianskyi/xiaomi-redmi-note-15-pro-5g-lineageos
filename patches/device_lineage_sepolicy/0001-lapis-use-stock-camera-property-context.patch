@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lapis Bringup <lapis@localhost>
+Date: Fri, 18 Sep 2026 17:10:00 +0300
+Subject: [PATCH] lapis: keep stock vendor camera property prefix ownership
+
+The stock vendor already declares this prefix. Duplicating it in system_ext
+causes PropertyInit to abort before services start. Gate only this entry;
+other products retain the existing context.
+
+---
+diff --git a/common/private/property_contexts b/common/private/property_contexts
+index 9bdd72f..a3661ba 100644
+--- a/common/private/property_contexts
++++ b/common/private/property_contexts
+@@ -4,7 +4,8 @@ ro.odm.cast.ssid_suffix u:object_r:odm_cast_prop:s0
+ 
+ # Aux camera
+ vendor.camera.aux.packageexcludelist   u:object_r:vendor_persist_camera_prop:s0
+-vendor.camera.aux.packagelist          u:object_r:vendor_persist_camera_prop:s0
++# Stock lapis vendor already owns this prefix; duplicate entries abort init.
++ifelse(lapis_stock_camera_property, `true', `', `vendor.camera.aux.packagelist          u:object_r:vendor_persist_camera_prop:s0')
+ 
+ # Bluetooth
+ bluetooth.hci.disabled_commands        u:object_r:bluetooth_config_prop:s0

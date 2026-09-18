@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- SPDX-License-Identifier: GPL-2.0-only
+     Derived from MindTheGapps GmsOverlay, revision 39bd3a09640efb81234cdbd8ab98ab71541d5d46.
+     Optional-app defaults removed for the minimal variant. -->
+<resources>
+    <string-array name="config_forceQueryablePackages" translatable="false">
+        <item>com.android.settings</item>
+        <item>com.android.providers.settings</item>
+        <item>com.android.vending</item>
+        <item>com.google.android.gms</item>
+    </string-array>
+    <string name="config_systemGameService" translatable="false">com.google.android.gms</string>
+    <string name="config_devicePolicyManagement" translatable="false">com.google.android.apps.work.clouddpc:23962F4B43B9857638EA66F4D419518EAE282491ACDA4B94707BD59003C45E58</string>
+    <string name="config_devicePolicyManagementUpdater" translatable="false">com.google.android.gms</string>
+    <string name="config_appsAuthorizedForSharedAccounts" translatable="false">;com.android.vending;com.android.settings;</string>
+    <string name="config_persistentDataPackageName" translatable="false">com.google.android.gms</string>
+    <string name="config_defaultDndAccessPackages" translatable="false">com.google.android.gms</string>
+    <string-array name="config_priorityOnlyDndExemptPackages" translatable="false">
+        <item>com.android.dialer</item>
+        <item>com.google.android.dialer</item>
+        <item>com.android.server.telecom</item>
+        <item>android</item>
+        <item>com.android.systemui</item>
+    </string-array>
+    <string name="config_defaultCredentialManagerHybridService" translatable="false">com.google.android.gms/.auth.api.credentials.credman.service.RemoteService</string>
+    <string-array name="config_enabledCredentialProviderService" translatable="false">
+        <item>com.google.android.gms/.auth.api.credentials.credman.service.PasswordAndPasskeyService</item>
+    </string-array>
+    <string-array name="config_primaryCredentialProviderService" translatable="false">
+        <item>com.google.android.gms/.auth.api.credentials.credman.service.PasswordAndPasskeyService</item>
+    </string-array>
+    <string name="config_defaultSupervisionProfileOwnerComponent" translatable="false">com.google.android.gms/.kids.account.receiver.ProfileOwnerReceiver</string>
+    <string name="config_systemSupervision" translatable="false">com.google.android.gms.supervision</string>
+    <string-array name="config_rawContactsEligibleDefaultAccountTypes" translatable="false">
+        <item>com.google</item>
+    </string-array>
+    <string-array name="config_setContactsDefaultAccountKnownSigners">
+        <item>F0FD6C5B410F25CB25C3B53346C8972FAE30F8EE7411DF910480AD6B2D60DB83</item>
+    </string-array>
+    <string name="config_defaultNearbyFastPairSettingsDevicesComponent" translatable="false">com.google.android.gms/com.google.android.gms.nearby.discovery.devices.SavedDevicesSettingsActivity</string>
+</resources>
