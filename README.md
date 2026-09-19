@@ -81,6 +81,10 @@ no post-install root modules are required. Details and remaining tests:
 
 ## Downloads and installation
 
+**[Full flashing guide for an unlocked Xiaomi Redmi Note 15 Pro 5G](docs/INSTALL.md)** —
+stock firmware prerequisites, image verification, Fastboot/fastbootd, AVB setup,
+clean installation, updates, first boot and rollback to HyperOS.
+
 Download the experimental image and checksums from [Releases](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases).
 The initial release is **GApps minimal**. Verify checksums before decompression
 and flashing. Read [installation prerequisites](docs/INSTALL.md); there is no
