@@ -8,7 +8,7 @@ root = Path(__file__).resolve().parent
 out = root / 'modules-out'
 out.mkdir(exist_ok=True)
 sums = []
-for name in ('display-fix', 'fingerprint-fix', 'call-audio-fix', 'dolby-fix'):
+for name in ('display-fix', 'fingerprint-fix', 'call-audio-fix', 'dolby-fix', 'bluetooth-fix'):
     module = root / name / 'module'
     props = dict(line.split('=', 1) for line in (module / 'module.prop').read_text().splitlines() if '=' in line)
     target = out / f"{props['id']}-{props['version']}.zip"

@@ -212,8 +212,11 @@ error output and resolve it, or use the rollback below. `fastboot -w` must finis
 successfully, including the data/metadata formatting reported by the tool.
 
 The stock product/system_ext files are retained on disk; this GSI's mount
-configuration uses its integrated system content. No additional GApps ZIP or
-Magisk fix modules are required for the published minimal-GApps image.
+configuration uses its integrated system content. No additional GApps ZIP is
+required for the published minimal-GApps image. The September image predates the
+[October Bluetooth profile hotfix](../rom/bluetooth-fix/README.md): that separate
+experimental hotfix requires Magisk; future source builds include the properties
+without root. No replacement system image accompanies the October update.
 
 ## 8. First boot and checks
 
@@ -236,6 +239,8 @@ and authorize your computer again if logs are needed: this public image does not
 include the maintainer's ADB key or diagnostic startup override.
 
 Do not install the older `rom/` fix modules on top: these fixes are integrated.
+The separately documented [Bluetooth hotfix](../rom/bluetooth-fix/README.md)
+targets the September image and has its own compatibility guard.
 Optional Magisk installation is separate from flashing this GSI; follow the
 [official Magisk instructions](https://topjohnwu.github.io/Magisk/install.html)
 and patch your matching `init_boot` on your own phone. Complete any requested app

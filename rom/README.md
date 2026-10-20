@@ -1,5 +1,22 @@
 # Optional Magisk workarounds for Xiaomi lapis
 
+## October Bluetooth hotfix for the September image
+
+The new [`bluetooth-fix`](bluetooth-fix/README.md) module targets the tested
+`23.2-20260918-UNOFFICIAL-gsi_lapis` build with vendor `OS3.0.307.0.WPPMIXM` and
+Magisk already installed. It restores absent music/headset and other profile
+defaults. The installer rejects other device/build/vendor combinations.
+Its payload was tested at runtime, including controlled Classic and BLE discovery;
+full reboot and installation through the new ZIP remain untested.
+
+This module **can be used on the documented September image**: it corrects a
+Bluetooth omission discovered after that release. Future source builds integrate
+the properties without root. See [the hotfix instructions](bluetooth-fix/README.md)
+and [updates](../CHANGELOG.md). The four older modules below keep their original
+reference-GSI restrictions.
+
+## Older reference-GSI workarounds
+
 These are the earlier, separately tested root-module implementations of selected
 fixes. They let an experienced user try individual fixes **without replacing the
 whole system image**, on the documented compatible reference GSI.

@@ -36,4 +36,5 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     device/local/gsi/treble-interfaces.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/interfaces.xml
 PRODUCT_SYSTEM_PROPERTIES += ro.adb.secure=1
+$(call inherit-product, device/local/gsi/bluetooth-defaults.mk)
 SELINUX_IGNORE_NEVERALLOWS := false

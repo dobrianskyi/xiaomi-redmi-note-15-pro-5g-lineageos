@@ -13,6 +13,7 @@
 | MediaTek IMS / carrier MNC parsing | `apps/MediatekIms`, `overlays/LapisIms*`, `scripts/prepare-ims.py` |
 | TrebleApp without QTI handlers | `patches/treble_app`, `scripts/prepare-trebleapp.py`, `apps/TrebleApp` |
 | SELinux / VINTF / permissions | `local/device/local/gsi/sepolicy`, `compatibility_matrix.xml`, `lapis-base.mk` |
+| Bluetooth profile defaults (2026-10-20) | `local/device/local/gsi/bluetooth-defaults.mk`; existing-build hotfix in `rom/bluetooth-fix` |
 
 Paths beginning `overlays/` or `apps/` are relative to `local/device/local/gsi/`.
 Android patch order and pinned bases are recorded in `patches/series.json`.

@@ -11,6 +11,15 @@ source-built Xiaomi kernel/vendor distribution. The tested firmware baseline is
 The initial release uses public Android test signing keys, not private production
 release keys. Bootloader locking and official OTA updates are not supported.
 
+## Update — 2026-10-20
+
+**[Bluetooth profile hotfix](CHANGELOG.md):** ordinary music/headset profile
+defaults were missing from the September build. The recipe is corrected for
+future builds, and an experimental [Magisk hotfix for the existing image](rom/bluetooth-fix/README.md)
+is available. Controlled Classic and BLE discovery passed; real-device connection
+stability and long-term battery behavior still need testing. **No new system image
+was published in this update.**
+
 ## Build LineageOS for Xiaomi Redmi Note 15 Pro 5G
 
 Use Linux x86_64, Python 3.12+ (or 3.11 with tarfile extraction-filter support),
@@ -64,6 +73,7 @@ the newest archive for that variant. See [build variants](docs/BUILD_VARIANTS.md
   digits disappearing under the physical screen corner.
 - Strict privileged permissions, service labels and stock-vendor SELinux/VINTF
   compatibility fixes discovered during bring-up.
+- Bluetooth profile defaults restored for future builds (October 20 hotfix).
 
 All are part of the recipe and apply during future builds and clean installations;
 no post-install root modules are required. Details and remaining tests:
@@ -78,6 +88,9 @@ no post-install root modules are required. Details and remaining tests:
    source and module payloads in [`rom/`](rom/README.md), or its release ZIPs.
    Magisk must already be installed. These are individual fixes, not the whole
    ROM; do not stack them on the released image, which already integrates them.
+
+The October [Bluetooth hotfix](rom/bluetooth-fix/README.md) is a separate exception:
+it targets the released September build, which lacks these Bluetooth defaults.
 
 ## Downloads and installation
 
