@@ -5,6 +5,8 @@ case "$(getprop ro.lineage.version)" in
     23.2-*gsi_lapis) ;;
     *) exit 0 ;;
 esac
+[ "$(getprop ro.build.version.sdk)" = 36 ] || exit 0
+[ "$(getprop ro.vendor.build.version.incremental)" = 'OS3.0.307.0.WPPMIXM' ] || exit 0
 MODDIR=${0%/*}
 [ -f "$MODDIR/disable" ] && exit 0
 [ -f "$MODDIR/remove" ] && exit 0

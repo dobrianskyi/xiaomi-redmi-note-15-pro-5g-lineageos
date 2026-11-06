@@ -32,6 +32,11 @@ existing apps/data passed, SELinux remains Enforcing, and both new controls were
 user-confirmed. This is an **experimental GSI**, not official LineageOS support or
 full hardware certification. See [release details](docs/ANDROID17.md).
 
+**Module installation update (2026-11-06):** exact build-date restrictions have
+been removed from the optional Android 16 Magisk ZIPs. Device/vendor and duplicate-fix
+checks remain. [Downloads and compatibility](rom/README.md). These modules are not
+needed on the integrated ROM and do not contain the pending vibration fix.
+
 ## Build LineageOS for Xiaomi Redmi Note 15 Pro 5G
 
 Use Linux x86_64, Python 3.12+ (or 3.11 with tarfile extraction-filter support),

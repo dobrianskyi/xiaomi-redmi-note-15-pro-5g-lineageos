@@ -55,7 +55,9 @@ ui_print() { :; }
             return json.loads(state.read_text())
 
     def test_stock_explicit_values_win_and_repeated_boot_is_idempotent(self):
-        initial = {'ro.product.vendor.device': 'lapis',
+        initial = {'ro.build.version.sdk': '36',
+                   'ro.vendor.build.version.incremental': 'OS3.0.307.0.WPPMIXM',
+                   'ro.product.vendor.device': 'lapis',
                    'ro.lineage.version': '23.2-20260918-UNOFFICIAL-gsi_lapis',
                    'bluetooth.profile.sap.server.enabled': 'false',
                    'bluetooth.profile.bap.unicast.client.enabled': 'false',
@@ -74,18 +76,24 @@ ui_print() { :; }
             self.assertEqual(self.run_script(initial), initial)
 
     def test_disable_and_remove_flags_prevent_changes(self):
-        initial = {'ro.product.vendor.device': 'lapis',
+        initial = {'ro.build.version.sdk': '36',
+                   'ro.vendor.build.version.incremental': 'OS3.0.307.0.WPPMIXM',
+                   'ro.product.vendor.device': 'lapis',
                    'ro.lineage.version': '23.2-20260918-UNOFFICIAL-gsi_lapis'}
         for flag in ('disable', 'remove'):
             self.assertEqual(self.run_script(initial, flags=(flag,)), initial)
 
-    def test_installer_accepts_only_tested_device_build_vendor_and_magisk_app(self):
-        initial = {'ro.product.vendor.device': 'lapis',
-                   'ro.lineage.version': '23.2-20260918-UNOFFICIAL-gsi_lapis',
-                   'ro.vendor.build.version.incremental': 'OS3.0.307.0.WPPMIXM'}
+    def test_installer_accepts_other_dates_but_checks_device_android_vendor_and_magisk(self):
+        initial = {'ro.build.version.sdk': '36',
+                   'ro.vendor.build.version.incremental': 'OS3.0.307.0.WPPMIXM',
+                   'ro.product.vendor.device': 'lapis',
+                   'ro.lineage.version': '23.2-20260918-UNOFFICIAL-gsi_lapis'}
         self.assertEqual(self.run_script(initial, script='customize.sh'), initial)
+        other_date = {**initial, 'ro.lineage.version': '23.2-another-gsi_lapis'}
+        self.assertEqual(self.run_script(other_date, script='customize.sh'), other_date)
         for key, value in [('ro.product.vendor.device', 'other'),
-                           ('ro.lineage.version', '23.2-another-gsi_lapis'),
+                           ('ro.lineage.version', '24.0-another-gsi_lapis'),
+                           ('ro.build.version.sdk', '37'),
                            ('ro.vendor.build.version.incremental', 'other-vendor')]:
             with self.subTest(key=key):
                 changed = {**initial, key: value}

@@ -1,6 +1,6 @@
 id=lapis_fod_bridge
 name=Lapis Xiaomi AIDL FOD bridge (experimental)
-version=0.3
-versionCode=3
+version=0.4
+versionCode=4
 author=local
 description=Restore Xiaomi display device path and FOD state updates for lapis LineageOS GSI.

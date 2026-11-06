@@ -1,5 +1,16 @@
 # Updates
 
+## 2026-11-06 — Module installer compatibility
+
+Removed exact build-date gates from the five optional Magisk modules. Eligibility
+now checks lapis, LineageOS 23.2 / SDK 36 and the documented Xiaomi vendor. The
+four legacy display/FOD/audio modules reject integrated lapis ROMs; Bluetooth
+defaults target 23.2 `gsi_lapis` and preserve explicit values. Corresponding boot
+guards are aligned with installer eligibility. New module versions and separate
+ZIPs leave the original release assets intact. Host compatibility tests pass;
+installation on additional GSI builds has not been tested on hardware. This
+update contains no system image and no vibration fix. See [module instructions](rom/README.md).
+
 ## 2026-11-06 — LineageOS 24.0 / Android 17
 
 [New system image, GApps minimal](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/24.0-lapis-20261106). The prior lapis display,

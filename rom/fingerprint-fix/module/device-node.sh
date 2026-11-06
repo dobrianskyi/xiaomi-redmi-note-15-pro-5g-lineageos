@@ -1,6 +1,13 @@
 #!/system/bin/sh
 [ "$(getprop ro.product.vendor.device)" = lapis ] || exit 1
-[ "$(getprop ro.lineage.version)" = '23.2-20260524-GAPPS-EXT4-GSI' ] || exit 1
+case "$(getprop ro.lineage.version)" in
+    23.2-*gsi_lapis*) exit 1 ;;
+    23.2-*) ;;
+    *) exit 1 ;;
+esac
+[ "$(getprop ro.build.version.sdk)" = 36 ] || exit 1
+[ "$(getprop ro.vendor.build.version.incremental)" = 'OS3.0.307.0.WPPMIXM' ] || exit 1
+[ ! -f /system/etc/ueventd/lapis.rc ] || exit 1
 node=/dev/mi_display/disp_feature
 sys=/sys/devices/virtual/mi_display/disp_feature
 [ -r "$sys/dev" ] || exit 2

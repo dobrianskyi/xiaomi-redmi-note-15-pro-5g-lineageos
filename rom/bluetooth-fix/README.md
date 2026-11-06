@@ -4,6 +4,16 @@ For Xiaomi Redmi Note 15 Pro 5G (`lapis`), the tested LineageOS build
 `23.2-20260918-UNOFFICIAL-gsi_lapis` and stock Xiaomi vendor
 `OS3.0.307.0.WPPMIXM`.
 
+## Installer update — 2026-11-06
+
+Version 0.2 removes the exact September 18 date restriction. Other LineageOS 23.2
+`gsi_lapis` dates are accepted on lapis with Android 16 / SDK 36 and the same stock
+vendor. Both installer and boot script enforce this environment. Existing profile
+values remain untouched, including in later builds with integrated defaults.
+Only the original September payload has been tested on hardware; other dates
+remain experimental. Android 17 is outside this module's supported environment.
+[Download the updated ZIP](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/module-installers-20261106).
+
 ## Problem and fix
 
 The lapis product does not inherit PHH's generic `base.mk`/`system.prop`.
@@ -26,13 +36,13 @@ It does not force unsupported profiles on.
   database, pairing, Wi-Fi, SELinux or firmware-partition edit.
 
 This hotfix is compatible with the documented September build. The older
-brightness/fingerprint/audio modules elsewhere in `rom/` have different guards
-and are still not intended for that image.
+brightness/fingerprint/audio modules elsewhere in `rom/` remain excluded from
+this image because their fixes are already integrated.
 
 ## Install on the existing build
 
-1. Check the device, build and vendor above. The ZIP installer rejects other
-   combinations; compatibility with other GSIs has not been established.
+1. Check lapis, LineageOS 23.2 `gsi_lapis`, SDK 36 and the vendor above. The
+   build date can differ; compatibility with that exact build remains unverified.
 2. Verify the ZIP against the release's `SHA256SUMS`.
 3. With Magisk already installed, open **Magisk → Modules → Install from storage**
    and select the Bluetooth ZIP, then reboot normally.
