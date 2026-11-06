@@ -1,5 +1,26 @@
 # Updates
 
+## 2026-11-06 — LineageOS 24.0 / Android 17
+
+[New system image, GApps minimal](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/24.0-lapis-20261106). The prior lapis display,
+fingerprint, audio/IMS, geometry, gestures, Dolby, power-schedule and Bluetooth
+recipe fixes are ported to Android 17.
+
+New: opt-in auto-confirm for PINs of four or more digits, and a dedicated media
+mute/unmute button beside the Quick Settings slider. Mute retains the native
+volume level for restoration. Existing credential checks and lockout handling
+remain in place.
+
+The exact release image was flashed without wiping the maintainer's existing
+Android 17 data. Boot, encrypted-user unlock, app retention, enforcing SELinux and
+the two new controls passed. Filesystem, permissions, service/property contexts,
+SELinux merge and VINTF checks passed with matching vendor/APEX metadata. Other
+hardware paths have not all been retested; see [device status](docs/DEVICE_STATUS.md).
+
+Builds now use bounded systemd scopes and Go memory controls. Four parallel jobs
+completed the tested incremental build; eight caused sustained memory reclaim.
+The source lock contains 1246 projects and the ordered recipe has 22 patches.
+
 ## 2026-10-20 — Bluetooth profile hotfix
 
 Fixed missing Bluetooth profile defaults in the lapis build recipe. Affected

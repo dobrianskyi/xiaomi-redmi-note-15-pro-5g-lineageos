@@ -1,4 +1,4 @@
-From 44c96565e08ee6de37418c74a27aa41c9f278320 Mon Sep 17 00:00:00 2001
+From 14c649aa596f9554f2c8be1cbffe704219f3a0ea Mon Sep 17 00:00:00 2001
 From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
 Date: Wed, 16 Sep 2026 18:42:53 +0300
 Subject: [PATCH] build: use overlay and QTI components already provided by
@@ -20,5 +20,5 @@ index 59a19da..1c4ef41 100644
  	treble-overlay-Hisense-HLTE556N \
  	treble-overlay-NavBar \
 -- 
-2.55.0
+2.56.0
 

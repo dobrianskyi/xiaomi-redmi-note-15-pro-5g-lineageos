@@ -11,7 +11,7 @@ while (($#)); do
   --tools-only) tools_only=true; shift ;;
   --help|-h)
    echo 'prepare.sh [--directory DIR] [--tools-only]'
-   echo 'Download LineageOS 23.2 tools and sources without compiling.'
+   echo 'Download LineageOS 24.0 tools and sources without compiling.'
    echo '--directory: create a separate recipe checkout in an empty directory.'
    echo '--tools-only: prepare tools only, without Android repo sync.'
    exit 0 ;;

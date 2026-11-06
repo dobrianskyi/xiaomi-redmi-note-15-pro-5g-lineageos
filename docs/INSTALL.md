@@ -4,9 +4,9 @@ This guide covers a clean installation from the matching stock HyperOS baseline,
 reinstallation over a compatible GSI, first boot, and rollback. **An already
 unlocked bootloader is required. A clean installation deletes all phone user data.**
 
-The release is an unofficial **LineageOS 23.2 / Android 16 ARM64 A/B EXT4 GSI**.
+The release is an unofficial **LineageOS 24.0 / Android 17 ARM64 A/B EXT4 GSI**.
 It contains a compressed `system.img`, not a recovery ZIP, OTA or complete Xiaomi
-firmware. The initial release includes minimal Google apps. Root is not required.
+firmware. The current release includes minimal Google apps. Root is not required.
 
 ## Scope and tested baseline
 
@@ -21,9 +21,9 @@ modified partition layouts or slot b. If a check differs, stop and investigate;
 do not switch slots just to match this guide. The inactive slot is **not** a
 verified recovery system: its logical partitions may be empty.
 
-The preceding build passed clean setup on the test phone. The final clock overlays
-were subsequently tested on it; the exact downloadable final image has not received
-another clean-flash test. See [device status and remaining tests](DEVICE_STATUS.md).
+The exact Android 17 image booted on the test phone after an update preserving
+existing data. The preceding Android 16 build passed clean setup; the exact
+Android 17 bytes have not received a separate clean-install test. See [device status and remaining tests](DEVICE_STATUS.md).
 This guide documents the known installation sequence, not a guarantee for every phone.
 
 ## 1. Prepare your computer, backups and recovery files
@@ -37,7 +37,7 @@ This guide documents the known installation sequence, not a guarantee for every 
    They are not a PowerShell script. Do not paste the whole guide as one script;
    check the output after each stage and stop on any error.
 5. Download the image, `SHA256SUMS` and `release-metadata.json` from the
-   [same release](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/23.2-lapis-20260918).
+   [same release](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/24.0-lapis-20261106).
 6. Obtain and unpack the matching **Xiaomi Global fastboot firmware**, not a
    recovery ZIP. The baseline archive used here is
    `lapis_global_images_OS3.0.307.0.WPPMIXM_20260624.0000.00_16.0_global_03d72813f0.tgz`.
@@ -60,9 +60,9 @@ Run in the working directory:
 
 ```bash
 sha256sum -c SHA256SUMS --ignore-missing
-xz -t lineage-23.2-20260918-UNOFFICIAL-lapis-gapps-minimal-system.img.xz
-xz -dk lineage-23.2-20260918-UNOFFICIAL-lapis-gapps-minimal-system.img.xz
-export IMAGE="$PWD/lineage-23.2-20260918-UNOFFICIAL-lapis-gapps-minimal-system.img"
+xz -t lineage-24.0-20261106-UNOFFICIAL-lapis-gapps-minimal-system.img.xz
+xz -dk lineage-24.0-20261106-UNOFFICIAL-lapis-gapps-minimal-system.img.xz
+export IMAGE="$PWD/lineage-24.0-20261106-UNOFFICIAL-lapis-gapps-minimal-system.img"
 python3 - <<'PY'
 import hashlib, json, os
 from pathlib import Path
@@ -76,8 +76,8 @@ print('Verified raw image:', digest, p.stat().st_size, 'bytes')
 PY
 ```
 
-The initial release expands to **2,494,197,760 bytes** with SHA256
-`1e187c136d693cb96a71bc5e0f3f07e6f3bb01a6686d4e88ffb4dd8a844c6a7c`.
+The Android 17 release expands to **2,495,295,488 bytes** with SHA256
+`d522e574dba8b99a463342c2368dffd4489299838554ca35394f395f84992499`.
 Flash the decompressed `.img`, never the `.xz` file. For a later release or your
 own build, use its actual filename, metadata and expanded size instead.
 The Python snippet above requires Python 3.11+.

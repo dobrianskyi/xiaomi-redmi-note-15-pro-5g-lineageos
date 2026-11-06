@@ -1,23 +1,30 @@
+From 868054df35ed7b4734ccc3dd58f243a0d64acb99 Mon Sep 17 00:00:00 2001
 From: Lapis Bringup <lapis@localhost>
-Subject: [PATCH] SystemUI: allow devices to require top-edge lockscreen shade gestures
+Date: Thu, 5 Nov 2026 20:36:33 +0200
+Subject: [PATCH] SystemUI: allow devices to require top-edge lockscreen shade
+ gestures
 
 Latch the gesture origin before lockscreen drag interception. Keep upward
 unlock gestures and the existing QS status-bar path unchanged. Default off
 for other devices; Lapis opts in through its SystemUI overlay.
+---
+ packages/SystemUI/res/values/config.xml               |  2 ++
+ .../statusbar/LockscreenShadeTransitionController.kt  | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
 
 diff --git a/packages/SystemUI/res/values/config.xml b/packages/SystemUI/res/values/config.xml
-index e0bc1ec0e..6b179c4d1 100644
+index 140bb805a..e29865f59 100644
 --- a/packages/SystemUI/res/values/config.xml
 +++ b/packages/SystemUI/res/values/config.xml
-@@ -1186,4 +1186,6 @@
- 
-     <!-- Indicates whether the tapping to open qs panel is supported -->
-     <bool name="config_statusBarTapToExpandShade">false</bool>
+@@ -1255,4 +1255,6 @@
+     Indicates whether to use the Alerts channel for storage notifications.
+     -->
+     <bool name="config_storageNotificationsUseAlertsChannel">false</bool>
 +    <!-- Require a top-edge gesture to open the shade from the lockscreen. -->
 +    <bool name="config_lockscreenShadeRequiresTopEdge">false</bool>
  </resources>
 diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/LockscreenShadeTransitionController.kt b/packages/SystemUI/src/com/android/systemui/statusbar/LockscreenShadeTransitionController.kt
-index 864bb7084..a4b37c628 100644
+index 3f71cf260..c7e9f8be7 100644
 --- a/packages/SystemUI/src/com/android/systemui/statusbar/LockscreenShadeTransitionController.kt
 +++ b/packages/SystemUI/src/com/android/systemui/statusbar/LockscreenShadeTransitionController.kt
 @@ -12,6 +12,7 @@ import android.view.View
@@ -27,8 +34,8 @@ index 864bb7084..a4b37c628 100644
 +import com.android.internal.policy.SystemBarUtils
  import com.android.systemui.Dumpable
  import com.android.systemui.ExpandHelper
- import com.android.systemui.Gefingerpoken
-@@ -762,6 +763,9 @@ class DragDownHelper(
+ import com.android.systemui.Flags
+@@ -793,6 +794,9 @@ class DragDownHelper(
      private var dragDownAmountOnStart = 0.0f
      lateinit var expandCallback: ExpandHelper.Callback
  
@@ -38,7 +45,7 @@ index 864bb7084..a4b37c628 100644
      private var minDragDistance = 0
      private var initialTouchX = 0f
      private var initialTouchY = 0f
-@@ -790,6 +794,9 @@ class DragDownHelper(
+@@ -827,6 +831,9 @@ class DragDownHelper(
      }
  
      fun updateResources(context: Context) {
@@ -48,7 +55,7 @@ index 864bb7084..a4b37c628 100644
          minDragDistance =
              context.resources.getDimensionPixelSize(R.dimen.keyguard_drag_down_min_distance)
          val configuration = ViewConfiguration.get(context)
-@@ -802,6 +809,9 @@ class DragDownHelper(
+@@ -839,6 +846,9 @@ class DragDownHelper(
          val y = event.y
          when (event.actionMasked) {
              MotionEvent.ACTION_DOWN -> {
@@ -57,12 +64,15 @@ index 864bb7084..a4b37c628 100644
 +                    dragDownCallback.isFalsingCheckNeeded && event.rawY > statusBarHeight
                  draggedFarEnough = false
                  isDraggingDown = false
-                 startingChild = null
-@@ -810,6 +820,7 @@ class DragDownHelper(
-             }
- 
-             MotionEvent.ACTION_MOVE -> {
-+                if (blockedOutsideTopEdge) return false
-                 val h = y - initialTouchY
-                 // Adjust the touch slop if another gesture may be being performed.
-                 val touchSlop =
+                 isDraggingUp = false
+@@ -858,6 +868,7 @@ class DragDownHelper(
+                         touchSlop
+                     }
+                 if (h > touchSlop && h > Math.abs(x - initialTouchX)) {
++                    if (blockedOutsideTopEdge) return false
+                     isDraggingDown = true
+                     captureStartingChild(initialTouchX, initialTouchY)
+                     initialTouchY = y
+-- 
+2.56.0
+

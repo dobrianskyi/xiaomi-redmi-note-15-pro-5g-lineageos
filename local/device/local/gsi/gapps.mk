@@ -1,16 +1,18 @@
+# Android17 MindTheGapps packages Play services in its signed product APEX.
 # Selected by build.sh under the build lock. Manual lunch defaults to vanilla.
 -include device/local/gsi/build-variant.mk
 LAPIS_GAPPS ?= none
 
 ifneq ($(filter minimal full,$(LAPIS_GAPPS)),)
-PRODUCT_SOONG_NAMESPACES += vendor/gapps/arm64 vendor/gapps/common
+PRODUCT_SOONG_NAMESPACES += vendor/gapps/arm64 vendor/gapps/common vendor/gapps/overlay
 PRODUCT_PACKAGES += \
-    GmsCore Phonesky GoogleServicesFramework SetupWizard \
+    com.google.android.gmssystem.prodvic Phonesky GoogleServicesFramework SetupWizard \
     GooglePartnerSetup GoogleFeedback \
     GoogleCalendarSyncAdapter GoogleContactsSyncAdapter \
     default-permissions-google.xml default-permissions-mtg.xml \
     gms_fsverity_cert.der google-hiddenapi-package-allowlist.xml google.xml \
-    privapp-permissions-google-product.xml privapp-permissions-google-system-ext.xml \
+    allowed_apex_com.google.android.gmssystem.xml \
+    privapp-permissions-google-product.xml privapp-permissions-google-system_ext.xml \
     privapp-permissions-mtg.xml \
     GmsSettingsOverlay GmsSettingsProviderOverlay GmsSetupWizardOverlay
 

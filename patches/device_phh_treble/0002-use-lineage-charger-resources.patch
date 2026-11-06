@@ -1,4 +1,4 @@
-From 2692cca868d8a21a2d1818ccf35acafce23ee285 Mon Sep 17 00:00:00 2001
+From 0b85ea6b6cddb6e06759ac329a0ae8ec7d248bf5 Mon Sep 17 00:00:00 2001
 From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
 Date: Wed, 16 Sep 2026 18:46:56 +0300
 Subject: [PATCH] build: select Lineage charger resources without duplicate
@@ -46,5 +46,5 @@ index cc18272..c3b9b02 100644
 +
 +endif # non-Lineage charger artwork
 -- 
-2.55.0
+2.56.0
 

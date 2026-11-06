@@ -20,10 +20,29 @@ class BuildVariantsTest(unittest.TestCase):
             (self.root / path).mkdir(parents=True, exist_ok=True)
         for name in ('build.sh', 'scripts/archive-image.py', 'scripts/inspect-image.py'):
             shutil.copy2(ROOT / name, self.root / name)
+        (self.root / 'bin').mkdir()
         (self.root / 'scripts/env.sh').write_text(
-            f'export PATH="{ROOT}/tools/host/usr/bin:$PATH"\n')
+            f'export PATH="{self.root}/bin:{ROOT}/tools/host/usr/bin:$PATH"\n')
+        manager = self.root / 'bin/systemd-run'
+        manager.write_text('''#!/usr/bin/env bash
+set -e
+[[ ${TEST_SYSTEMD_FAIL:-0} != 1 ]] || exit 73
+seen_limit=false
+while (($#)); do
+ case "$1" in
+  --setenv=*) export "${1#--setenv=}"; shift ;;
+  -p) [[ $2 != MemoryMax=48G ]] || seen_limit=true; shift 2 ;;
+  --*) shift ;;
+  *) break ;;
+ esac
+done
+$seen_limit || exit 74
+exec "$@"
+''')
+        manager.chmod(0o755)
         (self.root / 'source/build/envsetup.sh').touch()
         (self.root / 'research/resolved-manifest.xml').write_text('<manifest/>')
+        (self.root / 'research/lineage24-ready.json').write_text('{}')
         (self.root / 'research/gapps-source.json').write_text('{"revision":"fixture"}')
         (self.root / 'patches/series.json').write_text('[]')
         (self.root / 'scripts/prepare-gapps.py').write_text('print("GApps check fixture")\n')
@@ -89,6 +108,10 @@ printf '%032s%s' "$LAPIS_GAPPS" "${TEST_CONTENT:-initial}" > "$OUT_DIR/target/pr
         (self.root / 'source/out-gapps-full').symlink_to(protected)
         self.run_build('--gapps', 'full', '--clean', expected=1)
         self.assertTrue((protected / 'keep').exists())
+
+    def test_resource_manager_failure_never_runs_backend(self):
+        self.run_build('--gapps', 'minimal', expected=73, TEST_SYSTEMD_FAIL='1')
+        self.assertFalse((self.root / 'invoked').exists())
 
 
 if __name__ == '__main__':

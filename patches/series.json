@@ -1,7 +1,7 @@
 [
   {
     "project": "hardware/interfaces",
-    "base": "13d687a84c834af855bfb314b853b8372a7aa6d9",
+    "base": "a0221f11248a924532444fc7de85d41998b9fe1e",
     "patch": "hardware_interfaces/0001-restore-vibrator-hidl-declarations.patch"
   },
   {
@@ -26,17 +26,17 @@
   },
   {
     "project": "frameworks/base",
-    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
     "patch": "frameworks_base/0001-add-media-volume-slider.patch"
   },
   {
     "project": "system/core",
-    "base": "0e96ff13d90df568ddd788bb02b3ddb6e3641528",
+    "base": "65d661b1a536701e8b118be4e9728d7b5ca727c9",
     "patch": "system_core/0001-import-device-ueventd-config.patch"
   },
   {
     "project": "frameworks/base",
-    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
     "patch": "frameworks_base/0002-lapis-fingerprint-lifecycle.patch"
   },
   {
@@ -51,7 +51,7 @@
   },
   {
     "project": "frameworks/native",
-    "base": "9568531f9be7ae65f260699811f32ec4e461de6e",
+    "base": "a96adf2c6e62dbb22299cd83bbb9ea4bc569e985",
     "patch": "frameworks_native/0001-lapis-backlight-events.patch"
   },
   {
@@ -61,22 +61,52 @@
   },
   {
     "project": "device/lineage/sepolicy",
-    "base": "0a9e75292f0ed1a83c31a311b1b32367a9faff75",
+    "base": "a29110ed8d2933c8f0da9c6ff613c4b68b7e4ad8",
     "patch": "device_lineage_sepolicy/0001-lapis-use-stock-camera-property-context.patch"
   },
   {
     "project": "frameworks/base",
-    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
     "patch": "frameworks_base/0003-theme-media-volume-slider.patch"
   },
   {
     "project": "packages/apps/Launcher3",
-    "base": "ee25ab865b59ecda9c8fd6f901e80b48d7b789ea",
+    "base": "7cd3b7daa2ec6965f8aa75673d601d6fd3850b55",
     "patch": "packages_apps_Launcher3/0001-optional-home-swipe-notifications.patch"
   },
   {
     "project": "frameworks/base",
-    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
     "patch": "frameworks_base/0004-lockscreen-top-edge-shade.patch"
+  },
+  {
+    "project": "hardware/interfaces",
+    "base": "a0221f11248a924532444fc7de85d41998b9fe1e",
+    "patch": "hardware_interfaces/0002-restore-light-hidl-declarations.patch"
+  },
+  {
+    "project": "build/soong",
+    "base": "a528a88bd553d2a449ad9338a3e944b89a164971",
+    "patch": "build_soong/0001-forward-go-memory-controls.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
+    "patch": "frameworks_base/0005-self-contained-media-slider-resources.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
+    "patch": "frameworks_base/0006-four-digit-pin-auto-confirm.patch"
+  },
+  {
+    "project": "packages/apps/Settings",
+    "base": "2f16bfe2c784623a324350cd19dae7f6066e2cfb",
+    "patch": "packages_apps_Settings/0001-four-digit-pin-auto-confirm.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
+    "patch": "frameworks_base/0007-media-volume-mute-toggle.patch"
   }
 ]

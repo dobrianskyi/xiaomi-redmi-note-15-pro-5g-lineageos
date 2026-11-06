@@ -8,7 +8,7 @@ Run the same launcher from any directory:
 ./build.sh --gapps full
 ```
 
-`none` is the default. All variants use the same pinned LineageOS23.2/Android16
+`none` is the default. All variants use the same pinned LineageOS24.0/Android17
 sources and lapis fixes. All remain experimental until tested on the phone.
 
 | Option | Contents | Build cache | Published images |
@@ -27,7 +27,7 @@ and does not advertise contextual search, Exchange or Assistant availability.
 Its framework overlay is derived from the pinned MindTheGapps overlay, with
 those optional settings removed (GPLv2; license retained alongside the source).
 
-GApps source: https://github.com/MindTheGapps/vendor_gapps/tree/baklava
+GApps source: https://github.com/MindTheGapps/vendor_gapps/tree/cinnamonbun
 The exact revision is recorded in research/gapps-source.json. The launcher
 fetches it automatically when a Google variant is selected. Existing modified
 or differently pinned checkouts are rejected, not overwritten. Proprietary
@@ -36,7 +36,7 @@ This optional packaging is separate from vanilla upstream contribution work.
 
 ## Resume and clean
 
-Repeat the same `--gapps` option to resume that variant. `--jobs 8` controls jobs.
+Repeat the same `--gapps` option to resume that variant. `--jobs 4` is the recommended starting parallelism.
 The first build of each Google variant starts with a separate cache; it does
 not reuse the existing vanilla objects. Budget extra time and disk space.
 Downloaded source trees and GApps inputs are shared, not fetched per variant.

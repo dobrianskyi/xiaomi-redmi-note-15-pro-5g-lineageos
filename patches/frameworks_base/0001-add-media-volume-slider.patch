@@ -1,4 +1,4 @@
-From ff180a8c61f8c50626c740a452861cb25a84caa0 Mon Sep 17 00:00:00 2001
+From abb784852d40a9130a061cfce5f9a064e10ccbbf Mon Sep 17 00:00:00 2001
 From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
 Date: Thu, 17 Sep 2026 13:15:42 +0300
 Subject: [PATCH] SystemUI: add a media volume slider to quick settings
@@ -9,10 +9,8 @@ Change-Id: Ic5a03f9221b035dc243c0d01497f12b72b05e0d6
  .../media_volume_progress_full_drawable.xml   |  47 ++++++++
  .../res/values/strings_media_volume.xml       |   4 +
  .../systemui/qs/MediaVolumeSliderView.java    | 113 ++++++++++++++++++
- .../src/com/android/systemui/qs/QSPanel.java  |  14 +++
- .../systemui/qs/QSPanelController.java        |   4 +-
  .../qs/composefragment/QSFragmentCompose.kt   |  24 ++--
- 7 files changed, 234 insertions(+), 10 deletions(-)
+ 5 files changed, 217 insertions(+), 9 deletions(-)
  create mode 100644 packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
  create mode 100644 packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
  create mode 100644 packages/SystemUI/res/values/strings_media_volume.xml
@@ -129,7 +127,7 @@ index 000000000..0e5b74017
 +</resources>
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
 new file mode 100644
-index 000000000..de92660f6
+index 000000000..6182aa76c
 --- /dev/null
 +++ b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
 @@ -0,0 +1,113 @@
@@ -153,7 +151,7 @@ index 000000000..de92660f6
 +
 +import com.android.systemui.res.R;
 +
-+/** Media-only volume control shared by the View and Compose quick settings panels. */
++/** Media-only volume control hosted by the Compose quick settings panel. */
 +public class MediaVolumeSliderView extends LinearLayout {
 +    private final AudioManager mAudioManager;
 +    private final SeekBar mSlider;
@@ -246,69 +244,11 @@ index 000000000..de92660f6
 +        }
 +    }
 +}
-diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
-index 602f59373..edf669df0 100644
---- a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
-+++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
-@@ -72,6 +72,8 @@ public class QSPanel extends LinearLayout implements Tunable {
-     @Nullable
-     protected View mBrightnessView;
-     @Nullable
-+    private View mMediaVolumeView;
-+    @Nullable
-     protected BrightnessSliderController mToggleSliderController;
- 
-     /** Whether or not the QS media player feature is enabled. */
-@@ -230,6 +232,18 @@ public class QSPanel extends LinearLayout implements Tunable {
-         }
-     }
- 
-+    public void addMediaVolumeSlider() {
-+        if (mMediaVolumeView != null) {
-+            removeView(mMediaVolumeView);
-+            mChildrenLayoutTop.remove(mMediaVolumeView);
-+            mMovableContentStartIndex--;
-+        }
-+        mMediaVolumeView = new MediaVolumeSliderView(mContext);
-+        addView(mMediaVolumeView, mMovableContentStartIndex,
-+                new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-+        mMovableContentStartIndex++;
-+    }
-+
-     /** */
-     public QSTileLayout getOrCreateTileLayout() {
-         if (mTileLayout == null) {
-diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanelController.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanelController.java
-index fddef2ed6..d3fdf20bb 100644
---- a/packages/SystemUI/src/com/android/systemui/qs/QSPanelController.java
-+++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanelController.java
-@@ -118,6 +118,8 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
-         mBrightnessSliderController = brightnessSliderFactory.create(getContext(), mView);
-         mView.setBrightnessView(mBrightnessSliderController.getRootView());
- 
-+        mView.addMediaVolumeSlider();
-+
-         mBrightnessController = brightnessControllerFactory.create(mBrightnessSliderController);
-         mBrightnessMirrorHandler = new BrightnessMirrorHandler(mBrightnessController);
-         mStatusBarKeyguardViewManager = statusBarKeyguardViewManager;
-@@ -196,6 +198,7 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
-                 mBrightnessSliderControllerFactory.create(getContext(), mView);
-         mView.setBrightnessView(mBrightnessSliderController.getRootView());
-         mBrightnessController = mBrightnessControllerFactory.create(mBrightnessSliderController);
-+        mView.addMediaVolumeSlider();
-         mBrightnessMirrorHandler.setBrightnessController(mBrightnessController);
-         mBrightnessSliderController.init();
-         if (mListening) {
-@@ -308,4 +311,3 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
-         return mView.getBottom();
-     }
- }
--
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/composefragment/QSFragmentCompose.kt b/packages/SystemUI/src/com/android/systemui/qs/composefragment/QSFragmentCompose.kt
-index 84ee87b42..3adc12afb 100644
+index 7e5adc5b3..38d383443 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/composefragment/QSFragmentCompose.kt
 +++ b/packages/SystemUI/src/com/android/systemui/qs/composefragment/QSFragmentCompose.kt
-@@ -976,15 +976,21 @@ constructor(
+@@ -949,15 +949,21 @@ constructor(
                  }
              )
          ) {
@@ -340,5 +280,5 @@ index 84ee87b42..3adc12afb 100644
                  )
              }
 -- 
-2.55.0
+2.56.0
 

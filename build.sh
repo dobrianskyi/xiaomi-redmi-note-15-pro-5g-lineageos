@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
-# Local, incremental LineageOS 23.2 / Android 16 build for the prepared workspace.
+# Local, incremental LineageOS 24.0 / Android 17 build for the prepared workspace.
 set -eo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 root=$PWD
-jobs=12
+jobs=4
 check_only=false
 clean=false
 gapps=none
 
 usage() {
  cat <<'EOF'
-Build LineageOS 23.2 / Android 16 (user, ARM64 GSI).
+Build LineageOS 24.0 / Android 17 (user, ARM64 GSI).
 
   ./build.sh --gapps none       vanilla without Google (default)
   ./build.sh --gapps minimal    minimal Google services + Play Store
   ./build.sh --gapps full       extended MindTheGapps selection (see docs/BUILD_VARIANTS.md)
-  ./build.sh --jobs 8           parallel jobs (default 12)
+  ./build.sh --jobs 4           parallel jobs (default 4)
   ./build.sh --clean            clean only the selected variant build cache
   ./build.sh --check            check prerequisites without compiling/downloading
   ./build.sh --help             show help
@@ -50,6 +50,9 @@ if $clean && $check_only; then
  echo '--clean and --check cannot be combined.' >&2; exit 2
 fi
 
+[[ -f "$root/research/lineage24-ready.json" ]] || {
+ echo 'LineageOS 24 source lock and patches are not prepared. See docs/BUILD.md.' >&2; exit 1;
+}
 source "$root/scripts/env.sh"
 for tool in git python3 flock tee rsync make bison flex zip unzip gperf bc; do
  command -v "$tool" >/dev/null || { echo "Missing tool: $tool" >&2; exit 1; }
@@ -74,7 +77,7 @@ esac
 export OUT_DIR="${build_out##*/}"
 unset OUT_DIR_COMMON_BASE
 image="$build_out/target/product/tdgsi_arm64_ab/system.img"
-echo "Target: LineageOS 23.2 / Android 16, $variant ARM64 A/B EXT4 GSI"
+echo "Target: LineageOS 24.0 / Android 17, $variant ARM64 A/B EXT4 GSI"
 echo "Build files: $build_out"
 echo "Images: $root/out/$variant/"
 echo "Working directory: $root"
@@ -83,6 +86,12 @@ if $check_only; then
  python3 "$root/scripts/prepare-gapps.py" --variant "$gapps" --check
  echo 'Preflight passed. Compilation was not started.'
  exit 0
+fi
+
+if ! $check_only; then
+ command -v systemd-run >/dev/null || {
+  echo 'systemd-run is required; unbounded compilation is disabled.' >&2; exit 1;
+ }
 fi
 
 # Keep the lock through artifact inspection as well as compilation.
@@ -105,10 +114,14 @@ if $clean; then
  rm -rf -- "$build_out"
 fi
 interrupted=false
-trap 'interrupted=true' INT
+unit="lapis-build-$$"
+trap 'interrupted=true; systemctl --user stop "$unit.scope" >/dev/null 2>&1 || true' INT TERM
 
 set +e
-LAPIS_GAPPS="$gapps" BUILD_JOBS="$jobs" bash "$root/scripts/build-baseline.sh" 2>&1 | tee "$log"
+systemd-run --user --scope --unit="$unit" --quiet \
+ -p MemoryHigh=44G -p MemoryMax=48G -p MemorySwapMax=0 -p OOMPolicy=kill \
+ /usr/bin/env "LAPIS_GAPPS=$gapps" "BUILD_JOBS=$jobs" GOGC=30 GOMEMLIMIT=30GiB \
+ /usr/bin/bash "$root/scripts/build-baseline.sh" 2>&1 | tee "$log"
 results=("${PIPESTATUS[@]}")
 set -e
 if $interrupted || [[ ${results[0]} == 130 || ${results[0]} == 143 ]]; then

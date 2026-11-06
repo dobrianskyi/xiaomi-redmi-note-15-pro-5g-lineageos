@@ -1,0 +1,193 @@
+From c8e286bb6002a5ad15ef3c35de46948fbc519e12 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Fri, 6 Nov 2026 13:57:55 +0200
+Subject: [PATCH] SystemUI: give the media slider its own dimensions and colors
+
+Android 17 removed the legacy brightness slider resources. Preserve the media control geometry and state colors under dedicated names and update its Java resource references.
+
+Change-Id: I3eff92050d7159f69bd2860ad5e027ed0c521edf
+---
+ .../color/qs_media_volume_slider_overlay.xml  | 22 +++++++++++++++++++
+ .../color/qs_media_volume_slider_track.xml    | 19 ++++++++++++++++
+ .../media_volume_progress_drawable.xml        | 12 +++++-----
+ .../media_volume_progress_full_drawable.xml   | 20 ++++++++---------
+ .../res/values/dimens_media_volume.xml        | 13 +++++++++++
+ .../systemui/qs/MediaVolumeSliderView.java    |  4 ++--
+ 6 files changed, 72 insertions(+), 18 deletions(-)
+ create mode 100644 packages/SystemUI/res/color/qs_media_volume_slider_overlay.xml
+ create mode 100644 packages/SystemUI/res/color/qs_media_volume_slider_track.xml
+ create mode 100644 packages/SystemUI/res/values/dimens_media_volume.xml
+
+diff --git a/packages/SystemUI/res/color/qs_media_volume_slider_overlay.xml b/packages/SystemUI/res/color/qs_media_volume_slider_overlay.xml
+new file mode 100644
+index 000000000..a8abd793b
+--- /dev/null
++++ b/packages/SystemUI/res/color/qs_media_volume_slider_overlay.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++  ~ Copyright (C) 2023 The Android Open Source Project
++  ~
++  ~ Licensed under the Apache License, Version 2.0 (the "License");
++  ~ you may not use this file except in compliance with the License.
++  ~ You may obtain a copy of the License at
++  ~
++  ~      http://www.apache.org/licenses/LICENSE-2.0
++  ~
++  ~ Unless required by applicable law or agreed to in writing, software
++  ~ distributed under the License is distributed on an "AS IS" BASIS,
++  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  ~ See the License for the specific language governing permissions and
++  ~ limitations under the License.
++  -->
++
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:state_pressed="true" android:color="?attr/onShadeActive" android:alpha="0.12" />
++    <item android:state_hovered="true" android:color="?attr/onShadeActive" android:alpha="0.09" />
++    <item android:color="@color/transparent" />
++</selector>
+\ No newline at end of file
+diff --git a/packages/SystemUI/res/color/qs_media_volume_slider_track.xml b/packages/SystemUI/res/color/qs_media_volume_slider_track.xml
+new file mode 100644
+index 000000000..c6e9b65fb
+--- /dev/null
++++ b/packages/SystemUI/res/color/qs_media_volume_slider_track.xml
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="utf-8"?><!--
++  ~ Copyright (C) 2025 The Android Open Source Project
++  ~
++  ~ Licensed under the Apache License, Version 2.0 (the "License");
++  ~ you may not use this file except in compliance with the License.
++  ~ You may obtain a copy of the License at
++  ~
++  ~      http://www.apache.org/licenses/LICENSE-2.0
++  ~
++  ~ Unless required by applicable law or agreed to in writing, software
++  ~ distributed under the License is distributed on an "AS IS" BASIS,
++  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  ~ See the License for the specific language governing permissions and
++  ~ limitations under the License.
++  -->
++
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:color="@android:color/system_neutral2_500" android:lStar="40" />
++</selector>
+\ No newline at end of file
+diff --git a/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml b/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
+index ac0a80d55..8c18ba4f5 100644
+--- a/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
++++ b/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
+@@ -20,12 +20,12 @@
+     <item android:id="@android:id/background"
+         android:gravity="center_vertical|fill_horizontal">
+         <inset
+-            android:insetLeft="@dimen/rounded_slider_track_inset"
+-            android:insetRight="@dimen/rounded_slider_track_inset" >
++            android:insetLeft="@dimen/qs_media_volume_slider_track_inset"
++            android:insetRight="@dimen/qs_media_volume_slider_track_inset" >
+             <shape>
+-                <size android:height="@dimen/rounded_slider_track_width" />
+-                <corners android:radius="@dimen/rounded_slider_track_corner_radius" />
+-                <solid android:color="@color/brightness_slider_track" />
++                <size android:height="@dimen/qs_media_volume_slider_track_width" />
++                <corners android:radius="@dimen/qs_media_volume_slider_track_corner_radius" />
++                <solid android:color="@color/qs_media_volume_slider_track" />
+             </shape>
+         </inset>
+     </item>
+@@ -35,4 +35,4 @@
+                 android:drawable="@drawable/media_volume_progress_full_drawable"
+             />
+     </item>
+-</layer-list>
+\ No newline at end of file
++</layer-list>
+diff --git a/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml b/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
+index e613fefe2..480d9ec47 100644
+--- a/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
++++ b/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
+@@ -19,29 +19,29 @@
+     xmlns:priv-android="http://schemas.android.com/apk/prv/res/android"
+     android:autoMirrored="true">
+     <item android:id="@+id/slider_foreground"
+-        android:height="@dimen/rounded_slider_height">
++        android:height="@dimen/qs_media_volume_slider_height">
+         <shape>
+-            <size android:height="@dimen/rounded_slider_height" />
++            <size android:height="@dimen/qs_media_volume_slider_height" />
+             <solid android:color="?attr/shadeActive" />
+-            <corners android:radius="@dimen/rounded_slider_corner_radius"/>
++            <corners android:radius="@dimen/qs_media_volume_slider_corner_radius"/>
+         </shape>
+     </item>
+     <item>
+         <shape>
+-            <corners android:radius="@dimen/rounded_slider_corner_radius" />
+-            <size android:height="@dimen/rounded_slider_height" />
+-            <solid android:color="@color/brightness_slider_overlay_color" />
++            <corners android:radius="@dimen/qs_media_volume_slider_corner_radius" />
++            <size android:height="@dimen/qs_media_volume_slider_height" />
++            <solid android:color="@color/qs_media_volume_slider_overlay" />
+         </shape>
+     </item>
+     <item
+         android:id="@+id/slider_icon"
+         android:gravity="center_vertical|right"
+-        android:height="@dimen/rounded_slider_icon_size"
+-        android:width="@dimen/rounded_slider_icon_size"
+-        android:right="@dimen/rounded_slider_icon_inset">
++        android:height="@dimen/qs_media_volume_slider_icon_size"
++        android:width="@dimen/qs_media_volume_slider_icon_size"
++        android:right="@dimen/qs_media_volume_slider_icon_inset">
+         <com.android.systemui.util.AlphaTintDrawableWrapper
+             android:drawable="@drawable/ic_volume_media"
+             android:tint="?attr/onShadeActive"
+         />
+     </item>
+-</layer-list>
+\ No newline at end of file
++</layer-list>
+diff --git a/packages/SystemUI/res/values/dimens_media_volume.xml b/packages/SystemUI/res/values/dimens_media_volume.xml
+new file mode 100644
+index 000000000..d60cbb756
+--- /dev/null
++++ b/packages/SystemUI/res/values/dimens_media_volume.xml
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Copyright (C) 2026 The LineageOS Project
++     SPDX-License-Identifier: Apache-2.0 -->
++<resources>
++    <!-- Keep the media control independent of legacy brightness slider resources. -->
++    <dimen name="qs_media_volume_slider_height">48dp</dimen>
++    <dimen name="qs_media_volume_slider_corner_radius">24dp</dimen>
++    <dimen name="qs_media_volume_slider_icon_size">20dp</dimen>
++    <dimen name="qs_media_volume_slider_icon_inset">14dp</dimen>
++    <dimen name="qs_media_volume_slider_track_inset">22dp</dimen>
++    <dimen name="qs_media_volume_slider_track_width">4dp</dimen>
++    <dimen name="qs_media_volume_slider_track_corner_radius">2dp</dimen>
++</resources>
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+index 94091d049..1e022d8dc 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+@@ -43,7 +43,7 @@ public class MediaVolumeSliderView extends LinearLayout {
+                 new int[] {R.attr.onShadeInactive});
+         label.setTextColor(colors.getColor(0, android.graphics.Color.WHITE));
+         colors.recycle();
+-        int inset = getResources().getDimensionPixelSize(R.dimen.rounded_slider_icon_inset);
++        int inset = getResources().getDimensionPixelSize(R.dimen.qs_media_volume_slider_icon_inset);
+         label.setPaddingRelative(inset, 0, inset, 0);
+         addView(label);
+         mSlider = new SeekBar(context);
+@@ -56,7 +56,7 @@ public class MediaVolumeSliderView extends LinearLayout {
+         mSlider.setPadding(0, 0, 0, 0);
+         mSlider.setProgressDrawable(context.getDrawable(R.drawable.media_volume_progress_drawable));
+         addView(mSlider, new LayoutParams(LayoutParams.MATCH_PARENT,
+-                getResources().getDimensionPixelSize(R.dimen.brightness_mirror_height)));
++                getResources().getDimensionPixelSize(R.dimen.qs_media_volume_slider_height)));
+         mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+             @Override
+             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+-- 
+2.56.0
+

@@ -1,0 +1,8 @@
+{
+  "status": "pinned Android17 checkout and 22-patch series verified; minimal image built, booted and user-confirmed",
+  "projects": 1246,
+  "patches": 22,
+  "release_config": "cp2a",
+  "variant": "gapps-minimal",
+  "verified_at": "2026-11-06T19:09:07.977736+00:00"
+}

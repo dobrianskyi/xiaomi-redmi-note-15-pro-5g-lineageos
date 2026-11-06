@@ -1,4 +1,4 @@
-From e522e72053daa0e6bf8c9aa74f29ba40ce02610f Mon Sep 17 00:00:00 2001
+From b05a54b299586a07d9ec0eaa8434ce1ebac91179 Mon Sep 17 00:00:00 2001
 From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
 Date: Thu, 17 Sep 2026 14:16:15 +0300
 Subject: [PATCH] build: isolate lapis from generic PHH board overrides
@@ -20,5 +20,5 @@ index 2fddc52..970ce26 100644
  ifeq ($(BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE),)
  BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2147483648
 -- 
-2.55.0
+2.56.0
 

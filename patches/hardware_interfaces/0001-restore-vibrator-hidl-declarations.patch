@@ -1,4 +1,4 @@
-From c3b3a91bdc3947a40317cc2b040957a828236be5 Mon Sep 17 00:00:00 2001
+From 87f254ad74b851410c7ded4f53d873ef2696e826 Mon Sep 17 00:00:00 2001
 From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
 Date: Wed, 16 Sep 2026 18:33:33 +0300
 Subject: [PATCH] build: restore vibrator HIDL 1.0 declarations required by
@@ -18,10 +18,10 @@ Change-Id: Ieca36e28e2cdf82632d20ef59787d4b6ed286cf5
  create mode 100644 vibrator/1.0/types.hal
 
 diff --git a/current.txt b/current.txt
-index bb8fdb633..d0e938fc9 100644
+index 4b6a15b..e302736 100644
 --- a/current.txt
 +++ b/current.txt
-@@ -923,3 +923,7 @@ db37a1c757e2e69b1ec9c75a981a6987bd87a131d92ab6acc00e04d19f374281 android.hardwar
+@@ -908,3 +908,7 @@ db37a1c757e2e69b1ec9c75a981a6987bd87a131d92ab6acc00e04d19f374281 android.hardwar
  06983ffe6d75e90a22503a6d9fd14417f983a36bb060a80ad5915240d69b8a40 android.hardware.automotive.vehicle@2.0::types
  
  # There will be no more HIDL HALs. Use AIDL instead.
@@ -31,7 +31,7 @@ index bb8fdb633..d0e938fc9 100644
 +0fecd34ae64f32eff6aa615fd662349242c0b8b6e303ef05a7cb5776c732f413 android.hardware.vibrator@1.0::types
 diff --git a/vibrator/1.0/Android.bp b/vibrator/1.0/Android.bp
 new file mode 100644
-index 000000000..1ae1cef04
+index 0000000..1ae1cef
 --- /dev/null
 +++ b/vibrator/1.0/Android.bp
 @@ -0,0 +1,24 @@
@@ -61,7 +61,7 @@ index 000000000..1ae1cef04
 +}
 diff --git a/vibrator/1.0/IVibrator.hal b/vibrator/1.0/IVibrator.hal
 new file mode 100644
-index 000000000..757ad0d74
+index 0000000..757ad0d
 --- /dev/null
 +++ b/vibrator/1.0/IVibrator.hal
 @@ -0,0 +1,72 @@
@@ -139,7 +139,7 @@ index 000000000..757ad0d74
 +};
 diff --git a/vibrator/1.0/types.hal b/vibrator/1.0/types.hal
 new file mode 100644
-index 000000000..a080c0791
+index 0000000..a080c07
 --- /dev/null
 +++ b/vibrator/1.0/types.hal
 @@ -0,0 +1,48 @@
@@ -192,5 +192,5 @@ index 000000000..a080c0791
 +    STRONG
 +};
 -- 
-2.55.0
+2.56.0
 

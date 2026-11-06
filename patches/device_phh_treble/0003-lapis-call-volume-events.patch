@@ -1,4 +1,4 @@
-From 961e5810888ff836919536f5961eedb81120fb30 Mon Sep 17 00:00:00 2001
+From c3162c15e827a97236a35fd7b3394b9007486851 Mon Sep 17 00:00:00 2001
 From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
 Date: Thu, 17 Sep 2026 14:16:15 +0300
 Subject: [PATCH] audio: bound lapis call speaker gain on mode route and volume
@@ -144,5 +144,5 @@ index 0870315..39c3e9e 100644
  
          AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 -- 
-2.55.0
+2.56.0
 

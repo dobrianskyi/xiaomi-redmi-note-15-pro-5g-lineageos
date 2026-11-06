@@ -1,0 +1,57 @@
+{
+  "release": "24.0-lapis-20261106",
+  "device": "lapis",
+  "lineage": "24.0",
+  "android": "17",
+  "sdk": 37,
+  "security_patch": "2026-11-01",
+  "variant": "gapps-minimal",
+  "raw_image_sha256": "d522e574dba8b99a463342c2368dffd4489299838554ca35394f395f84992499",
+  "raw_image_bytes": 2495295488,
+  "compressed_image": "lineage-24.0-20261106-UNOFFICIAL-lapis-gapps-minimal-system.img.xz",
+  "compressed_image_sha256": "c0cb9e31cd608739dde244ac18a1dc2369486bac221a5b089cbc398f70a7f562",
+  "compressed_image_bytes": 1037456356,
+  "source_projects": 1246,
+  "patches": 22,
+  "release_config": "cp2a",
+  "stock_firmware_baseline": "OS3.0.307.0.WPPMIXM",
+  "source_recipe_host_tests_passed": 13,
+  "validated": [
+    "EXT4 filesystem",
+    "privileged permissions",
+    "TrebleApp QTI exclusion",
+    "IMS carrier MNC values",
+    "merged SELinux policy",
+    "property contexts",
+    "service contexts",
+    "VINTF with vendor/odm and matching APEX modules",
+    "boot of exact image",
+    "encrypted user unlock",
+    "existing application identity/data retention",
+    "SELinux Enforcing",
+    "four-digit PIN auto-confirm (user confirmed)",
+    "media mute toggle (user confirmed)"
+  ],
+  "limits": [
+    "Experimental unofficial GSI",
+    "All hardware paths not comprehensively retested",
+    "Exact image not separately clean-installed",
+    "Another clean-host rebuild not repeated"
+  ],
+  "privacy": {
+    "from_source_build": true,
+    "phone_userdata_distributed": false,
+    "personal_third_party_apps_bundled": false,
+    "host_adb_authorization_key_included": false,
+    "private_signing_keys_included": false
+  },
+  "signing": "public Android test keys",
+  "root_in_system_image": false,
+  "gapps": {
+    "provider": "MindTheGapps",
+    "android": "17",
+    "branch": "cinnamonbun",
+    "url": "https://github.com/MindTheGapps/vendor_gapps.git",
+    "revision": "822ff6a805533792ae43a9c3f2a159222da22a6f"
+  }
+}

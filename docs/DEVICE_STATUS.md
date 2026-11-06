@@ -1,4 +1,15 @@
-# Device status — updated 2026-10-20
+# Device status — updated 2026-11-06
+
+**Android 17 update:** the exact November 6 LineageOS 24.0 image booted on the
+maintainer's lapis. Updating from the earlier Android 17 build retained existing
+apps, identities and encrypted data directories; user unlock and SELinux Enforcing
+passed. The user confirmed four-digit PIN auto-confirm and the new media mute
+button work. The Android 16-to-17 transition was also tested earlier in the same
+session. These observations do not certify every hardware feature listed below.
+See [Android 17 release details](ANDROID17.md).
+
+## Earlier hardware observations (Android 16)
+
 
 **October Bluetooth hotfix:** missing profile defaults were restored on the
 installed `23.2-20260918-UNOFFICIAL-gsi_lapis` using the separate Magisk payload.

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- SPDX-License-Identifier: GPL-2.0-only
-     Derived from MindTheGapps GmsOverlay, revision 39bd3a09640efb81234cdbd8ab98ab71541d5d46.
+     Derived from MindTheGapps GmsOverlay, revision 822ff6a805533792ae43a9c3f2a159222da22a6f.
      Optional-app defaults removed for the minimal variant. -->
 <resources>
     <string-array name="config_forceQueryablePackages" translatable="false">

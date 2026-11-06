@@ -2,11 +2,11 @@
 <manifest>
   <remote name="bringup-github" fetch="https://github.com/" />
   <remote name="bringup-gitlab" fetch="https://gitlab.com/" />
-  <project path="device/phh/treble" name="TrebleDroid/device_phh_treble" remote="bringup-github" revision="android-16.0" />
-  <project path="vendor/hardware_overlay" name="TrebleDroid/vendor_hardware_overlay" remote="bringup-github" revision="pie" />
-  <project path="vendor/vndk-tests" name="phhusson/vendor_vndk-tests" remote="bringup-github" revision="master" />
-  <project path="vendor/interfaces" name="TrebleDroid/vendor_interfaces" remote="bringup-github" revision="android-16.0" />
-  <project path="vendor/lptools" name="phhusson/vendor_lptools" remote="bringup-github" revision="master" />
-  <project path="vendor/magisk" name="phhusson/vendor_magisk" remote="bringup-github" revision="android-10.0" />
-  <project path="packages/apps/QcRilAm" name="AndyCGYan/android_packages_apps_QcRilAm" remote="bringup-github" revision="master" />
+  <project path="device/phh/treble" name="TrebleDroid/device_phh_treble" remote="bringup-github" revision="91031960bf9f5ccf4e0af412db12138b7e26bd5b" upstream="android-16.0" />
+  <project path="vendor/hardware_overlay" name="TrebleDroid/vendor_hardware_overlay" remote="bringup-github" revision="bb0bbb9e1314e5312f718ca1d3ea320137d14370" upstream="pie" />
+  <project path="vendor/vndk-tests" name="phhusson/vendor_vndk-tests" remote="bringup-github" revision="533390a1d6bc98d86de6b9aab56825c1f03fddcb" upstream="master" />
+  <project path="vendor/interfaces" name="TrebleDroid/vendor_interfaces" remote="bringup-github" revision="a2271d260e226e8de5cb1e8c15a229dc90c007dd" upstream="android-16.0" />
+  <project path="vendor/lptools" name="phhusson/vendor_lptools" remote="bringup-github" revision="c8be7de57b80eab61a6f94ec86464a01fb9056f2" upstream="master" />
+  <project path="vendor/magisk" name="phhusson/vendor_magisk" remote="bringup-github" revision="d8056f8032a0f60f365ddfe5e9fccd7eaf3a655d" upstream="android-10.0" />
+  <project path="packages/apps/QcRilAm" name="AndyCGYan/android_packages_apps_QcRilAm" remote="bringup-github" revision="dc599b67cc1e7e9a62ca15eef605e3b2546d0d42" upstream="master" />
 </manifest>

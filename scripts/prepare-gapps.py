@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch only the pinned Android 16 GApps source; never update an existing checkout."""
+"""Fetch only the pinned Android 17 GApps source; never update an existing checkout."""
 import argparse
 import json
 from pathlib import Path
@@ -35,4 +35,4 @@ def read(*arguments):
                           text=True, check=True).stdout.strip()
 if read('rev-parse', 'HEAD') != config['revision'] or read('status', '--porcelain'):
     raise SystemExit('GApps checkout is modified or uses an unpinned revision; review it first.')
-print('Verified MindTheGapps Android 16 revision ' + config['revision'])
+print('Verified MindTheGapps Android 17 revision ' + config['revision'])

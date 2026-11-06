@@ -1,4 +1,4 @@
-From 5a5dd6ce902b1b5db1f1882953fa8472e1aec4eb Mon Sep 17 00:00:00 2001
+From 0ca4a95c189528b03949fe6157c9f6b2e30626ee Mon Sep 17 00:00:00 2001
 From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
 Date: Thu, 17 Sep 2026 15:08:33 +0300
 Subject: [PATCH] lapis: apply bounded speaker gain to VoIP calls
@@ -23,5 +23,5 @@ index 847d523..39d02d1 100644
                          != AudioSystem.DEVICE_OUT_SPEAKER) {
              return;
 -- 
-2.55.0
+2.56.0
 

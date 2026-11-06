@@ -10,9 +10,10 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("contexts", type=Path)
+parser.add_argument("--library", type=Path, help="libselinux.so from the selected build variant")
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[1]
-library = root / "source/out/host/linux-x86/lib64/libselinux.so"
+library = args.library or root / "source/out/host/linux-x86/lib64/libselinux.so"
 lib = ctypes.CDLL(str(library), use_errno=True)
 
 

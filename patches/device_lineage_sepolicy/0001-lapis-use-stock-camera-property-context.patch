@@ -1,4 +1,4 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From 373aaee578ff9ef15cdda7f347be0b0ea094ddd8 Mon Sep 17 00:00:00 2001
 From: Lapis Bringup <lapis@localhost>
 Date: Fri, 18 Sep 2026 17:10:00 +0300
 Subject: [PATCH] lapis: keep stock vendor camera property prefix ownership
@@ -6,19 +6,24 @@ Subject: [PATCH] lapis: keep stock vendor camera property prefix ownership
 The stock vendor already declares this prefix. Duplicating it in system_ext
 causes PropertyInit to abort before services start. Gate only this entry;
 other products retain the existing context.
-
 ---
+ common/private/property_contexts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
 diff --git a/common/private/property_contexts b/common/private/property_contexts
-index 9bdd72f..a3661ba 100644
+index 950447e..ee9eccc 100644
 --- a/common/private/property_contexts
 +++ b/common/private/property_contexts
-@@ -4,7 +4,8 @@ ro.odm.cast.ssid_suffix u:object_r:odm_cast_prop:s0
- 
- # Aux camera
- vendor.camera.aux.packageexcludelist   u:object_r:vendor_persist_camera_prop:s0
--vendor.camera.aux.packagelist          u:object_r:vendor_persist_camera_prop:s0
+@@ -8,7 +8,8 @@ bluetooth.hci.disabled_commands        u:object_r:bluetooth_config_prop:s0
+ # Camera
+ persist.vendor.camera.privapp.list     u:object_r:camera2_extensions_prop:s0
+ vendor.camera.aux.packageexcludelist   u:object_r:camera2_extensions_prop:s0
+-vendor.camera.aux.packagelist          u:object_r:camera2_extensions_prop:s0
 +# Stock lapis vendor already owns this prefix; duplicate entries abort init.
-+ifelse(lapis_stock_camera_property, `true', `', `vendor.camera.aux.packagelist          u:object_r:vendor_persist_camera_prop:s0')
++ifelse(lapis_stock_camera_property, `true', `', `vendor.camera.aux.packagelist          u:object_r:camera2_extensions_prop:s0')
  
- # Bluetooth
- bluetooth.hci.disabled_commands        u:object_r:bluetooth_config_prop:s0
+ # Custom legal URL
+ ro.lineagelegal.url                    u:object_r:legal_url_prop:s0
+-- 
+2.56.0
+

@@ -1,7 +1,7 @@
 # Build environment and reproducibility
 
 The tested host is Arch Linux x86_64 with JDK 17, Python 3.13, around 60 GiB RAM,
-and 12 parallel compilation jobs. Use a case-sensitive Linux filesystem and
+and four parallel compilation jobs for the validated Android 17 incremental build. Use a case-sensitive Linux filesystem and
 budget several hundred GiB of disk space. The exact requirement depends on the
 number of variants and retained archives. Other Linux distributions have not
 received a complete clean-host build test for this recipe.
@@ -9,7 +9,7 @@ received a complete clean-host build test for this recipe.
 Provide these tools before running `prepare.sh`: bash, git, curl, Python 3.12+
 (or updated Python 3.11 supporting `tarfile.extractall(filter=...)`), tar,
 sha256sum, flock, make, gcc/g++, bison, flex, zip/unzip, rsync, gperf, bc, JDK 17,
-and the standard Android host development libraries. The Android platform uses
+systemd with a working user manager, and the standard Android host development libraries. The Android platform uses
 its pinned prebuilt toolchain; JDK 17 is also used for TrebleApp Gradle tooling.
 Set `JAVA_HOME` to a JDK 17 installation if `javac` selects another version.
 
@@ -40,6 +40,16 @@ Build output is incremental and variant-specific. A fresh build is not promised
 to be byte-identical to a published release: timestamps, host paths, tool versions
 and generated signing metadata can change hashes. Sources and patches are pinned.
 A patch-tree mismatch or dirty upstream project stops the build; do not bypass it.
+
+## Memory and Android 17
+
+The target is `lineage_gsi_lapis-cp2a-user`. Start with `--jobs 4` on a host with
+about 60 GiB RAM. The launcher puts compilation in a separate systemd user scope:
+MemoryHigh=44G, MemoryMax=48G, MemorySwapMax=0, OOMPolicy=kill. Go receives
+GOMEMLIMIT=30GiB and GOGC=30; Soong's environment allowlist forwards these values.
+The backend refuses an unbounded launch. `--check` does not start compilation.
+Eight parallel jobs on the tested host caused sustained reclaim because Siso
+itself used about 20 GiB in addition to Java compilers; four completed the build.
 
 ## Checks
 

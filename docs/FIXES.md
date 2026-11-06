@@ -5,7 +5,8 @@
 | Brightness / display wake | `patches/frameworks_native`, `patches/device_phh_treble`, `local/device/local/gsi/ueventd` |
 | Fingerprint lifecycle / geometry | `patches/frameworks_base/0002-*`, `local/device/local/gsi/overlays/LapisUdfpsGeometry` |
 | Call / VoIP speaker gain | `patches/device_phh_treble/0003-*`, `0005-*` |
-| Media volume slider / theme | `patches/frameworks_base/0001-*`, `0003-*` |
+| Media volume slider / theme / mute toggle | `patches/frameworks_base/0001-*`, `0003-*`, `0005-*`, `0007-*` |
+| Four-digit PIN auto-confirm | `patches/frameworks_base/0006-*`, `patches/packages_apps_Settings/0001-*` |
 | Top-edge lockscreen shade | `patches/frameworks_base/0004-*`, `overlays/LapisShadeGestures` |
 | Launcher swipe option | `patches/packages_apps_Launcher3` |
 | Stock screen geometry / left clock | `overlays/LapisDisplayGeometry`, `overlays/LapisStatusBarGeometry` |
