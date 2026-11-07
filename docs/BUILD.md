@@ -1,7 +1,7 @@
 # Build environment and reproducibility
 
 The tested host is Arch Linux x86_64 with JDK 17, Python 3.13, around 60 GiB RAM,
-and 12 parallel compilation jobs. Use a case-sensitive Linux filesystem and
+and four parallel compilation jobs. Use a case-sensitive Linux filesystem and
 budget several hundred GiB of disk space. The exact requirement depends on the
 number of variants and retained archives. Other Linux distributions have not
 received a complete clean-host build test for this recipe.

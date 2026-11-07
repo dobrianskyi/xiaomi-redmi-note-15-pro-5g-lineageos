@@ -40,11 +40,11 @@ build intermediates and archived images. A second full clean-host build has not
 been completed; the scripts and patch replay have automated checks.
 
 ```sh
-git clone https://github.com/dobrianskyi/lineageos-lapis.git
-cd lineageos-lapis
+git clone -b lineage-23.2 https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos.git
+cd xiaomi-redmi-note-15-pro-5g-lineageos
 export JAVA_HOME=/path/to/your/jdk-17  # omit if javac already selects JDK 17
 ./prepare.sh
-./build.sh --gapps minimal --jobs 12
+./build.sh --gapps minimal --jobs 4
 ```
 
 `prepare.sh` downloads pinned source revisions and tools. Re-run it after an
