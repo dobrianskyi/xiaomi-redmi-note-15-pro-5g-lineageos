@@ -1,0 +1,17 @@
+type lapis_power, domain;
+# Like system_app, this UID 1000 app must traverse per-user storage categories.
+# TE still confines writable app data to lapis_power_data_file below.
+typeattribute lapis_power coredomain, mlstrustedsubject;
+app_domain(lapis_power)
+
+# app_domain supplies Binder IPC, but not discovery of public framework services.
+# ActivityThread needs ActivityManager before the receiver/activity can start;
+# the scheduler also uses PackageManager, AlarmManager, PowerManager and audio.
+allow lapis_power app_api_service:service_manager find;
+
+type lapis_power_data_file, file_type, data_file_type, core_data_file_type, app_data_file_type;
+allow lapis_power lapis_power_data_file:dir create_dir_perms;
+allow lapis_power lapis_power_data_file:{ file lnk_file } create_file_perms;
+
+allow lapis_power rtc_device:chr_file { open read getattr ioctl };
+allowxperm lapis_power rtc_device:chr_file ioctl { 0x7009 0x7015 };
