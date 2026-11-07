@@ -25,3 +25,11 @@ by changing resolution: radius 156px, portrait bar height 152px, content inset
 84px, top padding 38px, centered camera cutout 66px wide. Runtime resource and
 physical visibility checks passed. The recipe does not include stock overlay
 APKs, device captures, personal configuration or passwords.
+
+
+November 7 additions: native vibration instance selection is in
+`patches/frameworks_native/0002-*`; JNI provider selection in
+`patches/frameworks_base/0005-*`; Java discovery/reconnect selection in `0008-*`.
+Four-digit PIN opt-in is in `0006-*` and `patches/packages_apps_Settings`.
+The media mute button/resources are in `0007-*`; stream/group reboot persistence
+is in `0009-*`. All 24 ordered entries are in `patches/series.json`.

@@ -55,11 +55,7 @@ run('git', 'apply', '--check', PATCH, cwd=work)
 run('git', 'apply', PATCH, cwd=work)
 
 env = os.environ.copy()
-if not env.get('JAVA_HOME'):
-    javac = shutil.which('javac')
-    if not javac:
-        raise SystemExit('JDK 17 is required; set JAVA_HOME')
-    env['JAVA_HOME'] = str(Path(javac).resolve().parent.parent)
+env['JAVA_HOME'] = '/usr/lib/jvm/java-17-openjdk'
 env['PATH'] = env['JAVA_HOME'] + '/bin:' + env['PATH']
 # Reuse an SDK when present; otherwise bootstrap a project-local one.
 sdk = Path(env.get('ANDROID_HOME', str(Path.home() / 'Android/Sdk')))

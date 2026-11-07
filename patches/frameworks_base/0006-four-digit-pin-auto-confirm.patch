@@ -1,0 +1,88 @@
+From 39595cfb8e2b47c0554e23ebcd230f3d8281160a Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Sat, 7 Nov 2026 10:36:40 +0200
+Subject: [PATCH] Lockscreen: backport opt-in four-digit PIN auto-confirm
+
+Change-Id: I57afa9c0edfc96318fbe5d2aba4dcf5a559f6331
+---
+ .../internal/widget/LockPatternUtils.java     |  2 +-
+ .../LockSettingsStorageTestable.java          |  8 +++++++-
+ .../locksettings/SyntheticPasswordTests.java  | 20 +++++++++++++++++--
+ 3 files changed, 26 insertions(+), 4 deletions(-)
+
+diff --git a/core/java/com/android/internal/widget/LockPatternUtils.java b/core/java/com/android/internal/widget/LockPatternUtils.java
+index 842404753..ff58e9b99 100644
+--- a/core/java/com/android/internal/widget/LockPatternUtils.java
++++ b/core/java/com/android/internal/widget/LockPatternUtils.java
+@@ -128,7 +128,7 @@ public class LockPatternUtils {
+     public static final int PIN_LENGTH_UNAVAILABLE = -1;
+ 
+     // This is the minimum pin length at which auto confirmation is supported
+-    public static final int MIN_AUTO_PIN_REQUIREMENT_LENGTH = 6;
++    public static final int MIN_AUTO_PIN_REQUIREMENT_LENGTH = 4;
+ 
+     /**
+      * Header used for the encryption and decryption of the device credential for
+diff --git a/services/tests/servicestests/src/com/android/server/locksettings/LockSettingsStorageTestable.java b/services/tests/servicestests/src/com/android/server/locksettings/LockSettingsStorageTestable.java
+index c01d0f644..33f849fe6 100644
+--- a/services/tests/servicestests/src/com/android/server/locksettings/LockSettingsStorageTestable.java
++++ b/services/tests/servicestests/src/com/android/server/locksettings/LockSettingsStorageTestable.java
+@@ -97,9 +97,15 @@ public class LockSettingsStorageTestable extends LockSettingsStorage {
+     PersistentDataBlockManagerInternal getPersistentDataBlockManager() {
+         return mPersistentDataBlockManager;
+     }
++    private boolean mAutoPinConfirmEnabled = true;
++
++    void setAutoPinConfirmSettingEnabled(boolean enabled) {
++        mAutoPinConfirmEnabled = enabled;
++    }
++
+     @Override
+     public boolean isAutoPinConfirmSettingEnabled(int userId) {
+-        return true;
++        return mAutoPinConfirmEnabled;
+     }
+     private File remapToStorageDir(File origPath) {
+         File mappedPath = new File(mStorageDir, origPath.toString());
+diff --git a/services/tests/servicestests/src/com/android/server/locksettings/SyntheticPasswordTests.java b/services/tests/servicestests/src/com/android/server/locksettings/SyntheticPasswordTests.java
+index 220a811bb..268e72da3 100644
+--- a/services/tests/servicestests/src/com/android/server/locksettings/SyntheticPasswordTests.java
++++ b/services/tests/servicestests/src/com/android/server/locksettings/SyntheticPasswordTests.java
+@@ -679,8 +679,24 @@ public class SyntheticPasswordTests extends BaseLockSettingsServiceTests {
+ 
+     @Test
+     public void testStorePinLengthOnDisk() {
++        assertStoredPinLength("123456", true, 6);
++    }
++
++    @Test
++    public void testStoreFourDigitPinLengthOnDisk() {
++        assertStoredPinLength("1234", true, 4);
++    }
++
++    @Test
++    public void testFourDigitPinLengthUnavailableWithoutAutoConfirm() {
++        assertStoredPinLength("1234", false,
++                com.android.internal.widget.LockPatternUtils.PIN_LENGTH_UNAVAILABLE);
++    }
++
++    private void assertStoredPinLength(String pin, boolean autoConfirm, int expectedLength) {
+         int userId = 1;
+-        LockscreenCredential lockscreenCredentialPin = LockscreenCredential.createPin("123456");
++        mStorage.setAutoPinConfirmSettingEnabled(autoConfirm);
++        LockscreenCredential lockscreenCredentialPin = LockscreenCredential.createPin(pin);
+         MockSyntheticPasswordManager manager = new MockSyntheticPasswordManager(mContext, mStorage,
+                 mGateKeeperService, mUserManager, mPasswordSlotManager);
+         SyntheticPassword sp = manager.newSyntheticPassword(userId);
+@@ -691,7 +707,7 @@ public class SyntheticPasswordTests extends BaseLockSettingsServiceTests {
+                 PasswordMetrics.computeForCredential(lockscreenCredentialPin);
+         boolean result = manager.refreshPinLengthOnDisk(passwordMetrics, protectorId, userId);
+ 
+-        assertEquals(manager.getPinLength(protectorId, userId), lockscreenCredentialPin.size());
++        assertEquals(expectedLength, manager.getPinLength(protectorId, userId));
+         assertTrue(result);
+     }
+ 
+-- 
+2.56.0
+

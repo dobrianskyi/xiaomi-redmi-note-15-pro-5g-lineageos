@@ -1,0 +1,466 @@
+From 840a1fcd8f5d5a5a30ec4a06dfbfe0bd174ca6d1 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Sat, 7 Nov 2026 10:36:43 +0200
+Subject: [PATCH] SystemUI: backport media mute button and self-contained
+ slider resources
+
+Change-Id: I87265feb92e42d88aa33da9f82648c2cc9acce66
+---
+ .../res/color/qs_media_volume_mute_icon.xml   |   7 ++
+ .../color/qs_media_volume_slider_overlay.xml  |  22 ++++
+ .../color/qs_media_volume_slider_track.xml    |  19 +++
+ .../media_volume_progress_drawable.xml        |  12 +-
+ .../media_volume_progress_full_drawable.xml   |  20 +--
+ .../qs_media_volume_mute_background.xml       |  20 +++
+ .../res/values/dimens_media_volume.xml        |  15 +++
+ .../SystemUI/res/values/ids_media_volume.xml  |   7 ++
+ .../systemui/qs/MediaVolumeSliderView.java    |  57 ++++++++-
+ .../qs/MediaVolumeSliderViewTest.java         | 118 ++++++++++++++++++
+ 10 files changed, 275 insertions(+), 22 deletions(-)
+ create mode 100644 packages/SystemUI/res/color/qs_media_volume_mute_icon.xml
+ create mode 100644 packages/SystemUI/res/color/qs_media_volume_slider_overlay.xml
+ create mode 100644 packages/SystemUI/res/color/qs_media_volume_slider_track.xml
+ create mode 100644 packages/SystemUI/res/drawable/qs_media_volume_mute_background.xml
+ create mode 100644 packages/SystemUI/res/values/dimens_media_volume.xml
+ create mode 100644 packages/SystemUI/res/values/ids_media_volume.xml
+ create mode 100644 packages/SystemUI/tests/src/com/android/systemui/qs/MediaVolumeSliderViewTest.java
+
+diff --git a/packages/SystemUI/res/color/qs_media_volume_mute_icon.xml b/packages/SystemUI/res/color/qs_media_volume_mute_icon.xml
+new file mode 100644
+index 000000000..7d1415d3c
+--- /dev/null
++++ b/packages/SystemUI/res/color/qs_media_volume_mute_icon.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Copyright (C) 2026 The LineageOS Project
++     SPDX-License-Identifier: Apache-2.0 -->
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:state_selected="true" android:color="?attr/onShadeActive" />
++    <item android:color="?attr/onShadeInactive" />
++</selector>
+diff --git a/packages/SystemUI/res/color/qs_media_volume_slider_overlay.xml b/packages/SystemUI/res/color/qs_media_volume_slider_overlay.xml
+new file mode 100644
+index 000000000..a8abd793b
+--- /dev/null
++++ b/packages/SystemUI/res/color/qs_media_volume_slider_overlay.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++  ~ Copyright (C) 2023 The Android Open Source Project
++  ~
++  ~ Licensed under the Apache License, Version 2.0 (the "License");
++  ~ you may not use this file except in compliance with the License.
++  ~ You may obtain a copy of the License at
++  ~
++  ~      http://www.apache.org/licenses/LICENSE-2.0
++  ~
++  ~ Unless required by applicable law or agreed to in writing, software
++  ~ distributed under the License is distributed on an "AS IS" BASIS,
++  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  ~ See the License for the specific language governing permissions and
++  ~ limitations under the License.
++  -->
++
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:state_pressed="true" android:color="?attr/onShadeActive" android:alpha="0.12" />
++    <item android:state_hovered="true" android:color="?attr/onShadeActive" android:alpha="0.09" />
++    <item android:color="@color/transparent" />
++</selector>
+\ No newline at end of file
+diff --git a/packages/SystemUI/res/color/qs_media_volume_slider_track.xml b/packages/SystemUI/res/color/qs_media_volume_slider_track.xml
+new file mode 100644
+index 000000000..c6e9b65fb
+--- /dev/null
++++ b/packages/SystemUI/res/color/qs_media_volume_slider_track.xml
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="utf-8"?><!--
++  ~ Copyright (C) 2025 The Android Open Source Project
++  ~
++  ~ Licensed under the Apache License, Version 2.0 (the "License");
++  ~ you may not use this file except in compliance with the License.
++  ~ You may obtain a copy of the License at
++  ~
++  ~      http://www.apache.org/licenses/LICENSE-2.0
++  ~
++  ~ Unless required by applicable law or agreed to in writing, software
++  ~ distributed under the License is distributed on an "AS IS" BASIS,
++  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  ~ See the License for the specific language governing permissions and
++  ~ limitations under the License.
++  -->
++
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:color="@android:color/system_neutral2_500" android:lStar="40" />
++</selector>
+\ No newline at end of file
+diff --git a/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml b/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
+index ac0a80d55..8c18ba4f5 100644
+--- a/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
++++ b/packages/SystemUI/res/drawable/media_volume_progress_drawable.xml
+@@ -20,12 +20,12 @@
+     <item android:id="@android:id/background"
+         android:gravity="center_vertical|fill_horizontal">
+         <inset
+-            android:insetLeft="@dimen/rounded_slider_track_inset"
+-            android:insetRight="@dimen/rounded_slider_track_inset" >
++            android:insetLeft="@dimen/qs_media_volume_slider_track_inset"
++            android:insetRight="@dimen/qs_media_volume_slider_track_inset" >
+             <shape>
+-                <size android:height="@dimen/rounded_slider_track_width" />
+-                <corners android:radius="@dimen/rounded_slider_track_corner_radius" />
+-                <solid android:color="@color/brightness_slider_track" />
++                <size android:height="@dimen/qs_media_volume_slider_track_width" />
++                <corners android:radius="@dimen/qs_media_volume_slider_track_corner_radius" />
++                <solid android:color="@color/qs_media_volume_slider_track" />
+             </shape>
+         </inset>
+     </item>
+@@ -35,4 +35,4 @@
+                 android:drawable="@drawable/media_volume_progress_full_drawable"
+             />
+     </item>
+-</layer-list>
+\ No newline at end of file
++</layer-list>
+diff --git a/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml b/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
+index e613fefe2..480d9ec47 100644
+--- a/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
++++ b/packages/SystemUI/res/drawable/media_volume_progress_full_drawable.xml
+@@ -19,29 +19,29 @@
+     xmlns:priv-android="http://schemas.android.com/apk/prv/res/android"
+     android:autoMirrored="true">
+     <item android:id="@+id/slider_foreground"
+-        android:height="@dimen/rounded_slider_height">
++        android:height="@dimen/qs_media_volume_slider_height">
+         <shape>
+-            <size android:height="@dimen/rounded_slider_height" />
++            <size android:height="@dimen/qs_media_volume_slider_height" />
+             <solid android:color="?attr/shadeActive" />
+-            <corners android:radius="@dimen/rounded_slider_corner_radius"/>
++            <corners android:radius="@dimen/qs_media_volume_slider_corner_radius"/>
+         </shape>
+     </item>
+     <item>
+         <shape>
+-            <corners android:radius="@dimen/rounded_slider_corner_radius" />
+-            <size android:height="@dimen/rounded_slider_height" />
+-            <solid android:color="@color/brightness_slider_overlay_color" />
++            <corners android:radius="@dimen/qs_media_volume_slider_corner_radius" />
++            <size android:height="@dimen/qs_media_volume_slider_height" />
++            <solid android:color="@color/qs_media_volume_slider_overlay" />
+         </shape>
+     </item>
+     <item
+         android:id="@+id/slider_icon"
+         android:gravity="center_vertical|right"
+-        android:height="@dimen/rounded_slider_icon_size"
+-        android:width="@dimen/rounded_slider_icon_size"
+-        android:right="@dimen/rounded_slider_icon_inset">
++        android:height="@dimen/qs_media_volume_slider_icon_size"
++        android:width="@dimen/qs_media_volume_slider_icon_size"
++        android:right="@dimen/qs_media_volume_slider_icon_inset">
+         <com.android.systemui.util.AlphaTintDrawableWrapper
+             android:drawable="@drawable/ic_volume_media"
+             android:tint="?attr/onShadeActive"
+         />
+     </item>
+-</layer-list>
+\ No newline at end of file
++</layer-list>
+diff --git a/packages/SystemUI/res/drawable/qs_media_volume_mute_background.xml b/packages/SystemUI/res/drawable/qs_media_volume_mute_background.xml
+new file mode 100644
+index 000000000..4aec195a4
+--- /dev/null
++++ b/packages/SystemUI/res/drawable/qs_media_volume_mute_background.xml
+@@ -0,0 +1,20 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Copyright (C) 2026 The LineageOS Project
++     SPDX-License-Identifier: Apache-2.0 -->
++<ripple xmlns:android="http://schemas.android.com/apk/res/android"
++    android:color="?android:attr/colorControlHighlight">
++    <item>
++        <selector>
++            <item android:state_selected="true">
++                <shape android:shape="oval">
++                    <solid android:color="?attr/shadeActive" />
++                </shape>
++            </item>
++            <item>
++                <shape android:shape="oval">
++                    <solid android:color="?attr/shadeInactive" />
++                </shape>
++            </item>
++        </selector>
++    </item>
++</ripple>
+diff --git a/packages/SystemUI/res/values/dimens_media_volume.xml b/packages/SystemUI/res/values/dimens_media_volume.xml
+new file mode 100644
+index 000000000..19211c407
+--- /dev/null
++++ b/packages/SystemUI/res/values/dimens_media_volume.xml
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Copyright (C) 2026 The LineageOS Project
++     SPDX-License-Identifier: Apache-2.0 -->
++<resources>
++    <!-- Keep the media control independent of legacy brightness slider resources. -->
++    <dimen name="qs_media_volume_slider_height">48dp</dimen>
++    <dimen name="qs_media_volume_slider_corner_radius">24dp</dimen>
++    <dimen name="qs_media_volume_slider_icon_size">20dp</dimen>
++    <dimen name="qs_media_volume_slider_icon_inset">14dp</dimen>
++    <dimen name="qs_media_volume_slider_track_inset">22dp</dimen>
++    <dimen name="qs_media_volume_slider_track_width">4dp</dimen>
++    <dimen name="qs_media_volume_slider_track_corner_radius">2dp</dimen>
++    <dimen name="qs_media_volume_button_spacing">8dp</dimen>
++    <dimen name="qs_media_volume_button_padding">12dp</dimen>
++</resources>
+diff --git a/packages/SystemUI/res/values/ids_media_volume.xml b/packages/SystemUI/res/values/ids_media_volume.xml
+new file mode 100644
+index 000000000..1495f2e3a
+--- /dev/null
++++ b/packages/SystemUI/res/values/ids_media_volume.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Copyright (C) 2026 The LineageOS Project
++     SPDX-License-Identifier: Apache-2.0 -->
++<resources>
++    <item type="id" name="qs_media_volume_slider" />
++    <item type="id" name="qs_media_volume_mute" />
++</resources>
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+index c99c6b3ce..38836795d 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/MediaVolumeSliderView.java
+@@ -13,16 +13,19 @@ import android.media.AudioManager;
+ import android.os.UserHandle;
+ import android.os.UserManager;
+ import android.view.ContextThemeWrapper;
++import android.view.Gravity;
++import android.widget.ImageButton;
+ import android.widget.LinearLayout;
+ import android.widget.SeekBar;
+ import android.widget.TextView;
+ 
+ import com.android.systemui.res.R;
+ 
+-/** Media-only volume control shared by the View and Compose quick settings panels. */
++/** Media-only volume control hosted by the Compose quick settings panel. */
+ public class MediaVolumeSliderView extends LinearLayout {
+     private final AudioManager mAudioManager;
+     private final SeekBar mSlider;
++    private final ImageButton mMuteButton;
+     private boolean mTracking;
+     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+         @Override
+@@ -43,10 +46,16 @@ public class MediaVolumeSliderView extends LinearLayout {
+                 new int[] {R.attr.onShadeInactive});
+         label.setTextColor(colors.getColor(0, android.graphics.Color.WHITE));
+         colors.recycle();
+-        int inset = getResources().getDimensionPixelSize(R.dimen.rounded_slider_icon_inset);
++        int inset = getResources().getDimensionPixelSize(R.dimen.qs_media_volume_slider_icon_inset);
+         label.setPaddingRelative(inset, 0, inset, 0);
+         addView(label);
++        int controlHeight = getResources().getDimensionPixelSize(
++                R.dimen.qs_media_volume_slider_height);
++        LinearLayout controls = new LinearLayout(context);
++        controls.setOrientation(HORIZONTAL);
++        controls.setGravity(Gravity.CENTER_VERTICAL);
+         mSlider = new SeekBar(context);
++        mSlider.setId(R.id.qs_media_volume_slider);
+         mSlider.setContentDescription(context.getString(R.string.qs_media_volume_label));
+         mSlider.setThumb(null);
+         mSlider.setTickMark(null);
+@@ -55,8 +64,19 @@ public class MediaVolumeSliderView extends LinearLayout {
+         mSlider.setProgressBackgroundTintList(null);
+         mSlider.setPadding(0, 0, 0, 0);
+         mSlider.setProgressDrawable(context.getDrawable(R.drawable.media_volume_progress_drawable));
+-        addView(mSlider, new LayoutParams(LayoutParams.MATCH_PARENT,
+-                getResources().getDimensionPixelSize(R.dimen.brightness_mirror_height)));
++        controls.addView(mSlider, new LayoutParams(0, controlHeight, 1f));
++        mMuteButton = new ImageButton(context);
++        mMuteButton.setId(R.id.qs_media_volume_mute);
++        mMuteButton.setBackground(context.getDrawable(R.drawable.qs_media_volume_mute_background));
++        mMuteButton.setImageTintList(context.getColorStateList(R.color.qs_media_volume_mute_icon));
++        int padding = getResources().getDimensionPixelSize(R.dimen.qs_media_volume_button_padding);
++        mMuteButton.setPadding(padding, padding, padding, padding);
++        mMuteButton.setOnClickListener(view -> toggleMute());
++        LayoutParams buttonParams = new LayoutParams(controlHeight, controlHeight);
++        buttonParams.setMarginStart(getResources().getDimensionPixelSize(
++                R.dimen.qs_media_volume_button_spacing));
++        controls.addView(mMuteButton, buttonParams);
++        addView(controls, new LayoutParams(LayoutParams.MATCH_PARENT, controlHeight));
+         mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+             @Override
+             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+@@ -80,6 +100,7 @@ public class MediaVolumeSliderView extends LinearLayout {
+                 refresh();
+             }
+         });
++        refresh();
+     }
+ 
+     @Override
+@@ -102,10 +123,34 @@ public class MediaVolumeSliderView extends LinearLayout {
+         super.onDetachedFromWindow();
+     }
+ 
+-    private void refresh() {
++    private boolean canAdjustVolume() {
+         boolean restricted = getContext().getSystemService(UserManager.class).hasUserRestriction(
+                 UserManager.DISALLOW_ADJUST_VOLUME, UserHandle.of(ActivityManager.getCurrentUser()));
+-        mSlider.setEnabled(!mAudioManager.isVolumeFixed() && !restricted);
++        return !mAudioManager.isVolumeFixed() && !restricted;
++    }
++
++    private void toggleMute() {
++        if (canAdjustVolume()) {
++            // AudioService keeps the current route's volume index while muting, so unmute
++            // restores it without a view-local cache or overwriting the slider level with zero.
++            mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
++                    AudioManager.ADJUST_TOGGLE_MUTE, AudioManager.FLAG_SHOW_UI_WARNINGS);
++        }
++        refresh();
++    }
++
++    private void refresh() {
++        boolean adjustable = canAdjustVolume();
++        boolean muted = mAudioManager.isStreamMute(AudioManager.STREAM_MUSIC);
++        mSlider.setEnabled(adjustable);
++        mMuteButton.setEnabled(adjustable);
++        mMuteButton.setAlpha(adjustable ? 1f : 0.38f);
++        mMuteButton.setSelected(!muted);
++        mMuteButton.setImageResource(muted ? R.drawable.ic_speaker_mute : R.drawable.ic_speaker_on);
++        String description = getContext().getString(muted ? R.string.volume_panel_hint_unmute
++                : R.string.volume_panel_hint_mute, getContext().getString(R.string.stream_music));
++        mMuteButton.setContentDescription(description);
++        mMuteButton.setTooltipText(description);
+         mSlider.setMin(mAudioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC));
+         mSlider.setMax(mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+         if (!mTracking) {
+diff --git a/packages/SystemUI/tests/src/com/android/systemui/qs/MediaVolumeSliderViewTest.java b/packages/SystemUI/tests/src/com/android/systemui/qs/MediaVolumeSliderViewTest.java
+new file mode 100644
+index 000000000..78e0c34cb
+--- /dev/null
++++ b/packages/SystemUI/tests/src/com/android/systemui/qs/MediaVolumeSliderViewTest.java
+@@ -0,0 +1,118 @@
++/*
++ * Copyright (C) 2026 The LineageOS Project
++ * SPDX-License-Identifier: Apache-2.0
++ */
++package com.android.systemui.qs;
++
++import static com.google.common.truth.Truth.assertThat;
++import static org.mockito.ArgumentMatchers.any;
++import static org.mockito.ArgumentMatchers.anyInt;
++import static org.mockito.ArgumentMatchers.eq;
++import static org.mockito.Mockito.doAnswer;
++import static org.mockito.Mockito.mock;
++import static org.mockito.Mockito.never;
++import static org.mockito.Mockito.times;
++import static org.mockito.Mockito.verify;
++import static org.mockito.Mockito.when;
++
++import android.media.AudioManager;
++import android.os.UserHandle;
++import android.os.UserManager;
++import android.testing.AndroidTestingRunner;
++import android.testing.TestableLooper;
++import android.widget.ImageButton;
++import android.widget.SeekBar;
++
++import androidx.test.filters.SmallTest;
++
++import com.android.systemui.SysuiTestCase;
++import com.android.systemui.res.R;
++
++import org.junit.Before;
++import org.junit.Test;
++import org.junit.runner.RunWith;
++
++@SmallTest
++@RunWith(AndroidTestingRunner.class)
++@TestableLooper.RunWithLooper
++public class MediaVolumeSliderViewTest extends SysuiTestCase {
++    private final AudioManager mAudioManager = mock(AudioManager.class);
++    private final UserManager mUserManager = mock(UserManager.class);
++    private int mVolume = 7;
++    private boolean mMuted;
++
++    @Before
++    public void setUp() {
++        mContext.addMockSystemService(AudioManager.class, mAudioManager);
++        mContext.addMockSystemService(UserManager.class, mUserManager);
++        when(mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)).thenReturn(15);
++        when(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
++                .thenAnswer(invocation -> mMuted ? 0 : mVolume);
++        when(mAudioManager.isStreamMute(AudioManager.STREAM_MUSIC))
++                .thenAnswer(invocation -> mMuted);
++        doAnswer(invocation -> {
++            mMuted = !mMuted;
++            return null;
++        }).when(mAudioManager).adjustStreamVolume(AudioManager.STREAM_MUSIC,
++                AudioManager.ADJUST_TOGGLE_MUTE, AudioManager.FLAG_SHOW_UI_WARNINGS);
++    }
++
++    @Test
++    public void muteAndRecreateView_unmuteUsesServiceLevelWithoutWritingZero() {
++        MediaVolumeSliderView view = new MediaVolumeSliderView(mContext);
++        ImageButton button = view.findViewById(R.id.qs_media_volume_mute);
++        assertThat(button.isSelected()).isTrue();
++        button.performClick();
++        assertThat(mMuted).isTrue();
++        SeekBar slider = view.findViewById(R.id.qs_media_volume_slider);
++        assertThat(slider.getProgress()).isEqualTo(0);
++        assertThat(button.isSelected()).isFalse();
++
++        MediaVolumeSliderView recreated = new MediaVolumeSliderView(mContext);
++        ImageButton recreatedButton = recreated.findViewById(R.id.qs_media_volume_mute);
++        assertThat(recreatedButton.getContentDescription().toString()).isEqualTo(
++                mContext.getString(R.string.volume_panel_hint_unmute,
++                        mContext.getString(R.string.stream_music)));
++        recreatedButton.performClick();
++        SeekBar recreatedSlider = recreated.findViewById(R.id.qs_media_volume_slider);
++        assertThat(recreatedSlider.getProgress()).isEqualTo(7);
++        assertThat(mMuted).isFalse();
++        verify(mAudioManager, times(2)).adjustStreamVolume(AudioManager.STREAM_MUSIC,
++                AudioManager.ADJUST_TOGGLE_MUTE, AudioManager.FLAG_SHOW_UI_WARNINGS);
++        verify(mAudioManager, never()).setStreamVolume(anyInt(), anyInt(), anyInt());
++    }
++
++    @Test
++    public void recreateWithChangedServiceLevel_doesNotRestoreAStaleCachedVolume() {
++        new MediaVolumeSliderView(mContext).findViewById(R.id.qs_media_volume_mute)
++                .performClick();
++        mVolume = 11;
++        MediaVolumeSliderView recreated = new MediaVolumeSliderView(mContext);
++        recreated.findViewById(R.id.qs_media_volume_mute).performClick();
++        SeekBar slider = recreated.findViewById(R.id.qs_media_volume_slider);
++        assertThat(slider.getProgress()).isEqualTo(11);
++        verify(mAudioManager, never()).setStreamVolume(anyInt(), anyInt(), anyInt());
++    }
++
++    @Test
++    public void fixedVolume_disablesBothControlsAndDoesNotAdjustAudio() {
++        when(mAudioManager.isVolumeFixed()).thenReturn(true);
++        MediaVolumeSliderView view = new MediaVolumeSliderView(mContext);
++        assertThat(view.findViewById(R.id.qs_media_volume_slider).isEnabled()).isFalse();
++        ImageButton button = view.findViewById(R.id.qs_media_volume_mute);
++        assertThat(button.isEnabled()).isFalse();
++        button.performClick();
++        verify(mAudioManager, never()).adjustStreamVolume(anyInt(), anyInt(), anyInt());
++    }
++
++    @Test
++    public void restrictionAddedAfterCreation_isCheckedAgainBeforeAdjustingAudio() {
++        MediaVolumeSliderView view = new MediaVolumeSliderView(mContext);
++        when(mUserManager.hasUserRestriction(eq(UserManager.DISALLOW_ADJUST_VOLUME),
++                any(UserHandle.class))).thenReturn(true);
++        ImageButton button = view.findViewById(R.id.qs_media_volume_mute);
++        button.performClick();
++        assertThat(button.isEnabled()).isFalse();
++        verify(mAudioManager, never()).adjustStreamVolume(anyInt(), anyInt(), anyInt());
++    }
++}
+-- 
+2.56.0
+

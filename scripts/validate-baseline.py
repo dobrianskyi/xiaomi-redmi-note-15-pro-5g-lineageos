@@ -15,6 +15,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("image", type=Path)
 parser.add_argument("--stock-dir", type=Path, default=root / "artifacts/stock/lapis-OS3.0.307.0.WPPMIXM")
 parser.add_argument("--apex-dir", type=Path, help="Extracted APEX tree with apex-info-list.xml from this image and stock vendor")
+parser.add_argument("--build-out", type=Path, default=root / "source/out",
+                    help="Build output supplying matching validation tools")
 args = parser.parse_args()
 image = args.image.resolve(strict=True)
 stock = args.stock_dir.resolve(strict=True)
@@ -25,7 +27,7 @@ if apex and not (apex / "apex-info-list.xml").is_file():
     parser.error("--apex-dir must contain apex-info-list.xml")
 if not image.is_relative_to(root):
     parser.error("The image must be inside the bring-up directory")
-tools = root / "source/out/host/linux-x86/bin"
+tools = args.build_out.resolve(strict=True) / "host/linux-x86/bin"
 for name in ("debugfs", "e2fsck", "checkvintf", "secilc", "sepolicy-analyze", "property_info_checker"):
     if not (tools / name).is_file():
         parser.error(f"Missing host tool: {name}")

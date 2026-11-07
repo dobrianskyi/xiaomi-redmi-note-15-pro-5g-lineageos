@@ -1,0 +1,32 @@
+From f21454436387dab379de9ad7bbbf66c5ed0bdafc Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Sat, 7 Nov 2026 10:40:08 +0200
+Subject: [PATCH] build: forward Go memory controls to the isolated Soong
+ builder
+
+Change-Id: I4dbbc1631c3d153f2712f37bbbfcfda0c14d05b6
+---
+ ui/build/soong.go | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/ui/build/soong.go b/ui/build/soong.go
+index c9b303c..a9e9319 100644
+--- a/ui/build/soong.go
++++ b/ui/build/soong.go
+@@ -226,6 +226,13 @@ func (pb PrimaryBuilderFactory) primaryBuilderInvocation(config Config) bootstra
+ 
+ 	commonArgs = append(commonArgs, "-l", filepath.Join(pb.config.FileListDir(), "Android.bp.list"))
+ 	invocationEnv := make(map[string]string)
++	// Preserve explicit Go GC controls for memory-constrained build hosts.
++	// The primary builder otherwise starts under env -i.
++	for _, key := range []string{"GOGC", "GOMEMLIMIT"} {
++		if value, ok := config.Environment().Get(key); ok {
++			invocationEnv[key] = value
++		}
++	}
+ 	if pb.debugPort != "" {
+ 		//debug mode
+ 		commonArgs = append(commonArgs, "--delve_listen", pb.debugPort,
+-- 
+2.56.0
+

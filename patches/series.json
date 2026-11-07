@@ -78,5 +78,45 @@
     "project": "frameworks/base",
     "base": "781c37c3f3c8566177b85ff80637e7affc834858",
     "patch": "frameworks_base/0004-lockscreen-top-edge-shade.patch"
+  },
+  {
+    "project": "frameworks/native",
+    "base": "9568531f9be7ae65f260699811f32ec4e461de6e",
+    "patch": "frameworks_native/0002-lapis-vibrator-service-instance.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0005-lapis-vibrator-provider-instance.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0006-four-digit-pin-auto-confirm.patch"
+  },
+  {
+    "project": "packages/apps/Settings",
+    "base": "ab27fc02ebf36d6e482c55a6a295dc44bc5be87b",
+    "patch": "packages_apps_Settings/0001-four-digit-pin-auto-confirm.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0007-media-volume-mute-toggle.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0008-lapis-java-vibrator-instance.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "781c37c3f3c8566177b85ff80637e7affc834858",
+    "patch": "frameworks_base/0009-persist-media-mute.patch"
+  },
+  {
+    "project": "build/soong",
+    "base": "9aa045a2aef10b8089e32e847fed26d9aa3d61be",
+    "patch": "build_soong/0001-forward-go-memory-controls.patch"
   }
 ]

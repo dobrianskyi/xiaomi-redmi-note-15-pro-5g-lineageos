@@ -1,0 +1,274 @@
+From 03694db81903d75b35f6c3fe8cbd3817637c4e45 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Fri, 6 Nov 2026 21:51:23 +0200
+Subject: [PATCH] vibrator: use the declared stock service instance on lapis
+
+Change-Id: I50729e6a5675d2abce1b95f5d9289c36e6dbf4c5
+---
+ services/vibratorservice/Android.bp           |   1 +
+ .../vibratorservice/VibratorHalController.cpp |  11 +-
+ .../vibratorservice/VibratorServiceName.cpp   |  22 ++++
+ .../vibratorservice/VibratorController.h      |   3 +-
+ .../vibratorservice/VibratorServiceName.h     |  32 ++++++
+ services/vibratorservice/test/Android.bp      |   1 +
+ .../test/VibratorServiceNameTest.cpp          | 101 ++++++++++++++++++
+ 7 files changed, 168 insertions(+), 3 deletions(-)
+ create mode 100644 services/vibratorservice/VibratorServiceName.cpp
+ create mode 100644 services/vibratorservice/include/vibratorservice/VibratorServiceName.h
+ create mode 100644 services/vibratorservice/test/VibratorServiceNameTest.cpp
+
+diff --git a/services/vibratorservice/Android.bp b/services/vibratorservice/Android.bp
+index 4b12cc2..a2dc24b 100644
+--- a/services/vibratorservice/Android.bp
++++ b/services/vibratorservice/Android.bp
+@@ -31,6 +31,7 @@ cc_library_shared {
+         "VibratorHalWrapper.cpp",
+         "VibratorManagerHalController.cpp",
+         "VibratorManagerHalWrapper.cpp",
++        "VibratorServiceName.cpp",
+     ],
+ 
+     aidl: {
+diff --git a/services/vibratorservice/VibratorHalController.cpp b/services/vibratorservice/VibratorHalController.cpp
+index 302e3e1..dab09a9 100644
+--- a/services/vibratorservice/VibratorHalController.cpp
++++ b/services/vibratorservice/VibratorHalController.cpp
+@@ -24,6 +24,7 @@
+ #include <vibratorservice/VibratorCallbackScheduler.h>
+ #include <vibratorservice/VibratorHalController.h>
+ #include <vibratorservice/VibratorHalWrapper.h>
++#include <vibratorservice/VibratorServiceName.h>
+ 
+ using aidl::android::hardware::vibrator::CompositeEffect;
+ using aidl::android::hardware::vibrator::CompositePrimitive;
+@@ -46,13 +47,19 @@ std::shared_ptr<HalWrapper> connectHal(std::shared_ptr<CallbackScheduler> schedu
+         return nullptr;
+     }
+ 
+-    auto serviceName = std::string(IVibrator::descriptor) + "/default";
++    auto serviceName = getVibratorServiceName();
+     if (AServiceManager_isDeclared(serviceName.c_str())) {
+         std::shared_ptr<IVibrator> hal = IVibrator::fromBinder(
+                 ndk::SpAIBinder(AServiceManager_waitForService(serviceName.c_str())));
+         if (hal) {
+             ALOGV("Successfully connected to Vibrator HAL AIDL service.");
+-            return std::make_shared<AidlHalWrapper>(std::move(scheduler), std::move(hal));
++            auto reconnect = [serviceName]() {
++                auto reconnected = IVibrator::fromBinder(
++                        ndk::SpAIBinder(AServiceManager_checkService(serviceName.c_str())));
++                return HalResult<std::shared_ptr<IVibrator>>::ok(std::move(reconnected));
++            };
++            return std::make_shared<AidlHalWrapper>(std::move(scheduler), std::move(hal),
++                                                    std::move(reconnect));
+         }
+     }
+ 
+diff --git a/services/vibratorservice/VibratorServiceName.cpp b/services/vibratorservice/VibratorServiceName.cpp
+new file mode 100644
+index 0000000..39057ef
+--- /dev/null
++++ b/services/vibratorservice/VibratorServiceName.cpp
+@@ -0,0 +1,22 @@
++// Copyright (C) 2026 The LineageOS Project
++// SPDX-License-Identifier: Apache-2.0
++
++#include <aidl/android/hardware/vibrator/IVibrator.h>
++#include <android/binder_manager.h>
++#include <sys/system_properties.h>
++
++#include <vibratorservice/VibratorServiceName.h>
++
++namespace android::vibrator {
++
++std::string getVibratorServiceName() {
++    char device[PROP_VALUE_MAX] = {};
++    __system_property_get("ro.product.vendor.device", device);
++    return detail::
++            selectVibratorServiceName(aidl::android::hardware::vibrator::IVibrator::descriptor,
++                                      device, [](const std::string& name) {
++                                          return AServiceManager_isDeclared(name.c_str());
++                                      });
++}
++
++} // namespace android::vibrator
+diff --git a/services/vibratorservice/include/vibratorservice/VibratorController.h b/services/vibratorservice/include/vibratorservice/VibratorController.h
+index 691c8ae..6b8bffa 100644
+--- a/services/vibratorservice/include/vibratorservice/VibratorController.h
++++ b/services/vibratorservice/include/vibratorservice/VibratorController.h
+@@ -20,6 +20,7 @@
+ #include <aidl/android/hardware/vibrator/IVibrator.h>
+ 
+ #include <android-base/thread_annotations.h>
++#include <vibratorservice/VibratorServiceName.h>
+ 
+ namespace android {
+ 
+@@ -32,7 +33,7 @@ class VibratorProvider {
+ public:
+     using IVibrator = ::aidl::android::hardware::vibrator::IVibrator;
+ 
+-    VibratorProvider() : mServiceName(std::string(IVibrator::descriptor) + "/default") {}
++    VibratorProvider() : mServiceName(getVibratorServiceName()) {}
+     virtual ~VibratorProvider() = default;
+ 
+     /* Returns true if vibrator HAL service is declared in the device, false otherwise. */
+diff --git a/services/vibratorservice/include/vibratorservice/VibratorServiceName.h b/services/vibratorservice/include/vibratorservice/VibratorServiceName.h
+new file mode 100644
+index 0000000..a8b9b9c
+--- /dev/null
++++ b/services/vibratorservice/include/vibratorservice/VibratorServiceName.h
+@@ -0,0 +1,32 @@
++// Copyright (C) 2026 The LineageOS Project
++// SPDX-License-Identifier: Apache-2.0
++
++#pragma once
++
++#include <string>
++
++namespace android::vibrator {
++
++// Keep the same declared instance for discovery and reconnects.
++std::string getVibratorServiceName();
++
++namespace detail {
++
++template <typename IsDeclared>
++std::string selectVibratorServiceName(const std::string& descriptor, const std::string& device,
++                                      IsDeclared isDeclared) {
++    const auto defaultName = descriptor + "/default";
++    if (isDeclared(defaultName)) {
++        return defaultName;
++    }
++    if (device == "lapis") {
++        const auto stockName = descriptor + "/vibratorfeature";
++        if (isDeclared(stockName)) {
++            return stockName;
++        }
++    }
++    return defaultName;
++}
++
++} // namespace detail
++} // namespace android::vibrator
+diff --git a/services/vibratorservice/test/Android.bp b/services/vibratorservice/test/Android.bp
+index 92c6286..9185d65 100644
+--- a/services/vibratorservice/test/Android.bp
++++ b/services/vibratorservice/test/Android.bp
+@@ -33,6 +33,7 @@ cc_test {
+         "VibratorManagerHalControllerTest.cpp",
+         "VibratorManagerHalWrapperAidlTest.cpp",
+         "VibratorManagerHalWrapperLegacyTest.cpp",
++        "VibratorServiceNameTest.cpp",
+     ],
+     cflags: [
+         "-Wall",
+diff --git a/services/vibratorservice/test/VibratorServiceNameTest.cpp b/services/vibratorservice/test/VibratorServiceNameTest.cpp
+new file mode 100644
+index 0000000..d41e5a5
+--- /dev/null
++++ b/services/vibratorservice/test/VibratorServiceNameTest.cpp
+@@ -0,0 +1,101 @@
++// Copyright (C) 2026 The LineageOS Project
++// SPDX-License-Identifier: Apache-2.0
++
++#include <gtest/gtest.h>
++#include <vibratorservice/VibratorServiceName.h>
++
++#include <vector>
++
++#ifdef __ANDROID__
++#include <android/binder_process.h>
++#include <sys/system_properties.h>
++#include <vibratorservice/VibratorManagerHalController.h>
++
++#include <thread>
++#endif
++
++namespace android::vibrator {
++namespace {
++
++const std::string kDescriptor = "android.hardware.vibrator.IVibrator";
++const std::string kDefault = kDescriptor + "/default";
++const std::string kStock = kDescriptor + "/vibratorfeature";
++
++TEST(VibratorServiceNameTest, StandardServiceTakesPriorityOnLapis) {
++    std::vector<std::string> queried;
++    auto name = detail::selectVibratorServiceName(kDescriptor, "lapis", [&](const auto& service) {
++        queried.push_back(service);
++        return true;
++    });
++    EXPECT_EQ(kDefault, name);
++    EXPECT_EQ(std::vector<std::string>({kDefault}), queried);
++}
++
++TEST(VibratorServiceNameTest, LapisUsesDeclaredStockServiceWithoutDefault) {
++    std::vector<std::string> queried;
++    auto name = detail::selectVibratorServiceName(kDescriptor, "lapis", [&](const auto& service) {
++        queried.push_back(service);
++        return service == kStock;
++    });
++    EXPECT_EQ(kStock, name);
++    EXPECT_EQ(std::vector<std::string>({kDefault, kStock}), queried);
++}
++
++TEST(VibratorServiceNameTest, OtherDevicesDoNotProbeXiaomiService) {
++    std::vector<std::string> queried;
++    auto name = detail::selectVibratorServiceName(kDescriptor, "other", [&](const auto& service) {
++        queried.push_back(service);
++        return service == kStock;
++    });
++    EXPECT_EQ(kDefault, name);
++    EXPECT_EQ(std::vector<std::string>({kDefault}), queried);
++}
++
++TEST(VibratorServiceNameTest, UndeclaredStockServiceIsNotSelected) {
++    auto name = detail::selectVibratorServiceName(kDescriptor, "lapis",
++                                                  [](const auto&) { return false; });
++    EXPECT_EQ(kDefault, name);
++}
++
++TEST(VibratorServiceNameTest, MissingDevicePropertyDoesNotEnableFallback) {
++    auto name = detail::selectVibratorServiceName(kDescriptor, "", [](const auto& service) {
++        return service == kStock;
++    });
++    EXPECT_EQ(kDefault, name);
++}
++
++#ifdef __ANDROID__
++// Explicit opt-in only: this test sends a single short pulse to real lapis hardware.
++TEST(VibratorServiceNameTest, DISABLED_LapisLiveServiceProbe) {
++    char device[PROP_VALUE_MAX] = {};
++    __system_property_get("ro.product.vendor.device", device);
++    if (std::string(device) != "lapis") {
++        GTEST_SKIP() << "Live probe is restricted to lapis";
++    }
++    ABinderProcess_setThreadPoolMaxThreadCount(1);
++    ABinderProcess_startThreadPool();
++    ASSERT_EQ(kStock, getVibratorServiceName());
++
++    ManagerHalController manager;
++    auto ids = manager.getVibratorIds();
++    ASSERT_TRUE(ids.isOk());
++    ASSERT_EQ(std::vector<int32_t>({0}), ids.value());
++    auto vibrator = manager.getVibrator(0);
++    ASSERT_TRUE(vibrator.isOk());
++    auto controller = vibrator.value();
++    ASSERT_NE(nullptr, controller);
++    ASSERT_TRUE(controller->getInfo().capabilities.isOk());
++
++    auto on = controller->doWithRetry<
++            void>([](HalWrapper* hal) { return hal->on(std::chrono::milliseconds(120), []() {}); },
++                  "lapis-live-probe-on");
++    std::this_thread::sleep_for(std::chrono::milliseconds(200));
++    auto off = controller->doWithRetry<void>([](HalWrapper* hal) { return hal->off(); },
++                                             "lapis-live-probe-off");
++    ASSERT_TRUE(on.isOk());
++    ASSERT_TRUE(off.isOk());
++}
++#endif
++
++} // namespace
++} // namespace android::vibrator
+-- 
+2.56.0
+

@@ -1,5 +1,48 @@
 # Optional Magisk workarounds for Xiaomi lapis
 
+The [refreshed Android 17 system image](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/blob/main/docs/ANDROID17.md) now includes the
+vibration fix. These optional Android 16 ZIPs remain separate workarounds.
+
+## Module installer update — 2026-11-06
+
+Exact build-date restrictions have been removed. This changes module eligibility,
+not the system-image installer, and does not add the pending vibration fix.
+
+| Modules | Accepted environment |
+|---|---|
+| Display, fingerprint, call gain, Dolby | lapis, LineageOS 23.2 / Android 16 (SDK 36), Xiaomi vendor OS3.0.307.0.WPPMIXM, external GSI without integrated lapis fixes |
+| Bluetooth defaults | lapis, LineageOS 23.2 `gsi_lapis` / SDK 36, the same vendor; only missing properties are added |
+
+Other dates within these environments are now allowed experimentally; the
+underlying payloads have only been tested on the original builds listed below.
+The four legacy modules still reject `gsi_lapis` builds and the integrated
+`/system/etc/ueventd/lapis.rc` marker to avoid duplicate handlers. Boot-time guards
+also stop these handlers after an incompatible ROM upgrade. Android 17 is not
+supported by these legacy modules. Use the ready-made system image for its
+integrated fixes; no local ROM build or legacy module is required.
+
+[Updated module ZIPs](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/module-installers-20261106)
+include new version numbers so they can be distinguished from the original ZIPs.
+Old release assets remain unchanged.
+
+## October Bluetooth hotfix for the September image
+
+The new [`bluetooth-fix`](bluetooth-fix/README.md) module targets the tested
+`23.2-20260918-UNOFFICIAL-gsi_lapis` build with vendor `OS3.0.307.0.WPPMIXM` and
+Magisk already installed. It restores absent music/headset and other profile
+defaults. The installer now accepts other LineageOS 23.2 `gsi_lapis` build dates with the
+same device, SDK and vendor; other environments are rejected.
+Its payload was tested at runtime, including controlled Classic and BLE discovery;
+full reboot and installation through the new ZIP remain untested.
+
+This module **can be used on the documented September image**: it corrects a
+Bluetooth omission discovered after that release. Future source builds integrate
+the properties without root. See [the hotfix instructions](bluetooth-fix/README.md)
+and [updates](../CHANGELOG.md). The four older modules below now accept other 23.2 external GSI build dates,
+while excluding ROMs with integrated lapis fixes.
+
+## Older reference-GSI workarounds
+
 These are the earlier, separately tested root-module implementations of selected
 fixes. They let an experienced user try individual fixes **without replacing the
 whole system image**, on the documented compatible reference GSI.
@@ -9,7 +52,8 @@ for the complete ROM.
 **Requirements:** Xiaomi Redmi Note 15 Pro 5G (`lapis`), unlocked bootloader,
 working Magisk already installed, stock vendor OS3.0.307.0.WPPMIXM, and the tested
 reference GSI reporting `ro.lineage.version=23.2-20260524-GAPPS-EXT4-GSI`.
-The new installer guard rejects other builds. These ZIP wrappers have been
+The updated installer also allows other LineageOS 23.2 / SDK 36 build dates
+with this vendor, excluding integrated lapis ROMs. These ZIP wrappers have been
 checked on the host; the underlying module payloads were tested during bring-up.
 They have not been installed again on the current root-free phone.
 
@@ -19,10 +63,10 @@ No Magisk boot/init_boot image or personal signing key is distributed here.
 
 | Directory | Module | Effect |
 |---|---|---|
-| `display-fix` | `lapis_backlight_bridge` v0.1 | Mirrors MediaTek brightness to Xiaomi panel backlight; Power wake workaround |
-| `fingerprint-fix` | `lapis_fod_bridge` v0.3 | Xiaomi display-device path, FOD state notifications and resource-only sensor geometry overlay |
-| `call-audio-fix` | `lapis_call_volume` v0.2 | Bounded speaker gain for SIM and VoIP communication calls, maximum vendor index 11 |
-| `dolby-fix` | `lapis_dolby_control` v0.3 | Existing native Dolby effect daemon; no separate controller application included |
+| `display-fix` | `lapis_backlight_bridge` v0.2 | Mirrors MediaTek brightness to Xiaomi panel backlight; Power wake workaround |
+| `fingerprint-fix` | `lapis_fod_bridge` v0.4 | Xiaomi display-device path, FOD state notifications and resource-only sensor geometry overlay |
+| `call-audio-fix` | `lapis_call_volume` v0.3 | Bounded speaker gain for SIM and VoIP communication calls, maximum vendor index 11 |
+| `dolby-fix` | `lapis_dolby_control` v0.4 | Existing native Dolby effect daemon; no separate controller application included |
 
 The module directories contain boot scripts and their small runtime payloads.
 C/Java and overlay resource sources are included. The fingerprint APK is strictly

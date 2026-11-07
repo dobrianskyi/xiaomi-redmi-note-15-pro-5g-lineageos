@@ -11,6 +11,26 @@ source-built Xiaomi kernel/vendor distribution. The tested firmware baseline is
 The initial release uses public Android test signing keys, not private production
 release keys. Bootloader locking and official OTA updates are not supported.
 
+## Updated — 2026-11-07
+
+[Download the refreshed Android 16 image](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/23.2-lapis-20260918).
+The previous image in this same release has been replaced with the November 7
+build; there is one current Android 16 image.
+
+The 24-patch build includes the lapis native/JNI/Java vibration-discovery fix,
+opt-in four-digit PIN auto-confirm, a media mute button and persistence of its
+explicit mute state across reboot, including volume-group startup. Existing
+lapis hardware, IMS, Bluetooth, geometry, gesture, Dolby and power fixes remain.
+The implementation was backported from the tested Android 17 fixes. This exact
+Android 16 image has passed compilation and offline checks; boot and hardware
+behavior of these exact bytes have not yet been tested on a phone.
+
+Source branch: **lineage-23.2**. Clone this branch for Android 16:
+
+```sh
+git clone -b lineage-23.2 https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos.git
+```
+
 ## Build
 
 Use Linux x86_64, Python 3.12+ (or 3.11 with tarfile extraction-filter support),

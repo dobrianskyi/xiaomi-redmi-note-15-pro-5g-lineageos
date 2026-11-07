@@ -1,0 +1,1310 @@
+From 855c28e0e3b6c1bea4427c48469de6db50f612be Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Sat, 7 Nov 2026 10:36:42 +0200
+Subject: [PATCH] Settings: backport four-digit PIN auto-confirm eligibility
+ and summaries
+
+Change-Id: I4b2f6a48c5fd6286b609322836fbc5fedfc4fe5a
+---
+ res/values-af/strings.xml                           |  2 +-
+ res/values-am/strings.xml                           |  2 +-
+ res/values-ar/strings.xml                           |  2 +-
+ res/values-as/strings.xml                           |  2 +-
+ res/values-az/strings.xml                           |  2 +-
+ res/values-b+sr+Latn/strings.xml                    |  2 +-
+ res/values-be/strings.xml                           |  2 +-
+ res/values-bg/strings.xml                           |  2 +-
+ res/values-bn/strings.xml                           |  2 +-
+ res/values-bs/strings.xml                           |  2 +-
+ res/values-ca/strings.xml                           |  2 +-
+ res/values-cs/strings.xml                           |  2 +-
+ res/values-da/strings.xml                           |  2 +-
+ res/values-de/strings.xml                           |  2 +-
+ res/values-el/strings.xml                           |  2 +-
+ res/values-en-rAU/strings.xml                       |  2 +-
+ res/values-en-rCA/strings.xml                       |  2 +-
+ res/values-en-rGB/strings.xml                       |  2 +-
+ res/values-en-rIN/strings.xml                       |  2 +-
+ res/values-en-rXC/strings.xml                       |  2 +-
+ res/values-es-rUS/strings.xml                       |  2 +-
+ res/values-es/strings.xml                           |  2 +-
+ res/values-et/strings.xml                           |  2 +-
+ res/values-eu/strings.xml                           |  2 +-
+ res/values-fa/strings.xml                           |  2 +-
+ res/values-fi/strings.xml                           |  2 +-
+ res/values-fr-rCA/strings.xml                       |  2 +-
+ res/values-fr/strings.xml                           |  2 +-
+ res/values-gl/strings.xml                           |  2 +-
+ res/values-gu/strings.xml                           |  2 +-
+ res/values-hi/strings.xml                           |  2 +-
+ res/values-hr/strings.xml                           |  2 +-
+ res/values-hu/strings.xml                           |  2 +-
+ res/values-hy/strings.xml                           |  2 +-
+ res/values-in/strings.xml                           |  2 +-
+ res/values-is/strings.xml                           |  2 +-
+ res/values-it/strings.xml                           |  2 +-
+ res/values-iw/strings.xml                           |  2 +-
+ res/values-ja/strings.xml                           |  2 +-
+ res/values-ka/strings.xml                           |  2 +-
+ res/values-kk/strings.xml                           |  2 +-
+ res/values-km/strings.xml                           |  2 +-
+ res/values-kn/strings.xml                           |  2 +-
+ res/values-ko/strings.xml                           |  2 +-
+ res/values-ky/strings.xml                           |  2 +-
+ res/values-lo/strings.xml                           |  2 +-
+ res/values-lt/strings.xml                           |  2 +-
+ res/values-lv/strings.xml                           |  2 +-
+ res/values-mk/strings.xml                           |  2 +-
+ res/values-ml/strings.xml                           |  2 +-
+ res/values-mn/strings.xml                           |  2 +-
+ res/values-mr/strings.xml                           |  2 +-
+ res/values-ms/strings.xml                           |  2 +-
+ res/values-my/strings.xml                           |  2 +-
+ res/values-nb/strings.xml                           |  2 +-
+ res/values-ne/strings.xml                           |  2 +-
+ res/values-nl/strings.xml                           |  2 +-
+ res/values-or/strings.xml                           |  2 +-
+ res/values-pa/strings.xml                           |  2 +-
+ res/values-pl/strings.xml                           |  2 +-
+ res/values-pt-rBR/strings.xml                       |  2 +-
+ res/values-pt-rPT/strings.xml                       |  2 +-
+ res/values-pt/strings.xml                           |  2 +-
+ res/values-ro/strings.xml                           |  2 +-
+ res/values-ru/strings.xml                           |  2 +-
+ res/values-si/strings.xml                           |  2 +-
+ res/values-sk/strings.xml                           |  2 +-
+ res/values-sl/strings.xml                           |  2 +-
+ res/values-sq/strings.xml                           |  2 +-
+ res/values-sr/strings.xml                           |  2 +-
+ res/values-sv/strings.xml                           |  2 +-
+ res/values-sw/strings.xml                           |  2 +-
+ res/values-ta/strings.xml                           |  2 +-
+ res/values-te/strings.xml                           |  2 +-
+ res/values-th/strings.xml                           |  2 +-
+ res/values-tl/strings.xml                           |  2 +-
+ res/values-tr/strings.xml                           |  2 +-
+ res/values-uk/strings.xml                           |  2 +-
+ res/values-ur/strings.xml                           |  2 +-
+ res/values-uz/strings.xml                           |  2 +-
+ res/values-vi/strings.xml                           |  2 +-
+ res/values-zh-rCN/strings.xml                       |  2 +-
+ res/values-zh-rHK/strings.xml                       |  2 +-
+ res/values-zh-rTW/strings.xml                       |  2 +-
+ res/values-zu/strings.xml                           |  2 +-
+ res/values/strings.xml                              |  2 +-
+ .../settings/password/ChooseLockPassword.java       | 10 +++++-----
+ .../settings/password/ChooseLockPasswordTest.java   |  4 ++--
+ .../AutoPinConfirmPreferenceControllerTest.java     | 13 +++++++++++--
+ 89 files changed, 104 insertions(+), 95 deletions(-)
+
+diff --git a/res/values-af/strings.xml b/res/values-af/strings.xml
+index 4ac774d..7dcc754 100644
+--- a/res/values-af/strings.xml
++++ b/res/values-af/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Skermslotopsies"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Skermslotopsies"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Outobevestig ontsluiting"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Ontsluit outomaties as jy ’n korrekte PIN van 6 of meer syfers invoer. Dit is effens minder veilig as om op Enter te tik om te bevestig."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Ontsluit outomaties as jy ’n korrekte PIN van 4 of meer syfers invoer. Dit is effens minder veilig as om op Enter te tik om te bevestig."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Outobevestig korrekte PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Dit is veiliger om jou PIN te bevestig deur op Enter te tik as om outobevestiging te gebruik"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Voer toestel-PIN in om outobevestig te aktiveer"</string>
+diff --git a/res/values-am/strings.xml b/res/values-am/strings.xml
+index 8210b75..532672c 100644
+--- a/res/values-am/strings.xml
++++ b/res/values-am/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"ማያ ገፅ መቆለፊያ አማራጮች"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"ማያ ገፅ መቆለፊያ አማራጮች"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ክፈትን በራስ ሰር ማረጋገጥ"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"6 አሃዞች ወይም ከዚያ በላይ የሆኑ ትክክለኛ ፒኖችን ካስገቡ በራስ ሰር ይክፈቱ። ይህ ለማረጋገጥ አስገባ ላይ መታ ከማድረግ በመጠኑ ያነሰ አስተማማኝ ነው።"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"4 አሃዞች ወይም ከዚያ በላይ የሆኑ ትክክለኛ ፒኖችን ካስገቡ በራስ ሰር ይክፈቱ። ይህ ለማረጋገጥ አስገባ ላይ መታ ከማድረግ በመጠኑ ያነሰ አስተማማኝ ነው።"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"ትክክለኛ ፒንን በራስ ሰር ማረጋገጥ"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"አስገባ ላይ መታ በማድረግ ፒንዎን ማረጋገጥ በራስ ሰር ከማረጋገጥ የበለጠ ደህንነቱ የተጠበቀ ነው"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ራስ ሰር-ማረጋገጥን ለማንቃት የመሣሪያውን ፒን ያስገቡ"</string>
+diff --git a/res/values-ar/strings.xml b/res/values-ar/strings.xml
+index 382efdd..b9eeba3 100644
+--- a/res/values-ar/strings.xml
++++ b/res/values-ar/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"خيارات قفل الشاشة"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"خيارات قفل الشاشة"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"التأكيد التلقائي لفتح القفل"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"‏يتم فتح القفل تلقائيًا إذا أدخلت رقم تعريف شخصيًا صحيحًا مكونًا من ٦ أرقام أو أكثر. هذا إلى حد ما أقل أمانًا من النقر على Enter للتأكيد."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"‏يفتح القفل تلقائيًا إذا أدخلت رقم تعريف شخصيًا صحيحًا مكونًا من ٤ أرقام أو أكثر. هذا أقل أمانًا إلى حد ما من النقر على Enter للتأكيد."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"التأكيد التلقائي لرقم التعريف الشخصي الصحيح"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"‏تأكيد رقم التعريف الشخصي عن طريق النقر على Enter هو طريقة أكثر أمانًا من استخدام التأكيد التلقائي."</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"أدخِل رقم التعريف الشخصي للجهاز لتفعيل التأكيد التلقائي."</string>
+diff --git a/res/values-as/strings.xml b/res/values-as/strings.xml
+index 946b763..0461c6c 100644
+--- a/res/values-as/strings.xml
++++ b/res/values-as/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"স্ক্ৰীন লক সম্পৰ্কীয় বিকল্প"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"স্ক্ৰীন লক সম্পৰ্কীয় বিকল্প"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"আনলক কৰাটো স্বয়ংক্ৰিয়ভাৱে নিশ্চিত কৰক"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"আপুনি ৬ টা অথবা তাতকৈ অধিক অংকৰ সঠিক পিন ইনপুট কৰি স্বয়ংক্ৰিয়ভাৱে আনলক কৰক। নিশ্চিত কৰিবলৈ এণ্টাৰ টিপাতকৈ এইটো অলপ কম সুৰক্ষিত।"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"আপুনি ৪ টা অথবা তাতকৈ অধিক অংকৰ সঠিক পিন ইনপুট কৰি স্বয়ংক্ৰিয়ভাৱে আনলক কৰক। নিশ্চিত কৰিবলৈ এণ্টাৰ টিপাতকৈ এইটো অলপ কম সুৰক্ষিত।"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"সঠিক পিনটো স্বয়ংক্ৰিয়ভাৱে নিশ্চিত কৰক"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"এণ্টাৰ টিপি আপোনাৰ পিন নিশ্চিত কৰাটো স্বয়ংক্ৰিয়-নিশ্চিতকৰণ ব্যৱহাৰ কৰাতকৈ অধিক সুৰক্ষিত"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"স্বয়ংক্ৰিয় নিশ্চিতকৰণ সক্ষম কৰিবলৈ ডিভাইচৰ পিনটো দিয়ক"</string>
+diff --git a/res/values-az/strings.xml b/res/values-az/strings.xml
+index 2b47785..5ef3cd6 100644
+--- a/res/values-az/strings.xml
++++ b/res/values-az/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Ekran kilidi seçimləri"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Ekran kilidi seçimləri"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Kilidin açılmasını avtomatik təsdiqləyin"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"6 və ya daha çox rəqəmdən ibarət düzgün PİN kodu daxil etsəniz, avtomatik kiliddən çıxarın. Bu, təsdiqləmək üçün Enter düyməsinə toxunmaqdan bir qədər az təhlükəsizdir."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"4 və ya daha çox rəqəmdən ibarət düzgün PİN kodu daxil etsəniz, avtomatik kiliddən çıxarın. Bu, təsdiqləmək üçün Enter düyməsinə toxunmaqdan bir qədər az təhlükəsizdir."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Düzgün PİN kodu avtomatik təsdiqləyin"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter düyməsinə toxunmaqla PİN kodu təsdiqləmək avtomatik təsdiqdən istifadə etməkdən daha təhlükəsizdir"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Avtomatik təsdiqi aktivləşdirmək üçün cihaz PIN-i daxil edin"</string>
+diff --git a/res/values-b+sr+Latn/strings.xml b/res/values-b+sr+Latn/strings.xml
+index 5bec025..ee3ef82 100644
+--- a/res/values-b+sr+Latn/strings.xml
++++ b/res/values-b+sr+Latn/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opcije otključavanja ekrana"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opcije otključavanja ekrana"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Otključavanje koje se automatski potvrđuje"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Otključava se automatski ako unesete PIN sa 6 ili više cifara. To je malo manje pouzdano nego da dodirnete Enter da biste potvrdili."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Otključava se automatski ako unesete PIN sa 4 ili više cifara. To je malo manje pouzdano nego da dodirnete Enter da biste potvrdili."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Automatski potvrdi tačan PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Potvrda PIN-a dodirom na Enter je bezbednija nego automatska potvrda"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Unesite PIN uređaja da biste omogućili automatsku potvrdu"</string>
+diff --git a/res/values-be/strings.xml b/res/values-be/strings.xml
+index 78f1781..f08c100 100644
+--- a/res/values-be/strings.xml
++++ b/res/values-be/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Параметры экрана блакіроўкі"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Параметры экрана блакіроўкі"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Аўтаматычнае пацвярджэнне разблакіроўкі"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Аўтаматычна разблакіраваць пры ўводзе правільнага PIN-кода з 6 ці болей лічбаў. Гэта менш бяспечна, чым націскаць кнопку \"Увод\" для пацвярджэння."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Аўтаматычна разблакіраваць пры ўводзе правільнага PIN-кода з 4 ці болей лічбаў. Гэта менш бяспечна, чым націскаць кнопку \"Увод\" для пацвярджэння."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Аўтаматычнае пацвярджэнне правільнасці PIN-кода"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Пацвярджаць PIN-код націсканнем кнопкі \"Увод\" бяспечней, чым ужываць аўтаматычнае пацвярджэнне"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Увядзіце PIN-код прылады, каб уключыць аўтаматычнае пацвярджэнне"</string>
+diff --git a/res/values-bg/strings.xml b/res/values-bg/strings.xml
+index 881e5e4..72da590 100644
+--- a/res/values-bg/strings.xml
++++ b/res/values-bg/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Опции за заключване на екрана"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Опции за заключване на екрана"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Автоматично потвърждаване при отключване"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Автоматично отключване при въвеждане на правилен ПИН код с дължина от поне 6 цифри. Това е по-малко сигурно от потвърждаването чрез докосване на Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Автоматично отключване при въвеждане на правилен ПИН код с дължина от поне 4 цифри. Това е по-малко сигурно от потвърждаването чрез докосване на Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Автоматично потвърждаване на правилния ПИН код"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Потвърждаването на ПИН кода чрез докосване на Enter е по-сигурно от автоматичното"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Въведете ПИН кода на устройството, за да активирате автоматичното потвърждаване"</string>
+diff --git a/res/values-bn/strings.xml b/res/values-bn/strings.xml
+index 2a60954..329c146 100644
+--- a/res/values-bn/strings.xml
++++ b/res/values-bn/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"স্ক্রিন লকের বিকল্প"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"স্ক্রিন লকের বিকল্প"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"পিন অটোমেটিক কনফার্ম করে ডিভাইস আনলক করা"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"৬ বা তার বেশি সংখ্যার সঠিক পিন লিখলে অটোমেটিক আনলক করুন। \'এন্টার\' ট্যাপ করে কনফার্ম করার থেকে এই প্রক্রিয়াটি সামান্য কম নিরাপদ।"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"৪ বা তার বেশি সংখ্যার সঠিক পিন লিখলে অটোমেটিক আনলক করুন। \'এন্টার\' ট্যাপ করে কনফার্ম করার থেকে এই প্রক্রিয়াটি সামান্য কম নিরাপদ।"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"সঠিক পিন অটোমেটিক কনফার্ম করুন"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"অটোমেটিক কনফার্মেশনের চেয়ে Enter ট্যাপ করে আপনার পিন কনফার্ম করা অনেক বেশি নিরাপদ"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"\'অটো-কনফার্ম\' সেটিং চালু করতে ডিভাইসের পিন লিখুন"</string>
+diff --git a/res/values-bs/strings.xml b/res/values-bs/strings.xml
+index 0843e6c..93effbc 100644
+--- a/res/values-bs/strings.xml
++++ b/res/values-bs/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opcije otključavanja ekrana"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opcije otključavanja ekrana"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Automatska potvrda otključavanja"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Automatsko otključavanje prilikom unosa ispravnog PIN-a od 6 ili više cifara. Ovo je manje sigurno od potvrđivanja dodirom tipke Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Automatsko otključavanje prilikom unosa ispravnog PIN-a od 4 ili više cifara. Ovo je manje sigurno od potvrđivanja dodirom tipke Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Automatsko potvrđivanje ispravnog PIN-a"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Potvrđivanje PIN-a dodirom tipke Enter je sigurnije od korištenja opcije automatskog potvrđivanja"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Unesite PIN uređaja da omogućite automatsko potvrđivanje"</string>
+diff --git a/res/values-ca/strings.xml b/res/values-ca/strings.xml
+index 4e1c766..4d53524 100644
+--- a/res/values-ca/strings.xml
++++ b/res/values-ca/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opcions de bloqueig de pantalla"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opcions de bloqueig de pantalla"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Desbloqueig amb confirmació automàtica"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloqueja automàticament en introduir un PIN correcte de 6 dígits o més. Aquesta opció és una mica menys segura que tocar Retorn per confirmar."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloqueja automàticament en introduir un PIN correcte de 4 dígits o més. Aquesta opció és una mica menys segura que tocar Retorn per confirmar."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirma el PIN correcte automàticament"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirmar el PIN tocant Retorn és més segur que utilitzar la confirmació automàtica"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Introdueix el PIN del dispositiu per activar la confirmació automàtica"</string>
+diff --git a/res/values-cs/strings.xml b/res/values-cs/strings.xml
+index e6a2231..cbc1fe6 100644
+--- a/res/values-cs/strings.xml
++++ b/res/values-cs/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Možnosti zámku obrazovky"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Možnosti zámku obrazovky"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Automatické potvrzování odemknutí"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Nechte si zařízení odemknout automaticky, když zadáte správný PIN o délce minimálně 6 číslic. Tato možnost je o něco méně bezpečná než potvrzení klepnutím na Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Po zadání správného PINu o délce minimálně 4 číslic odemykat automaticky. Tato možnost je o něco méně bezpečná než potvrzení klepnutím na Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Automaticky potvrzovat správný kód PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Potvrzení kódu PIN klepnutím na Enter je bezpečnější než používání automatického potvrzení"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Pokud chcete zapnout automatické potvrzování, zadejte PIN zařízení"</string>
+diff --git a/res/values-da/strings.xml b/res/values-da/strings.xml
+index 2f9413e..4fe7903 100644
+--- a/res/values-da/strings.xml
++++ b/res/values-da/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Valgmuligheder for skærmlås"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Valgmuligheder for skærmlås"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Bekræft oplåsning automatisk"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Låser automatisk op, hvis du indtaster en korrekt pinkode på 6 eller flere cifre. Dette er lidt mindre sikkert end at trykke på Enter for at bekræfte pinkoden."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Låser automatisk op, hvis du indtaster en korrekt pinkode på 4 eller flere cifre. Dette er lidt mindre sikkert end at trykke på Enter for at bekræfte pinkoden."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Bekræft den korrekte pinkode automatisk"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Det er mere sikkert at bekræfte din pinkode ved at trykke på Enter end at bruge automatisk bekræftelse"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Angiv enhedens pinkode for at aktivere automatisk bekræftelse"</string>
+diff --git a/res/values-de/strings.xml b/res/values-de/strings.xml
+index 5550ac1..eefa180 100644
+--- a/res/values-de/strings.xml
++++ b/res/values-de/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Optionen für die Displaysperre"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Optionen für die Displaysperre"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Entsperren mit automatischer Bestätigung"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Der Bildschirm wird automatisch entsperrt, wenn du eine korrekte PIN mit 6 oder mehr Ziffern eingibst. Diese Option ist etwas weniger sicher, als wenn du zum Bestätigen auf „Eingabe“ tippst."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Der Bildschirm wird automatisch entsperrt, wenn du eine korrekte PIN mit 4 oder mehr Ziffern eingibst. Diese Option ist etwas weniger sicher, als wenn du zum Bestätigen auf „Eingabe“ tippst."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Korrekte PIN automatisch bestätigen"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Die Bestätigung deiner PIN durch Tippen auf „Eingabe“ ist sicherer als die automatische Bestätigung"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Geräte-PIN eingeben, um automatische Bestätigung zu aktivieren"</string>
+diff --git a/res/values-el/strings.xml b/res/values-el/strings.xml
+index 2e0f3a6..bb7312b 100644
+--- a/res/values-el/strings.xml
++++ b/res/values-el/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Επιλογές κλειδώματος οθόνης"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Επιλογές κλειδώματος οθόνης"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Αυτόματη επιβεβαίωση ξεκλειδώματος"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Με την εισαγωγή ενός σωστού PIN που αποτελείται από έξι ή περισσότερα ψηφία θα γίνεται αυτόματο ξεκλείδωμα. Αυτή η μέθοδος είναι κάπως λιγότερο ασφαλής συγκριτικά με το πάτημα του πλήκτρου Enter για επιβεβαίωση."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Με την εισαγωγή ενός σωστού PIN που αποτελείται από 4 ή περισσότερα ψηφία θα γίνεται αυτόματο ξεκλείδωμα. Αυτή η μέθοδος είναι κάπως λιγότερο ασφαλής συγκριτικά με το πάτημα του πλήκτρου Enter για επιβεβαίωση."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Αυτόματη επιβεβαίωση σωστού PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Η επιβεβαίωση του PIN με πάτημα του πλήκτρου Enter είναι πιο ασφαλής από το να χρησιμοποιείτε την αυτόματη επιβεβαίωση"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Εισαγάγετε το PIN της συσκευής για να ενεργοποιήσετε την αυτόματη επιβεβαίωση"</string>
+diff --git a/res/values-en-rAU/strings.xml b/res/values-en-rAU/strings.xml
+index 029a3cc..0080edc 100644
+--- a/res/values-en-rAU/strings.xml
++++ b/res/values-en-rAU/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Screen lock options"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Screen lock options"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Auto-confirm unlock"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Unlock automatically if you input a correct PIN of 6 digits or more. This is slightly less secure than tapping Enter to confirm."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Unlock automatically if you input a correct PIN of 4 digits or more. This is slightly less secure than tapping Enter to confirm."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Auto-confirm correct PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirming your PIN by tapping Enter is more secure than using auto-confirm"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Enter device PIN to enable auto-confirm"</string>
+diff --git a/res/values-en-rCA/strings.xml b/res/values-en-rCA/strings.xml
+index f46c340..3510464 100644
+--- a/res/values-en-rCA/strings.xml
++++ b/res/values-en-rCA/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Screen lock options"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Screen lock options"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Auto-confirm unlock"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Unlock automatically if you input a correct PIN of 6 digits or more. This is slightly less secure than tapping Enter to confirm."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Unlock automatically if you input a correct PIN of 4 digits or more. This is slightly less secure than tapping Enter to confirm."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Auto-confirm correct PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirming your PIN by tapping Enter is more secure than using auto-confirm"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Enter device PIN to enable auto-confirm"</string>
+diff --git a/res/values-en-rGB/strings.xml b/res/values-en-rGB/strings.xml
+index db9524e..ce705e9 100644
+--- a/res/values-en-rGB/strings.xml
++++ b/res/values-en-rGB/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Screen lock options"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Screen lock options"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Auto-confirm unlock"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Unlock automatically if you input a correct PIN of 6 digits or more. This is slightly less secure than tapping Enter to confirm."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Unlock automatically if you input a correct PIN of 4 digits or more. This is slightly less secure than tapping Enter to confirm."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Auto-confirm correct PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirming your PIN by tapping Enter is more secure than using auto-confirm"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Enter device PIN to enable auto-confirm"</string>
+diff --git a/res/values-en-rIN/strings.xml b/res/values-en-rIN/strings.xml
+index 953b37e..31ba6a1 100644
+--- a/res/values-en-rIN/strings.xml
++++ b/res/values-en-rIN/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Screen lock options"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Screen lock options"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Auto-confirm unlock"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Unlock automatically if you input a correct PIN of 6 digits or more. This is slightly less secure than tapping Enter to confirm."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Unlock automatically if you input a correct PIN of 4 digits or more. This is slightly less secure than tapping Enter to confirm."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Auto-confirm correct PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirming your PIN by tapping Enter is more secure than using auto-confirm"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Enter device PIN to enable auto-confirm"</string>
+diff --git a/res/values-en-rXC/strings.xml b/res/values-en-rXC/strings.xml
+index 6a17b39..cdb544a 100644
+--- a/res/values-en-rXC/strings.xml
++++ b/res/values-en-rXC/strings.xml
+@@ -689,7 +689,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‏‎‏‏‏‏‏‏‏‎‏‎‏‎‎‏‎‏‎‎‎‎‏‏‎‎‎‎‎‎‏‎‎‏‏‏‎‏‏‎‎‏‎‏‏‏‎‎‏‏‎‏‏‎‎‏‏‎‎‏‏‏‎‏‎‎‎‏‎‎‏‎Screen lock options‎‏‎‎‏‎"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‏‎‏‏‏‏‏‏‏‏‎‏‏‏‎‏‏‎‏‎‎‎‎‏‏‎‎‏‏‎‎‏‏‎‎‏‎‎‎‎‏‏‎‏‏‎‎‏‎‏‏‏‎‎‎‏‏‎‏‏‎‎‏‏‎‎‏‏‎‎‏‎Screen lock options‎‏‎‎‏‎"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‏‎‏‏‏‏‏‎‏‎‏‎‎‏‏‏‎‎‏‏‎‏‎‎‏‏‏‎‏‎‏‎‎‎‏‏‏‏‎‎‏‎‎‎‎‎‏‏‎‏‎‎‎‏‏‏‎‏‏‎‏‏‏‎‏‏‎‏‏‏‎Auto-confirm unlock‎‏‎‎‏‎"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‏‎‏‏‏‏‏‏‏‏‏‏‏‎‏‏‎‎‏‏‎‏‎‏‏‏‏‎‏‏‏‏‏‎‎‏‏‏‏‎‏‎‎‏‎‎‎‏‏‎‏‎‏‎‎‎‎‎‎‏‏‏‎‎‏‎‏‎‎‏‏‎Unlock automatically if you input a correct PIN of 6 digits or more. This is slightly less secure than tapping Enter to confirm.‎‏‎‎‏‎"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‏‎‏‏‏‏‏‏‏‏‏‏‏‎‏‏‎‎‏‏‎‏‎‏‏‏‏‎‏‏‏‏‏‎‎‏‏‏‏‎‏‎‎‏‎‎‎‏‏‎‏‎‏‎‎‎‎‎‎‏‏‏‎‎‏‎‏‎‎‏‏‎Unlock automatically if you input a correct PIN of 4 digits or more. This is slightly less secure than tapping Enter to confirm.‎‏‎‎‏‎"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‏‎‏‏‏‏‏‏‏‎‏‎‏‎‏‏‏‏‏‎‏‏‏‎‏‏‏‏‏‎‎‎‎‎‎‎‏‎‏‎‎‎‎‎‏‏‎‎‎‎‎‎‎‏‎‏‏‏‎‎‎‎‏‎‎‏‏‎‎‏‎‎Auto-confirm correct PIN‎‏‎‎‏‎"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‏‎‏‏‏‏‎‎‏‎‎‎‎‎‎‎‏‏‏‏‎‏‎‏‎‎‏‎‏‏‎‏‏‎‏‎‏‏‎‏‎‎‏‎‎‎‏‎‎‏‏‎‏‎‏‏‏‎‏‎‎‎‏‏‏‏‎‏‎Confirming your PIN by tapping Enter is more secure than using auto-confirm‎‏‎‎‏‎"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‎‎‎‏‎‎‏‎‎‎‏‎‏‏‏‏‎‏‏‏‏‎‎‎‏‏‏‏‎‏‏‎‎‎‎‎‏‎‏‏‏‎‎‏‏‎‎‏‎‎‎‎‏‎‏‏‏‎‎‎‏‏‎‎‏‎‎‎‏‎‎‎‏‎‎‏‏‏‎‎Enter device PIN to enable auto-confirm‎‏‎‎‏‎"</string>
+diff --git a/res/values-es-rUS/strings.xml b/res/values-es-rUS/strings.xml
+index 5e77ee8..c4248a1 100644
+--- a/res/values-es-rUS/strings.xml
++++ b/res/values-es-rUS/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opciones de bloqueo de pantalla"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opciones de bloqueo de pantalla"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Desbloqueo con confirmación automática"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloquear automáticamente si introduces el PIN correcto de 6 o más dígitos. Esto es menos seguro que presionar Ingresar para confirmar."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloquear automáticamente si introduces el PIN correcto de 4 o más dígitos. Esto es un poco menos seguro que presionar el botón de confirmación."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirmar automáticamente si el PIN es correcto"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Presionar Ingresar para confirmar tu PIN es más seguro que usar la confirmación automática"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Ingresa el PIN del dispositivo para habilitar la confirmación automática"</string>
+diff --git a/res/values-es/strings.xml b/res/values-es/strings.xml
+index 5fd4ee8..78aff49 100644
+--- a/res/values-es/strings.xml
++++ b/res/values-es/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opciones de bloqueo de pantalla"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opciones de bloqueo de pantalla"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Desbloqueo con confirmación automática"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloquea automáticamente si introduces un PIN correcto de 6 dígitos o más. Esta opción es un poco menos segura que tocar Intro para confirmar"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloquea automáticamente si introduces un PIN correcto de 4 dígitos o más. Esta opción es un poco menos segura que tocar Intro para confirmar."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirmar automáticamente el PIN correcto"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"La confirmación del PIN tocando Intro es más segura que la confirmación automática"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Introduce el PIN del dispositivo para habilitar la confirmación automática"</string>
+diff --git a/res/values-et/strings.xml b/res/values-et/strings.xml
+index 59d65a2..0bbbe5b 100644
+--- a/res/values-et/strings.xml
++++ b/res/values-et/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Ekraaniluku valikud"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Ekraaniluku valikud"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Avamise automaatne kinnitamine"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Avatakse automaatselt, kui sisestate vähemalt 6-kohalise PIN-koodi õigesti. See on veidi vähem turvaline kui kinnitamiseks sisestusklahvi vajutamine."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Avatakse automaatselt, kui sisestate vähemalt 4-kohalise PIN-koodi õigesti. See on veidi vähem turvaline kui kinnitamiseks sisestusklahvi vajutamine."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Õige PIN-koodi automaatne kinnitamine"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"PIN-koodi kinnitamine sisestusklahvi abil on turvalisem kui automaatse kinnitamise kasutamine."</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Automaatse kinnitamise lubamiseks sisestage seadme PIN-kood"</string>
+diff --git a/res/values-eu/strings.xml b/res/values-eu/strings.xml
+index b843771..d930bd9 100644
+--- a/res/values-eu/strings.xml
++++ b/res/values-eu/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Pantaila blokeatzeko aukerak"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Pantaila blokeatzeko aukerak"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"PINa automatikoki berresten duen desblokeoa"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desblokeatu automatikoki gailua sei digitu edo gehiagoko PIN zuzena idazten baduzu. Ez da PINa berresteko Sartu sakatzea bezain segurua."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desblokeatu automatikoki gailua 4 digitu edo gehiagoko PIN zuzena idazten baduzu. Ez da PINa berresteko Sartu sakatzea bezain segurua."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Berretsi automatikoki PIN zuzena"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Berrespen automatikoa erabiltzea baino seguruagoa da PINa berresteko Sartu sakatzea"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Automatikoki berresteko aukera gaitzeko, idatzi PINa"</string>
+diff --git a/res/values-fa/strings.xml b/res/values-fa/strings.xml
+index 058e144..069e03f 100644
+--- a/res/values-fa/strings.xml
++++ b/res/values-fa/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"گزینه‌های قفل صفحه"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"گزینه‌های قفل صفحه"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"تأیید خودکار قفل‌گشایی"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"اگر پین صحیح ۶ رقمی یا بیشتر وارد کنید، قفل به‌طور خودکار باز می‌شود. این ویژگی کمی ناامن‌تر از ضربه زدن روی «ورود» برای تأیید است."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"اگر پین صحیح ۴ رقمی یا بیشتر وارد کنید، قفل به‌طور خودکار باز می‌شود. این ویژگی کمی ناامن‌تر از ضربه زدن روی «ورود» برای تأیید است."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"تأیید خودکار پین صحیح"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"تأیید پین با ضربه زدن روی «ورود» امن‌تر از استفاده از تأیید خودکار است"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"برای فعال کردن تأیید خودکار، پین دستگاه را وارد کنید"</string>
+diff --git a/res/values-fi/strings.xml b/res/values-fi/strings.xml
+index 2e8f72d..43884fa 100644
+--- a/res/values-fi/strings.xml
++++ b/res/values-fi/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Näytön lukitusvaihtoehdot"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Näytön lukitusvaihtoehdot"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Lukituksen avaamisen automaattinen vahvistaminen"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Avaa lukitus automaattisesti, jos lisätyssä PIN-koodissa on vähintään kuusi numeroa ja se on oikein. Tämä ei ole aivan yhtä turvallista kuin vahvistaminen naputtamalla Enteriä."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Avaa lukitus automaattisesti, jos lisätyssä PIN-koodissa on vähintään 4 numeroa ja se on oikein. Tämä ei ole aivan yhtä turvallista kuin vahvistaminen naputtamalla Enteriä."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Vahvista PIN-koodi automaattisesti"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"PIN-koodin vahvistaminen napauttamalla Enteriä on turvallisempaa kuin automaattinen vahvistaminen"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Lisää laitteen PIN-koodi, jos haluat ottaa automaattisen vahvistuksen käyttöön"</string>
+diff --git a/res/values-fr-rCA/strings.xml b/res/values-fr-rCA/strings.xml
+index 912d46a..80cc75c 100644
+--- a/res/values-fr-rCA/strings.xml
++++ b/res/values-fr-rCA/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Options de verrouillage de l\'écran"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Options de verrouillage de l\'écran"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Confirmer automatiquement le déverrouillage"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Déverrouillage automatique si vous entrez un NIP correct de six chiffres ou plus. Cette méthode est un peu moins sécuritaire que de toucher Entrée pour confirmer."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Déverrouillage automatique si vous entrez un NIP correct de 4 chiffres ou plus. Cette méthode est un peu moins sécuritaire que de toucher Entrée pour confirmer."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirmer automatiquement que le NIP est correct"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"La confirmation de votre NIP en touchant Entrée est plus sécuritaire que la confirmation automatique"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Entrez le NIP de l\'appareil pour activer la confirmation automatique"</string>
+diff --git a/res/values-fr/strings.xml b/res/values-fr/strings.xml
+index 79daeee..bcbc9e5 100644
+--- a/res/values-fr/strings.xml
++++ b/res/values-fr/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Options de verrouillage de l\'écran"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Options de verrouillage de l\'écran"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Confirmer automatiquement le déverrouillage"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Déverrouillage automatique en cas de saisie d\'un code correct contenant six chiffres ou plus. Cette méthode est légèrement moins sécurisée que d\'appuyer sur Entrée pour confirmer."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Déverrouillage automatique en cas de saisie d\'un code correct contenant 4 chiffres ou plus. Cette méthode est légèrement moins sécurisée que d\'appuyer sur Entrée pour confirmer."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirmer automatiquement que le code est correct"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Il est plus sûr de confirmer votre code en appuyant sur Entrée qu\'en utilisant la confirmation automatique"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Saisissez le code de l\'appareil pour activer la confirmation automatique"</string>
+diff --git a/res/values-gl/strings.xml b/res/values-gl/strings.xml
+index 86e06f1..24e2642 100644
+--- a/res/values-gl/strings.xml
++++ b/res/values-gl/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opcións de bloqueo de pantalla"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opcións de bloqueo de pantalla"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Desbloqueo con confirmación automática"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloquéase automaticamente se insires un PIN correcto de 6 ou máis díxitos. Esta opción é un pouco menos segura que tocar Introducir para confirmar."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloquéase automaticamente se insires un PIN correcto de 4 ou máis díxitos. Esta opción é un pouco menos segura que tocar Introducir para confirmar."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirma automaticamente o PIN correcto"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Tocar Introducir para confirmar o PIN é máis seguro que utilizar a confirmación automática"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Mete o PIN do dispositivo para activar a confirmación automática"</string>
+diff --git a/res/values-gu/strings.xml b/res/values-gu/strings.xml
+index ea666e8..92e20b9 100644
+--- a/res/values-gu/strings.xml
++++ b/res/values-gu/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"સ્ક્રીન લૉકના વિકલ્પો"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"સ્ક્રીન લૉકના વિકલ્પો"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"\'ઑટો-કન્ફર્મ\' અનલૉક કરો"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"જો તમે 6 કે તેથી વધુ અંકનો કોઈ સાચો પિન દાખલ કરો, તો ઑટોમૅટિક રીતે અનલૉક કરવામાં આવે છે. કન્ફર્મ કરવા માટે, Enter પર ટૅપ કરવા કરતાં આ થોડું ઓછું સુરક્ષિત છે."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"જો તમે 4 કે તેથી વધુ અંકનો કોઈ સાચો પિન દાખલ કરો, તો ઑટોમૅટિક રીતે અનલૉક કરવામાં આવે છે. કન્ફર્મ કરવા માટે, Enter પર ટૅપ કરવા કરતાં આ થોડું ઓછું સુરક્ષિત છે."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"સાચો પિન \'ઑટો-કન્ફર્મ\' કરો"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"\'ઑટો-કન્ફર્મ\'નો ઉપયોગ કરવા કરતાં Enter પર ટૅપ કરીને તમારા પિનને કન્ફર્મ કરવો વધુ સુરક્ષિત છે"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ઑટોમૅટિક રીતે કન્ફર્મ કરવાની સુવિધા ચાલુ કરવા માટે, ડિવાઇસનો પિન દાખલ કરો"</string>
+diff --git a/res/values-hi/strings.xml b/res/values-hi/strings.xml
+index bad0f36..5a77c39 100644
+--- a/res/values-hi/strings.xml
++++ b/res/values-hi/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"स्क्रीन लॉक के विकल्प"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"स्क्रीन लॉक के विकल्प"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"पिन की अपने-आप पुष्टि होकर डिवाइस अनलॉक होने की सेटिंग चालू करें"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"यह सेटिंग चालू करने पर, छह या इससे ज़्यादा अंकों का सही पिन डालने के बाद डिवाइस अपने-आप अनलॉक हो जाएगा. यह सुविधा, Enter पर टैप करके पिन की पुष्टि करने की सुविधा से कम सुरक्षित होती है."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"यह सेटिंग चालू करने पर, 4 या इससे ज़्यादा अंकों का सही पिन डालने के बाद डिवाइस अपने-आप अनलॉक हो जाएगा. यह सुविधा, Enter पर टैप करके पिन की पुष्टि करने की सुविधा से कम सुरक्षित होती है."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"पिन सही होने की पुष्टि अपने-आप करने वाली सेटिंग चालू करें"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter पर टैप करके पिन की पुष्टि करना, अपने-आप पुष्टि करने वाली सुविधा से ज़्यादा सुरक्षित होता है"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"अपने-आप पुष्टि होने की सुविधा को चालू करने के लिए, डिवाइस का पिन डालें"</string>
+diff --git a/res/values-hr/strings.xml b/res/values-hr/strings.xml
+index b35664e..4c61120 100644
+--- a/res/values-hr/strings.xml
++++ b/res/values-hr/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opcije otključavanja zaslona"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opcije otključavanja zaslona"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Automatska potvrda otključavanja"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Automatski otključajte ako unesete ispravan PIN od šest ili više znamenki. To je malo nesigurniji način od dodira na Enter za potvrdu."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Automatski otključaj zaslon nakon unosa ispravnog PIN-a od 4 ili više znamenki. To je malo nesigurnije od dodira na Enter za potvrdu."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Automatska potvrda ispravnog PIN-a"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Potvrđivanje PIN-a dodirom na Enter sigurnije je od automatske potvrde"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Unesite PIN uređaja da biste omogućili automatsku potvrdu"</string>
+diff --git a/res/values-hu/strings.xml b/res/values-hu/strings.xml
+index eebfb0b..72c9e50 100644
+--- a/res/values-hu/strings.xml
++++ b/res/values-hu/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Képernyőzárolási lehetőségek"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Képernyőzárolási lehetőségek"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Feloldás automatikus megerősítéssel"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Automatikusan feloldja a zárolást, ha helyesen ad meg egy hat vagy annál több jegyű PIN-kódot. Ez a megoldás valamelyest kevésbé biztonságos, mint az Enterre koppintással történő megerősítés."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Automatikusan feloldja a zárolást, ha helyesen ad meg egy 4 vagy annál több jegyű PIN-kódot. Ez a megoldás valamelyest kevésbé biztonságos, mint az Enterre koppintással történő megerősítés."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"PIN-kód helyességének automatikus megerősítése"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"A PIN-kód Enterre koppintással történő megerősítése biztonságosabb, mint az automatikus megerősítés használata"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Eszköz PIN-kódjának megadása az automatikus megerősítés bekapcsolásához"</string>
+diff --git a/res/values-hy/strings.xml b/res/values-hy/strings.xml
+index 56989f1..9741a48 100644
+--- a/res/values-hy/strings.xml
++++ b/res/values-hy/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Էկրանի կողպման տարբերակներ"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Էկրանի կողպման տարբերակներ"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Ավտոմատ կերպով հաստատել ապակողպումը"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Սարքն ավտոմատ կերպով կապակողպվի 6 կամ ավելի նիշանոց ճիշտ PIN կոդի մուտքագրման դեպքում։ Այս եղանակը մի փոքր ոչ այդքան ապահով է, քան Enter ստեղնին հպելով հաստատումը:"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Սարքն ավտոմատ կերպով կապակողպվի 4 կամ ավելի նիշանոց ճիշտ PIN կոդի մուտքագրման դեպքում։ Այս եղանակը մի փոքր ոչ այդքան ապահով է, քան Enter ստեղնին հպելով հաստատումը:"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Ավտոմատ կերպով հաստատել ճիշտ PIN կոդը"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter ստեղնին հպելով PIN կոդի հաստատումն ավելին ապահով է, քան ավտոմատ հաստատումը"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Մուտքագրեք սարքի PIN կոդը՝ ավտոմատ հաստատումը միացնելու համար"</string>
+diff --git a/res/values-in/strings.xml b/res/values-in/strings.xml
+index 44772a5..dc9e158 100644
+--- a/res/values-in/strings.xml
++++ b/res/values-in/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opsi kunci layar"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opsi kunci layar"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Konfirmasi otomatis untuk membuka kunci"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Otomatis membuka kunci jika Anda memasukkan PIN 6 digit atau lebih dengan benar. Cara ini agak kurang aman dibandingkan mengetuk Enter untuk mengonfirmasi."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Otomatis membuka kunci jika Anda memasukkan PIN 4 digit atau lebih dengan benar. Cara ini agak kurang aman dibandingkan mengetuk Enter untuk mengonfirmasi."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Konfirmasi otomatis PIN yang benar"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Mengonfirmasi PIN Anda dengan mengetuk Enter lebih aman daripada menggunakan konfirmasi otomatis"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Masukkan PIN perangkat untuk mengaktifkan konfirmasi otomatis"</string>
+diff --git a/res/values-is/strings.xml b/res/values-is/strings.xml
+index ecf5264..1e6035e 100644
+--- a/res/values-is/strings.xml
++++ b/res/values-is/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Valkostir skjálæsingar"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Valkostir skjálæsingar"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Taka úr lás með sjálfvirkri staðfestingu"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Taka sjálfkrafa úr lás ef þú slærð inn rétt PIN-númer sem er 6 tölustafir eða lengra. Þetta er örlítið ótraustara en að ýta á „Enter“ til að staðfesta."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Taka sjálfkrafa úr lás ef þú slærð inn rétt PIN-númer sem er 4 tölustafir eða lengra. Þetta er örlítið ótraustara en að ýta á „Enter“ til að staðfesta."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Staðfesta rétt PIN-númer sjálfkrafa"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Öruggara er að staðfesta PIN-númer með því að ýta á „Enter“ en að nota sjálfvirka staðfestingu"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Sláðu inn PIN-númer tækis til að kveikja á sjálfvirkri staðfestingu"</string>
+diff --git a/res/values-it/strings.xml b/res/values-it/strings.xml
+index 3c0476b..4228a4f 100644
+--- a/res/values-it/strings.xml
++++ b/res/values-it/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opzioni di blocco schermo"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opzioni di blocco schermo"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Sblocco autoconfermato"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Sblocca automaticamente se immetti un PIN corretto di almeno 6 cifre. Questa opzione è leggermente meno sicura rispetto a quella di toccare Invio per confermare."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Sblocca automaticamente se immetti un PIN corretto di almeno 4 cifre. Questa opzione è leggermente meno sicura rispetto a quella di toccare Invio per confermare"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Conferma automaticamente il PIN corretto"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confermare il PIN toccando Invio è più sicuro che usare la conferma automatica"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Inserisci il PIN del dispositivo per attivare la conferma automatica"</string>
+diff --git a/res/values-iw/strings.xml b/res/values-iw/strings.xml
+index 5d5aa88..d0bb060 100644
+--- a/res/values-iw/strings.xml
++++ b/res/values-iw/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"אפשרויות לנעילת המסך"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"אפשרויות לנעילת המסך"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ביטול נעילה באמצעות אישור אוטומטי"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"‏הנעילה תתבטל אוטומטית כשלוחצים את קוד האימות הנכון, באורך של 6 ספרות או יותר. הפעולה הזו מעט פחות מאובטחת מאשר לחיצה של Enter כדי לאשר."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"‏הנעילה תתבטל אוטומטית כשלוחצים את קוד האימות הנכון, באורך של 4 ספרות או יותר. הפעולה הזו מעט פחות מאובטחת מאשר לחיצה של Enter כדי לאשר."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"אישור אוטומטי של קוד האימות הנכון"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"‏אישור קוד האימות באמצעות לחיצה על Enter הוא מאובטח יותר מאשר שימוש באישור אוטומטי"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"יש להזין את קוד האימות של המכשיר כדי להפעיל את האישור האוטומטי"</string>
+diff --git a/res/values-ja/strings.xml b/res/values-ja/strings.xml
+index 9c2835a..f06ce92 100644
+--- a/res/values-ja/strings.xml
++++ b/res/values-ja/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"画面ロックの方法"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"画面ロックの方法"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ロック解除を自動で確認する"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"6 桁以上の正しい PIN が入力されると自動的にロック解除します。[入力] をタップして確認するよりも、安全面でやや劣ります。"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"4 桁以上の正しい PIN が入力されると自動的にロック解除します。[入力] をタップして確認するよりも、安全面でやや劣ります。"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"正しい PIN の場合は自動でロックを解除する"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"PIN を入力後に [→] ボタンをタップするほうが安全です"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"自動確認を有効にするには、デバイスの PIN を入力してください"</string>
+diff --git a/res/values-ka/strings.xml b/res/values-ka/strings.xml
+index 0013c40..2294e04 100644
+--- a/res/values-ka/strings.xml
++++ b/res/values-ka/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"ეკრანის დაბლოკვის ვარიანტები"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"ეკრანის დაბლოკვის ვარიანტები"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"განბლოკვის ავტომატურად დადასტურება"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"მინიმუმ 6-ნიშნა სწორი PIN-კოდის შეყვანისას ავტომატური განბლოკვა. ეს შედარებით ნაკლებად უსაფრთხო მეთოდია, ვიდრე Enter-ის მეშვეობით დადასტურება."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"მინიმუმ 4-ნიშნა სწორი PIN-კოდის შეყვანისას ავტომატური განბლოკვა. ეს შედარებით ნაკლებად უსაფრთხო მეთოდია, ვიდრე Enter-ის მეშვეობით დადასტურება."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"სწორი PIN-კოდის ავტომატური დადასტურება"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"თქვენი PIN-კოდის დადასტურება Enter-ზე შეხებით უფრო უსაფრთხოა, ვიდრე ავტომატური დადასტურება"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"შეიყვანეთ მოწყობილობის PIN-კოდი ავტომატური დადასტურების ჩასართველად"</string>
+diff --git a/res/values-kk/strings.xml b/res/values-kk/strings.xml
+index ae10929..7aa6046 100644
+--- a/res/values-kk/strings.xml
++++ b/res/values-kk/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Экран құлпының түрлері"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Экран құлпы опциялары"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Құлыпты автоматты түрде растау арқылы ашу"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Кемінде 6 цифрдан тұратын дұрыс PIN коды енгізілсе, құрылғының құлпы автоматты түрде ашылады. Бұл әдістің қауіпсіздігі Enter-ді түртіп растағанға қарағанда әлсіздеу."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Кемінде 4 цифрдан тұратын дұрыс PIN коды енгізілсе, құрылғының құлпы автоматты түрде ашылады. Бұл әдістің қауіпсіздігі Enter-ді түртіп растағанға қарағанда әлсіздеу."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Дұрыс PIN кодын автоматты түрде растау"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter-ді түртіп PIN кодын растау автоматты растауға қарағанда қауіпсіздеу."</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Автоматты түрде растауды қосу үшін құрылғының PIN кодын енгізіңіз."</string>
+diff --git a/res/values-km/strings.xml b/res/values-km/strings.xml
+index 217da47..e200c47 100644
+--- a/res/values-km/strings.xml
++++ b/res/values-km/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"ជម្រើស​ចាក់សោអេក្រង់"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"ជម្រើស​ចាក់សោអេក្រង់"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"បញ្ជាក់ការដោះសោដោយស្វ័យប្រវត្តិ"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ដោះសោដោយស្វ័យប្រវត្តិ ប្រសិនបើអ្នកបញ្ចូលកូដ PIN ត្រឹមត្រូវដែលមាន 6 ខ្ទង់ ឬច្រើនជាងនេះ។ ដំណើរការនេះមានសុវត្ថិភាពតិចជាងការចុច \"Enter\" ដើម្បីបញ្ជាក់។"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ដោះសោដោយស្វ័យប្រវត្តិ ប្រសិនបើអ្នកបញ្ចូលកូដ PIN ត្រឹមត្រូវដែលមាន 4 ខ្ទង់ ឬច្រើនជាងនេះ។ ដំណើរការនេះមានសុវត្ថិភាពតិចជាងការចុច \"Enter\" ដើម្បីបញ្ជាក់។"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"បញ្ជាក់កូដ PIN ដែលត្រឹមត្រូវដោយស្វ័យប្រវត្តិ"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"ការបញ្ជាក់កូដ PIN របស់អ្នកតាមរយៈការចុច \"Enter\" គឺមានសុវត្ថិភាពជាងការប្រើការបញ្ជាក់ដោយស្វ័យប្រវត្តិ"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"បញ្ចូលកូដ PIN ឧបករណ៍ ដើម្បីបើក​ការបញ្ជាក់ស្វ័យប្រវត្តិ"</string>
+diff --git a/res/values-kn/strings.xml b/res/values-kn/strings.xml
+index 3a04633..b6a523d 100644
+--- a/res/values-kn/strings.xml
++++ b/res/values-kn/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"ಸ್ಕ್ರೀನ್ ಲಾಕ್ ಆಯ್ಕೆಗಳು"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"ಸ್ಕ್ರೀನ್ ಲಾಕ್ ಆಯ್ಕೆಗಳು"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ಸ್ವಯಂ-ದೃಢೀಕರಣ ಅನ್‌ಲಾಕ್‌"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ನೀವು 6 ಅಥವಾ ಹೆಚ್ಚಿನ ಅಂಕಿಗಳ ಸರಿಯಾದ ಪಿನ್ ಅನ್ನು ನಮೂದಿಸಿದರೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅನ್‌ಲಾಕ್ ಮಾಡಿ. ಖಚಿತಪಡಿಸಲು Enter ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವುದಕ್ಕಿಂತ ಇದು ಸ್ವಲ್ಪ ಹೆಚ್ಚು ಅಸುರಕ್ಷಿತ ಮಾರ್ಗವಾಗಿದೆ."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ನೀವು 4 ಅಥವಾ ಹೆಚ್ಚಿನ ಅಂಕಿಗಳ ಸರಿಯಾದ ಪಿನ್ ಅನ್ನು ನಮೂದಿಸಿದರೆ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅನ್‌ಲಾಕ್ ಮಾಡಿ. ಖಚಿತಪಡಿಸಲು Enter ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವುದಕ್ಕಿಂತ ಇದು ಸ್ವಲ್ಪ ಹೆಚ್ಚು ಅಸುರಕ್ಷಿತ ಮಾರ್ಗವಾಗಿದೆ."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"ಸರಿಯಾದ ಪಿನ್ ಅನ್ನು ಸ್ವಯಂ-ದೃಢೀಕರಿಸಿ"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ ಪಿನ್ ಅನ್ನು ದೃಢೀಕರಿಸುವುದು ಸ್ವಯಂಚಾಲಿತ ದೃಢೀಕರಣವನ್ನು ಬಳಸುವುದಕ್ಕಿಂತ ಹೆಚ್ಚು ಸುರಕ್ಷಿತವಾಗಿದೆ"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ಸ್ವಯಂ-ದೃಢೀಕರಣವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಸಾಧನದ ಪಿನ್ ನಮೂದಿಸಿ"</string>
+diff --git a/res/values-ko/strings.xml b/res/values-ko/strings.xml
+index 3713dd1..b60f576 100644
+--- a/res/values-ko/strings.xml
++++ b/res/values-ko/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"화면 잠금 옵션"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"화면 잠금 옵션"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"잠금 해제 자동 확인"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"6자리 이상의 PIN을 정확하게 입력하면 자동으로 잠금 해제됩니다. Enter 키를 눌러 확인하는 방식보다는 다소 취약한 보안 설정입니다."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"4자리 이상의 PIN을 정확하게 입력하면 자동으로 잠금 해제(Enter 키를 눌러 확인하는 방식보다는 다소 취약한 보안 설정)"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"올바른 PIN 입력 여부 자동 확인"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"자동 확인보다는 Enter 키를 눌러 PIN을 확인하는 방법이 더 안전합니다."</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"자동 확인을 사용 설정하려면 기기의 PIN을 입력하세요."</string>
+diff --git a/res/values-ky/strings.xml b/res/values-ky/strings.xml
+index 4ba00f8..5824604 100644
+--- a/res/values-ky/strings.xml
++++ b/res/values-ky/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Экранды кулпулоо жолдору"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Экранды кулпулоо параметрлери"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Автоматтык түрдө ырастап ачуу"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Кеминде 6 сандан турган PIN кодду туура киргизсеңиз, түзмөгүңүз дароо ачылат. Бул ыкмага караганда кол менен киргизүү алдаганча коопсузураак."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Кеминде 4 сандан турган PIN кодду туура киргизсеңиз, түзмөгүңүз дароо ачылат. Бул ыкмага караганда кол менен киргизүү алдаганча коопсузураак."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Туура PIN кодду автоматтык түрдө ырастоо"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Автоматтык ачууга караганда PIN кодду киргизүү алдаганча коопсузураак."</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Автоматтык түрдө ырастоону иштетүү үчүн түзмөктүн PIN кодун киргизиңиз"</string>
+diff --git a/res/values-lo/strings.xml b/res/values-lo/strings.xml
+index d81d207..aa35b55 100644
+--- a/res/values-lo/strings.xml
++++ b/res/values-lo/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"ຕົວເລືອກໜ້າຈໍລັອກ"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"ຕົວເລືອກໜ້າຈໍລັອກ"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ປົດລັອກດ້ວຍການຢືນຢັນໂດຍອັດຕະໂນມັດ"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ປົດລັອກໂດຍອັດຕະໂນມັດຫາກທ່ານປ້ອນ PIN ຢ່າງໜ້ອຍ 6 ຕົວເລກທີ່ຖືກຕ້ອງ. ຕົວເລືອກນີ້ຈະປອດໄພໜ້ອຍກວ່າການແຕະ Enter ເພື່ອຢືນຢັນ."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ປົດລັອກໂດຍອັດຕະໂນມັດຫາກທ່ານປ້ອນ PIN ຢ່າງໜ້ອຍ 4 ຕົວເລກທີ່ຖືກຕ້ອງ. ຕົວເລືອກນີ້ຈະປອດໄພໜ້ອຍກວ່າການແຕະ Enter ເພື່ອຢືນຢັນ."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"ຢືນຢັນ PIN ທີ່ຖືກຕ້ອງໂດຍອັດຕະໂນມັດ"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"ການຢືນຢັນ PIN ຂອງທ່ານໂດຍການແຕະ Enter ຈະປອດໄພກວ່າການໃຊ້ການຢືນຢັນໂດຍອັດຕະໂນມັດ"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ໃສ່ PIN ອຸປະກອນເພື່ອເປີດການນຳໃຊ້ການຢືນຢັນອັດຕະໂນມັດ"</string>
+diff --git a/res/values-lt/strings.xml b/res/values-lt/strings.xml
+index a9336ec..8198ddb 100644
+--- a/res/values-lt/strings.xml
++++ b/res/values-lt/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Ekrano užrakto parinktys"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Ekrano užrakto parinktys"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Atrakinimas automatiškai patvirtinus"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Atrakinkite automatiškai įvedę tinkamą ne mažiau kaip šešių skaitmenų PIN kodą. Tai ne taip saugu kaip patvirtinimas palietus „Enter“."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Atrakinkite automatiškai įvedę tinkamą ne mažiau kaip 4 skaitmenų PIN kodą. Tai ne taip saugu kaip patvirtinimas palietus „Enter“."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Automatiškai patvirtinti tinkamą PIN kodą"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"PIN kodo patvirtinimo paliečiant „Enter“ procesas gerokai saugesnis nei naudojant automatinį patvirtinimą"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Įveskite įrenginio PIN kodą, kad įjungtumėte automatinį patvirtinimą"</string>
+diff --git a/res/values-lv/strings.xml b/res/values-lv/strings.xml
+index 0a53b25..3de85ef 100644
+--- a/res/values-lv/strings.xml
++++ b/res/values-lv/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Ekrāna bloķēšanas opcijas"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Ekrāna bloķēšanas opcijas"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Atbloķēt, izmantojot automātisko apstiprināšanu"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Var automātiski atbloķēt ierīci, ja jūs ievadāt pareizu PIN, kura garums ir vismaz 6 cipari. Tas ir mazliet mazāk droši nekā apstiprināt, pieskaroties ievadīšanas pogai."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Var automātiski atbloķēt ierīci, ja jūs ievadāt pareizu PIN, kura garums ir vismaz 4 cipari. Tas ir mazliet mazāk droši nekā apstiprināt, pieskaroties ievadīšanas pogai."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Automātiski apstiprināt pareizo PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"PIN apstiprināšana, pieskaroties ievadīšanas pogai, ir drošāka nekā automātiskā apstiprināšana."</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Lai iespējotu automātisko apstiprināšanu, ievadiet ierīces PIN."</string>
+diff --git a/res/values-mk/strings.xml b/res/values-mk/strings.xml
+index 9159285..1293bcd 100644
+--- a/res/values-mk/strings.xml
++++ b/res/values-mk/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Опции за заклучување на екранот"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Опции за заклучување на екранот"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Автоматски потврдувај отклучување"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Автоматско отклучување ако внесете точен PIN од 6 цифри или повеќе. Ова е помалку безбедно отколку да допрете Enter за да потврдите."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Автоматско отклучување ако внесете точен PIN од 4 цифри или повеќе. Ова е помалку безбедно отколку да допрете Enter за да потврдите."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Автоматски потврдувај точен PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Потврдувањето на PIN со допирање Enter е побезбедно отколку со автоматско потврдување"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Внесете PIN на уредот за да овозможите автоматското потврдување"</string>
+diff --git a/res/values-ml/strings.xml b/res/values-ml/strings.xml
+index c494884..4e1d453 100644
+--- a/res/values-ml/strings.xml
++++ b/res/values-ml/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"സ്‌ക്രീൻ ലോക്ക് ഓപ്ഷനുകള്‍"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"സ്‌ക്രീൻ ലോക്ക് ഓപ്ഷനുകള്‍"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"അൺലോക്ക് ചെയ്തു എന്ന് സ്വയമേവ സ്ഥിരീകരിക്കുക"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"നിങ്ങൾ 6 അക്കങ്ങളോ അതിൽ കൂടുതലോ ഉള്ള ശരിയായ പിൻ നൽകിയാൽ സ്വയമേവ അൺലോക്ക് ചെയ്യുന്നു. സ്ഥിരീകരിക്കാൻ Enter ടാപ്പ് ചെയ്യുന്നത്ര സുരക്ഷിതമായിരിക്കില്ല ഇത്."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"നിങ്ങൾ 4 അക്കങ്ങളോ അതിൽ കൂടുതലോ ഉള്ള ശരിയായ പിൻ നൽകിയാൽ സ്വയമേവ അൺലോക്ക് ചെയ്യുന്നു. സ്ഥിരീകരിക്കാൻ Enter ടാപ്പ് ചെയ്യുന്നത്ര സുരക്ഷിതമായിരിക്കില്ല ഇത്."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"ശരിയായ പിൻ സ്വയമേവ സ്ഥിരീകരിക്കുക"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter ടാപ്പ് ചെയ്യുന്നതിലൂടെ പിൻ സ്ഥിരീകരിക്കുന്നത്, \'സ്വയമേവ സ്ഥിരീകരിക്കൽ\' ഉപയോഗിക്കുന്നതിനേക്കാളും സുരക്ഷിതമാണ്"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"സ്വയമേവയുള്ള സ്ഥിരീകരണം പ്രവർത്തനക്ഷമമാക്കാൻ ഉപകരണത്തിന്റെ പിൻ നൽകുക"</string>
+diff --git a/res/values-mn/strings.xml b/res/values-mn/strings.xml
+index 47046a1..bbafe1e 100644
+--- a/res/values-mn/strings.xml
++++ b/res/values-mn/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Дэлгэцийн түгжээний сонголт"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Дэлгэцийн түгжээний сонголт"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Түгжээг автоматаар тайлахыг баталгаажуулах"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Хэрэв та 6 буюу түүнээс дээш оронтой зөв ПИН код оруулбал түгжээ автоматаар тайлагдана. Энэ нь Enter дарж баталгаажуулахаас арай бага хамгаалалттай."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Хэрэв та 4 буюу түүнээс дээш оронтой зөв ПИН код оруулбал түгжээ автоматаар тайлагдана. Энэ нь Enter дарж баталгаажуулахаас арай бага хамгаалалттай."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Зөв PIN кодоо автоматаар баталгаажуулна уу"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter товчийг дарж ПИН кодоо баталгаажуулах нь автоматаар баталгаажуулахаас илүү аюулгүй юм"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Автомат баталгаажуулалтыг идэвхжүүлэхийн тулд төхөөрөмжийн ПИН-г оруулна уу"</string>
+diff --git a/res/values-mr/strings.xml b/res/values-mr/strings.xml
+index 195cdb3..8658941 100644
+--- a/res/values-mr/strings.xml
++++ b/res/values-mr/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"स्क्रीन लॉक पर्याय"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"स्क्रीन लॉक पर्याय"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ऑटो-कन्फर्म अनलॉक"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"तुम्ही सहा किंवा त्याहून अधिक अंकी योग्य पिन इनपुट केल्यास आपोआप अनलॉक करा. हे कन्फर्म करण्यासाठी एंटर वर टॅप करण्यापेक्षा थोडेसे कमी सुरक्षित आहे."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"तुम्ही 4 किंवा त्याहून अधिक अंकी योग्य पिन इनपुट केल्यास आपोआप अनलॉक करा. हे कन्फर्म करण्यासाठी एंटर वर टॅप करण्यापेक्षा थोडेसे कमी सुरक्षित आहे."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"योग्य पिन ऑटो-कन्फर्म करा"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"ऑटो-कन्फर्म वापरण्यापेक्षा एंटर वर टॅप करून तुमचा पिन कन्फर्म करणे अधिक सुरक्षित आहे"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ऑटो-कन्फर्म सुरू करण्यासाठी डिव्हाइस पिन एंटर करा"</string>
+diff --git a/res/values-ms/strings.xml b/res/values-ms/strings.xml
+index d11a5b4..3537bf2 100644
+--- a/res/values-ms/strings.xml
++++ b/res/values-ms/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Pilihan kunci skrin"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Pilihan kunci skrin"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Buka kunci pengesahan automatik"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Buka kunci secara automatik jika anda memasukkan PIN 6 digit atau lebih dengan betul. Ciri ini kurang selamat berbanding dengan mengetik Enter untuk membuat pengesahan."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Buka kunci secara automatik jika anda memasukkan PIN 4 digit atau lebih dengan betul. Ciri ini kurang selamat berbanding dengan mengetik Enter untuk membuat pengesahan."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Pengesahan PIN yang betul secara automatik"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Tindakan mengetik Enter untuk mengesahkan PIN anda adalah lebih selamat berbanding dengan menggunakan pengesahan automatik"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Masukkan PIN peranti untuk mendayakan pengesahan automatik"</string>
+diff --git a/res/values-my/strings.xml b/res/values-my/strings.xml
+index 7e3dd30..8b3a455 100644
+--- a/res/values-my/strings.xml
++++ b/res/values-my/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"မျက်နှာပြင် လော့ခ်ချရန် ရွေးချယ်စရာများ"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"မျက်နှာပြင် လော့ခ်ချရန် ရွေးချယ်စရာများ"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ဖွင့်ရန် အလိုအလျောက်အတည်ပြုခြင်း"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ဂဏန်း ၆ လုံးနှင့်အထက်ရှိသည့် မှန်ကန်သော ပင်နံပါတ်ကို ထည့်သွင်းပါက အလိုအလျောက်ပွင့်သည်။ ၎င်းက အတည်ပြုရန် Enter ခလုတ်နှိပ်ခြင်းထက် အနည်းငယ် လုံခြုံမှုပိုနည်းသည်။"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ဂဏန်း ၄ လုံးနှင့်အထက်ရှိသည့် မှန်ကန်သော ပင်နံပါတ်ကို ထည့်သွင်းပါက အလိုအလျောက်ပွင့်သည်။ ၎င်းက အတည်ပြုရန် Enter ခလုတ်နှိပ်ခြင်းထက် အနည်းငယ် လုံခြုံမှုပိုနည်းသည်။"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"မှန်ကန်သော ပင်နံပါတ်ကို အလိုအလျောက်အတည်ပြုရန်"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter ခလုတ်နှိပ်၍ ပင်နံပါတ်ကို အတည်ပြုခြင်းက ‘အလိုအလျောက်အတည်ပြုရန်’ သုံးခြင်းထက် ပိုမိုလုံခြုံသည်"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"အလိုအလျောက်အတည်ပြုခြင်း ဖွင့်ရန် စက်၏ပင်နံပါတ် ထည့်ပါ"</string>
+diff --git a/res/values-nb/strings.xml b/res/values-nb/strings.xml
+index 8bcada2..5b86215 100644
+--- a/res/values-nb/strings.xml
++++ b/res/values-nb/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Alternativer for skjermlås"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Alternativer for skjermlås"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Bekreft opplåsning automatisk"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Lås opp automatisk hvis du legger inn en riktig PIN-kode på minst 6 sifre. Dette er litt mindre sikkert enn å bekrefte med Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Lås opp automatisk hvis du legger inn en riktig PIN-kode på minst 4 sifre. Dette er litt mindre sikkert enn å bekrefte med Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Bekreft korrekt PIN-kode automatisk"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Det er sikrere å bekrefte PIN-koden med Enter enn å bruke automatisk bekreftelse"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Legg inn PIN-koden for enheten for å slå på automatisk bekreftelse"</string>
+diff --git a/res/values-ne/strings.xml b/res/values-ne/strings.xml
+index b6776a6..96475f7 100644
+--- a/res/values-ne/strings.xml
++++ b/res/values-ne/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"स्क्रिन लकका विकल्पहरू"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"स्क्रिन लकका विकल्पहरू"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"अनलक हुने सुविधा स्वतः पुष्टि गर्नुहोस्"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"तपाईंले ६ अङ्क वा सोभन्दा बढी अङ्कको सही PIN हाल्नुभयो भने डिभाइस स्वतः अनलक हुने छ। यो सुविधा Enter कीमा ट्याप गरेर PIN पुष्टि गर्ने सुविधाभन्दा कम सुरक्षित हुन्छ।"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"तपाईंले ४ अङ्क वा सोभन्दा बढी अङ्कको सही PIN हाल्नुभयो भने डिभाइस स्वतः अनलक हुने छ। यो सुविधा Enter कीमा ट्याप गरेर PIN पुष्टि गर्ने सुविधाभन्दा कम सुरक्षित हुन्छ।"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"PIN सही छ कि छैन भनी स्वतः पुष्टि गर्नुहोस्"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter की ट्याप गरी आफ्नो PIN पुष्टि गर्ने कार्य स्वतः पुष्टि गर्ने सुविधाभन्दा सुरक्षित हुन्छ"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"स्वतः पुष्टि गर्ने सुविधा अन गर्न डिभाइसको PIN हाल्नुहोस्"</string>
+diff --git a/res/values-nl/strings.xml b/res/values-nl/strings.xml
+index a47ea49..c9adfe1 100644
+--- a/res/values-nl/strings.xml
++++ b/res/values-nl/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Schermvergrendelingsopties"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Schermvergrendelingsopties"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Ontgrendelen automatisch bevestigen"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Ontgrendel het apparaat automatisch als je de juiste pincode van 6 cijfers of meer opgeeft. Dit is iets minder veilig dan op Enter tikken om te bevestigen."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Ontgrendel het apparaat automatisch als je de juiste pincode van 4 cijfers of meer opgeeft. Dit is iets minder veilig dan op Enter tikken om te bevestigen."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Juiste pincode automatisch bevestigen"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Je pincode bevestigen door op Enter te tikken is veiliger dan automatisch bevestigen gebruiken"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Geef de pincode van het apparaat op om automatische bevestiging aan te zetten"</string>
+diff --git a/res/values-or/strings.xml b/res/values-or/strings.xml
+index 8697d2e..ac751ed 100644
+--- a/res/values-or/strings.xml
++++ b/res/values-or/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"ସ୍କ୍ରିନ ଲକ ବିକଳ୍ପ"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"ସ୍କ୍ରିନ ଲକ ବିକଳ୍ପ"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ଅନଲକକୁ ସ୍ୱତଃ-ସୁନିଶ୍ଚିତ କରନ୍ତୁ"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ଯଦି ଆପଣ 6 କିମ୍ବା ଅଧିକ ଅଙ୍କର ଏକ ସଠିକ PIN ଇନପୁଟ କରନ୍ତି ତେବେ ସ୍ୱତଃ ଅନଲକ କରନ୍ତୁ। ସୁନିଶ୍ଚିତ କରିବା ପାଇଁ Enter ଟାପ କରିବାଠାରୁ ଏହା ସାମାନ୍ୟ କମ ସୁରକ୍ଷିତ ଅଟେ।"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ଯଦି ଆପଣ 4 କିମ୍ବା ଅଧିକ ଅଙ୍କର ଏକ ସଠିକ PIN ଇନପୁଟ କରନ୍ତି ତେବେ ସ୍ୱତଃ ଅନଲକ କରନ୍ତୁ। ସୁନିଶ୍ଚିତ କରିବା ପାଇଁ ଏଣ୍ଟର ଟାପ କରିବାଠାରୁ ଏହା ସାମାନ୍ୟ କମ ସୁରକ୍ଷିତ ଅଟେ।"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"ସଠିକ PINକୁ ସ୍ୱତଃ-ସୁନିଶ୍ଚିତ କରନ୍ତୁ"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter ଟାପ କରି ଆପଣଙ୍କ PIN ସୁନିଶ୍ଚିତ କରିବା ସ୍ୱତଃ-ସୁନିଶ୍ଚିତ ବ୍ୟବହାର କରିବା ଅପେକ୍ଷା ଅଧିକ ସୁରକ୍ଷିତ ଅଟେ"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ସ୍ୱତଃ-ସୁନିଶ୍ଚିତକୁ ସକ୍ଷମ କରିବା ପାଇଁ ଡିଭାଇସ PIN ଲେଖନ୍ତୁ"</string>
+diff --git a/res/values-pa/strings.xml b/res/values-pa/strings.xml
+index 92ce917..3961fe7 100644
+--- a/res/values-pa/strings.xml
++++ b/res/values-pa/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"ਸਕ੍ਰੀਨ ਲਾਕ ਵਿਕਲਪ"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"ਸਕ੍ਰੀਨ ਲਾਕ ਵਿਕਲਪ"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ਅਣਲਾਕ ਕਰਨ ਦੀ ਸੁਵਿਧਾ ਦੀ ਸਵੈ-ਤਸਦੀਕ ਕਰੋ"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ਜੇ ਤੁਸੀਂ 6 ਜਾਂ ਉਸ ਤੋਂ ਵੱਧ ਅੰਕਾਂ ਦਾ ਸਹੀ ਪਿੰਨ ਦਾਖਲ ਕਰਦੇ ਹੋ, ਤਾਂ ਇਹ ਸਵੈਚਲਿਤ ਤੌਰ \'ਤੇ ਅਣਲਾਕ ਹੋ ਜਾਵੇਗਾ। ਇਹ Enter \'ਤੇ ਟੈਪ ਕਰ ਕੇ ਤਸਦੀਕ ਕਰਨ ਨਾਲੋਂ ਥੋੜ੍ਹਾ ਘੱਟ ਸੁਰੱਖਿਅਤ ਹੈ।"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ਜੇ ਤੁਸੀਂ 4 ਜਾਂ ਉਸ ਤੋਂ ਵੱਧ ਅੰਕਾਂ ਦਾ ਸਹੀ ਪਿੰਨ ਦਾਖਲ ਕਰਦੇ ਹੋ, ਤਾਂ ਇਹ ਸਵੈਚਲਿਤ ਤੌਰ \'ਤੇ ਅਣਲਾਕ ਹੋ ਜਾਵੇਗਾ। ਇਹ Enter \'ਤੇ ਟੈਪ ਕਰ ਕੇ ਤਸਦੀਕ ਕਰਨ ਨਾਲੋਂ ਥੋੜ੍ਹਾ ਘੱਟ ਸੁਰੱਖਿਅਤ ਹੈ।"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"ਸਹੀ ਪਿੰਨ ਦੀ ਸਵੈ-ਤਸਦੀਕ ਕਰੋ"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter \'ਤੇ ਟੈਪ ਕਰ ਕੇ ਆਪਣੇ ਪਿੰਨ ਦੀ ਤਸਦੀਕ ਕਰਨਾ ਸਵੈ-ਤਸਦੀਕ ਨਾਲੋਂ ਜ਼ਿਆਦਾ ਸੁਰੱਖਿਅਤ ਹੈ"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ਸਵੈ-ਤਸਦੀਕ ਚਾਲੂ ਕਰਨ ਲਈ ਡੀਵਾਈਸ ਦਾ ਪਿੰਨ ਦਾਖਲ ਕਰੋ"</string>
+diff --git a/res/values-pl/strings.xml b/res/values-pl/strings.xml
+index 4d57b8c..6d42b89 100644
+--- a/res/values-pl/strings.xml
++++ b/res/values-pl/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opcje blokady ekranu"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opcje blokady ekranu"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Automatycznie potwierdzaj odblokowanie"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Odblokowuj automatycznie po poprawnym wprowadzeniu kodu PIN składającego się z co najmniej 6 cyfr. Ta metoda jest mniej bezpieczna niż potwierdzanie kliknięciem klawisza Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Odblokowuj automatycznie po poprawnym wprowadzeniu kodu PIN składającego się z co najmniej 4 cyfr. Ta metoda jest mniej bezpieczna niż potwierdzanie kliknięciem klawisza Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Automatycznie potwierdzaj poprawny kod PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Potwierdzanie kodu PIN kliknięciem jest bezpieczniejsze od automatycznego potwierdzania"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Aby włączyć automatyczne potwierdzanie, wpisz kod PIN urządzenia"</string>
+diff --git a/res/values-pt-rBR/strings.xml b/res/values-pt-rBR/strings.xml
+index 82e6de3..0ab529a 100644
+--- a/res/values-pt-rBR/strings.xml
++++ b/res/values-pt-rBR/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opções de bloqueio de tela"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opções de bloqueio de tela"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Desbloqueio com confirmação automática"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloqueia automaticamente se você inserir um PIN correto de seis ou mais dígitos. É uma forma um pouco menos segura do que confirmar tocando em Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloqueia automaticamente se você inserir um PIN correto de 4 ou mais dígitos. É uma forma um pouco menos segura do que confirmar tocando em Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirmar PIN correto automaticamente"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirmar o PIN tocando em Enter é mais seguro do que usar a confirmação automática"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Insira o PIN do dispositivo para ativar a confirmação automática"</string>
+diff --git a/res/values-pt-rPT/strings.xml b/res/values-pt-rPT/strings.xml
+index 1b76a78..5886e69 100644
+--- a/res/values-pt-rPT/strings.xml
++++ b/res/values-pt-rPT/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opções de bloqueio de ecrã"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opções de bloqueio de ecrã"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Confirmação automática do desbloqueio"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloqueie automaticamente se introduzir um PIN correto de 6 ou mais dígitos. Esta é uma forma ligeiramente menos segura do que tocar em Enter para confirmar."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloqueie automaticamente se introduzir um PIN correto de 4 ou mais dígitos. Esta é uma forma ligeiramente menos segura do que tocar em Enter para confirmar."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirmação automática do PIN correto"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirmar o PIN ao tocar em Enter é mais seguro do que usar a confirmação automática"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Introduza o PIN do dispositivo para ativar a confirmação automática"</string>
+diff --git a/res/values-pt/strings.xml b/res/values-pt/strings.xml
+index 82e6de3..0ab529a 100644
+--- a/res/values-pt/strings.xml
++++ b/res/values-pt/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opções de bloqueio de tela"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opções de bloqueio de tela"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Desbloqueio com confirmação automática"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloqueia automaticamente se você inserir um PIN correto de seis ou mais dígitos. É uma forma um pouco menos segura do que confirmar tocando em Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Desbloqueia automaticamente se você inserir um PIN correto de 4 ou mais dígitos. É uma forma um pouco menos segura do que confirmar tocando em Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirmar PIN correto automaticamente"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirmar o PIN tocando em Enter é mais seguro do que usar a confirmação automática"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Insira o PIN do dispositivo para ativar a confirmação automática"</string>
+diff --git a/res/values-ro/strings.xml b/res/values-ro/strings.xml
+index b791ea7..0f50ccf 100644
+--- a/res/values-ro/strings.xml
++++ b/res/values-ro/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opțiuni de blocare a ecranului"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opțiuni de blocare a ecranului"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Deblocare prin confirmare automată"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Deblochează automat la introducerea codului PIN corect de minimum șase cifre. Această opțiune este mai puțin sigură decât dacă atingi Enter pentru a confirma."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Deblochează automat la introducerea codului PIN corect de minimum 4 cifre. Această opțiune este mai puțin sigură decât dacă atingi Enter pentru a confirma."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Confirmă automat codul PIN corect"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Confirmarea codului PIN prin atingerea tastei Enter este mai sigură decât folosirea confirmării automate"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Introdu codul PIN al dispozitivului pentru a activa confirmarea automată"</string>
+diff --git a/res/values-ru/strings.xml b/res/values-ru/strings.xml
+index a4203a8..e0a8ba4 100644
+--- a/res/values-ru/strings.xml
++++ b/res/values-ru/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Способы разблокировки экрана"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Варианты блокировки экрана"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Разблокировать с автоподтверждением"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Устройство разблокируется автоматически после ввода верного PIN-кода длиной не менее 6 цифр. Этот способ менее безопасный, чем подтверждение вручную."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Устройство разблокируется автоматически при вводе правильного PIN-кода из 4 и более цифр. Это чуть менее безопасно, чем подтверждение кнопкой ввода."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Автоматическое подтверждение верного PIN-кода"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Подтверждение PIN-кода вручную безопаснее автоматического"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Введите PIN-код устройства, чтобы включить автоматическое подтверждение."</string>
+diff --git a/res/values-si/strings.xml b/res/values-si/strings.xml
+index da0a0b0..4d294f7 100644
+--- a/res/values-si/strings.xml
++++ b/res/values-si/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"තිරයේ අගුලු විකල්ප"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"තිර අගුලු විකල්ප"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"අගුළු හැරීම ස්වයංව තහවුරු කරන්න"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ඔබ නිවැරදි සංඛ්‍යා 6ක හෝ ඊට වැඩි PIN එකක් ආදානය කරන්නේ නම් ස්වයංක්‍රීයව අගුළු හරින්න. මෙය තහවුරු කිරීමට Enter තට්ටු කිරීමට වඩා තරමක් අඩුවෙන් සුරක්ෂිතයි."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ඔබ නිවැරදි සංඛ්‍යා 4ක හෝ ඊට වැඩි PIN එකක් ආදානය කරන්නේ නම් ස්වයංක්‍රීයව අගුළු හරින්න. මෙය තහවුරු කිරීමට Enter තට්ටු කිරීමට වඩා තරමක් අඩුවෙන් සුරක්ෂිතයි."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"නිවැරදි PIN අංකය ස්වයංව තහවුරු කරන්න"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter තට්ටු කිරීමෙන් ඔබේ PIN අංකය තහවුරු කිරීම ස්වයංව තහවුරු කිරීම භාවිතා කරනවාට වඩා සුරක්ෂිතයි"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ස්වයං තහවුරු කිරීම සබල කිරීමට උපාංග PIN ඇතුළු කරන්න"</string>
+diff --git a/res/values-sk/strings.xml b/res/values-sk/strings.xml
+index df44d28..80d0c7e 100644
+--- a/res/values-sk/strings.xml
++++ b/res/values-sk/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Možnosti zámky obrazovky"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Možnosti zámky obrazovky"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Odomykať automatickým potvrdením"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Ak zadáte správny kód PIN s minimálne šiestimi číslicami, odomkne sa automaticky. Je to o niečo menej bezpečné než potvrdenie klepnutím na Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Odomknúť automaticky po zadaní správneho kódu PIN s minimálne 4 číslicami. Je to o niečo menej bezpečné než potvrdenie klepnutím na Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Automatické potvrdenie správneho kódu PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Potvrdzovanie kódu PIN klepnutím na Enter je bezpečnejšie než používanie automatického potvrdenia"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Ak chcete zapnúť automatické potvrdenie, zadajte PIN zariadenia"</string>
+diff --git a/res/values-sl/strings.xml b/res/values-sl/strings.xml
+index bd25ecd..52c09a9 100644
+--- a/res/values-sl/strings.xml
++++ b/res/values-sl/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Možnosti zaklepanja zaslona"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Možnosti zaklepanja zaslona"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Samodejna potrditev odklepanja"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Samodejno se odklene ob vnosu pravilne šest- ali večmestne kode PIN. To je nekoliko manj varno od potrditve z dotikom tipke Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Samodejno se odklene ob vnosu pravilne 4- ali večmestne kode PIN. To je nekoliko manj varno od potrditve z dotikom tipke Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Samodejna potrditev pravilne kode PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Potrditev kode PIN z dotikom tipke Enter je varnejša od uporabe samodejne potrditve."</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Če želite omogočiti samodejno potrditev, vnesite kodo PIN naprave."</string>
+diff --git a/res/values-sq/strings.xml b/res/values-sq/strings.xml
+index 13f518f..31cff0a 100644
+--- a/res/values-sq/strings.xml
++++ b/res/values-sq/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Opsionet e kyçjes së ekranit"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Opsionet e kyçjes së ekranit"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Shkyçje me konfirmim automatik"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Shkyç automatikisht nëse fut një kod të saktë PIN prej 6 shifrash ose më shumë. Ky është disi më pak i sigurt sesa trokitja e \"Fut\" për të konfirmuar."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Shkyç automatikisht nëse fut një kod të saktë PIN prej 4 shifrash ose më shumë. Ky është disi më pak i sigurt sesa trokitja e \"Fut\" për të konfirmuar."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Konfirmo automatikisht kodin e saktë PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Konfirmimi i kodit tënd PIN duke trokitur \"Enter\" është më i sigurt se sa përdorimi i konfirmimit automatik"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Fut kodin PIN të pajisjes për të aktivizuar konfirmimin automatik"</string>
+diff --git a/res/values-sr/strings.xml b/res/values-sr/strings.xml
+index 208c846..617c66a 100644
+--- a/res/values-sr/strings.xml
++++ b/res/values-sr/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Опције откључавања екрана"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Опције откључавања екрана"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Откључавање које се аутоматски потврђује"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Откључава се аутоматски ако унесете PIN са 6 или више цифара. То је мало мање поуздано него да додирнете Enter да бисте потврдили."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Откључава се аутоматски ако унесете PIN са 4 или више цифара. То је мало мање поуздано него да додирнете Enter да бисте потврдили."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Аутоматски потврди тачан PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Потврда PIN-а додиром на Enter је безбеднија него аутоматска потврда"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Унесите PIN уређаја да бисте омогућили аутоматску потврду"</string>
+diff --git a/res/values-sv/strings.xml b/res/values-sv/strings.xml
+index 034eb9a..6b1c18b 100644
+--- a/res/values-sv/strings.xml
++++ b/res/values-sv/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Alternativ för skärmlås"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Alternativ för skärmlås"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Bekräfta upplåsning automatiskt"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Lås upp automatiskt om du anger rätt pinkod på minst sex siffror. Detta är något mindre säkert än att trycka på Retur för att bekräfta."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Lås upp automatiskt om du anger rätt pinkod på minst 4 siffror. Detta är något mindre säkert än att trycka på Retur för att bekräfta."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Bekräfta rätt pinkod automatiskt"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Att bekräfta pinkoden genom att trycka på Retur är säkrare än att använda automatisk bekräftelse"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Ange enhetens pinkod för att aktivera automatisk bekräftelse"</string>
+diff --git a/res/values-sw/strings.xml b/res/values-sw/strings.xml
+index 0437f4b..0502bda 100644
+--- a/res/values-sw/strings.xml
++++ b/res/values-sw/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Chaguo za kufunga skrini"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Chaguo za kufunga skrini"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Thibitisha kufungua kiotomatiki"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Fungua kiotomatiki ukiweka PIN sahihi yenye tarakimu 6 au zaidi. Hatua hii ina usalama kidogo kuliko kugusa \'Weka\' ili kuthibitisha."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Fungua kiotomatiki ukiweka PIN sahihi yenye tarakimu 4 au zaidi. Hatua hii ina usalama mdogo kuliko kugusa Enter ili kuthibitisha."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Thibitisha PIN sahihi kiotomatiki"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Kuthibitisha PIN yako kwa kugusa \'Weka\' ni salama zaidi kuliko kuthibitisha kiotomatiki"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Weka PIN ya kifaa ili uwashe mipangilio ya kuthibitisha kiotomatiki"</string>
+diff --git a/res/values-ta/strings.xml b/res/values-ta/strings.xml
+index f8420fc..844dca5 100644
+--- a/res/values-ta/strings.xml
++++ b/res/values-ta/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"திரைப் பூட்டு விருப்பங்கள்"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"திரைப் பூட்டு விருப்பங்கள்"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"தானாக உறுதிப்படுத்தி அன்லாக் செய்தல்"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"6 அல்லது அதற்கு மேற்பட்ட இலக்கங்களுடைய சரியான பின்னை உள்ளிட்டால் தானாக அன்லாக் ஆகும். உறுதிப்படுத்த Enter பட்டனைத் தட்டுவதை விட இது சற்று குறைந்த பாதுகாப்புடையதாகும்."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"4 அல்லது அதற்கு மேற்பட்ட இலக்கங்களுடைய சரியான பின்னை உள்ளிட்டால் தானாக அன்லாக் ஆகும். உறுதிப்படுத்த Enter பட்டனைத் தட்டுவதை விட இது சற்று குறைந்த பாதுகாப்புடையதாகும்."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"சரியான பின்னைத் தானாக உறுதிப்படுத்தும்"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"தானியங்கு உறுதிப்படுத்தல் அம்சத்தைப் பயன்படுத்துவதை விட, Enter பட்டனைத் தட்டி உங்கள் பின்னை உறுதிப்படுத்துவது மிகப் பாதுகாப்பானதாகும்"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"தானியங்கி உறுதிப்படுத்தலை இயக்க, சாதனத்தின் பின்னை உள்ளிடுங்கள்"</string>
+diff --git a/res/values-te/strings.xml b/res/values-te/strings.xml
+index 42c16e5..5065a30 100644
+--- a/res/values-te/strings.xml
++++ b/res/values-te/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"స్క్రీన్ లాక్ ఆప్షన్‌లు"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"స్క్రీన్ లాక్ ఆప్షన్‌లు"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"అన్‌లాక్‌ను ఆటోమేటిక్‌గా నిర్ధారించండి"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"మీరు 6 అంకెలు లేదా అంతకంటే ఎక్కువ అంకెల సరైన PINను ఇన్‌పుట్‌గా ఉపయోగిస్తే ఆటోమేటిక్‌గా అన్‌లాక్ అవుతుంది. నిర్ధారించడానికి Enter కీని ట్యాప్ చేయడం కంటే ఇది కొంచెం తక్కువ సురక్షితమైనది."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"మీరు 4 అంకెలు లేదా అంతకంటే ఎక్కువ అంకెల సరైన PINను ఇన్‌పుట్‌గా ఉపయోగిస్తే ఆటోమేటిక్‌గా అన్‌లాక్ అవుతుంది. నిర్ధారించడానికి Enter కీని ట్యాప్ చేయడం కంటే ఇది కొంచెం తక్కువ సురక్షితమైనది."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"సరైన PINను ఆటోమేటిక్‌గా నిర్ధారించండి"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter కీని ట్యాప్ చేయడం ద్వారా మీ PINను నిర్ధారించడం ఆటోమేటిక్-నిర్ధారణను ఉపయోగించడం కంటే మరింత సురక్షితం"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ఆటోమేటిక్‌గా-నిర్ధారించడాన్ని ఎనేబుల్ చేయడానికి డివైజ్‌ PINను ఎంటర్ చేయండి"</string>
+diff --git a/res/values-th/strings.xml b/res/values-th/strings.xml
+index d6498e8..8e062c8 100644
+--- a/res/values-th/strings.xml
++++ b/res/values-th/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"ตัวเลือกการล็อกหน้าจอ"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"ตัวเลือกการล็อกหน้าจอ"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"ปลดล็อกด้วยการยืนยันโดยอัตโนมัติ"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ปลดล็อกโดยอัตโนมัติหากคุณป้อน PIN อย่างน้อย 6 หลักที่ถูกต้อง ฟีเจอร์นี้ปลอดภัยน้อยกว่าการแตะ Enter เพื่อยืนยันเล็กน้อย"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"ปลดล็อกโดยอัตโนมัติหากคุณป้อน PIN อย่างน้อย 4 หลักที่ถูกต้อง ฟีเจอร์นี้ปลอดภัยน้อยกว่าการแตะ Enter เพื่อยืนยันเล็กน้อย"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"ยืนยัน PIN ที่ถูกต้องโดยอัตโนมัติ"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"การยืนยัน PIN โดยการแตะ Enter ปลอดภัยกว่าใช้การยืนยันโดยอัตโนมัติ"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"ป้อน PIN ของอุปกรณ์เพื่อเปิดใช้การยืนยันโดยอัตโนมัติ"</string>
+diff --git a/res/values-tl/strings.xml b/res/values-tl/strings.xml
+index e8f626e..670bde3 100644
+--- a/res/values-tl/strings.xml
++++ b/res/values-tl/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Mga opsyon sa lock ng screen"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Mga opsyon sa lock ng screen"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Awtomatikong kumpirmahin ang pag-unlock"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Awtomatikong mag-unlock kung maglagay ka ng tamang PIN na may 6 na digit pataas. Hindi ito kasing-secure ng pag-tap sa Enter para kumpirmahin."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Awtomatikong mag-unlock kung maglagay ka ng tamang PIN na may 4 na digit pataas. Hindi ito kasing-secure ng pag-tap sa Enter para kumpirmahin."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Awtomatikong kumpirmahin ang tamang PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Mas secure ang pagkumpirma sa iyong PIN sa pamamagitan ng pag-tap sa Enter kumpara sa paggamit ng awtomatikong pagkumpirma"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Ilagay ang PIN ng device para i-enable ang awtomatikong pagkumpirma"</string>
+diff --git a/res/values-tr/strings.xml b/res/values-tr/strings.xml
+index 25a1b38..e604541 100644
+--- a/res/values-tr/strings.xml
++++ b/res/values-tr/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Ekran kilidi seçenekleri"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Ekran kilidi seçenekleri"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Kilit açmayı otomatik olarak onayla"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"En az 6 basamaklı doğru bir PIN girerseniz kilit otomatik olarak açılır. Bu, Enter\'a dokunarak onaylamaktan biraz daha az güvenli bir yöntemdir."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"En az 4 basamaklı doğru bir PIN girerseniz kilit otomatik olarak açılır. Bu, Enter\'a dokunarak onaylamaktan biraz daha az güvenli bir yöntemdir."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Doğru PIN\'i otomatik olarak onaylayın"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"PIN\'inizi onaylamak için Enter\'a dokunmak, otomatik onaylama özelliğini kullanmaktan daha güvenlidir"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Otomatik olarak onaylamayı etkinleştirmek için cihaz PIN\'ini girin"</string>
+diff --git a/res/values-uk/strings.xml b/res/values-uk/strings.xml
+index a6f42de..4ccbc92 100644
+--- a/res/values-uk/strings.xml
++++ b/res/values-uk/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Способи розблокування екрана"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Способи розблокування екрана"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Автоматично підтверджувати розблокування"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Пристрій розблокується автоматично, якщо ви введете правильний PIN-код щонайменше із 6 цифр. Це трохи менш безпечно, ніж натиснути для підтвердження клавішу Enter."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Пристрій розблокується автоматично, якщо ви введете правильний PIN-код щонайменше із 4 цифр. Це трохи менш безпечно, ніж натиснути для підтвердження клавішу Enter."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Підтверджуйте правильний PIN-код автоматично"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Підтверджувати PIN-код натисканням клавіші Enter безпечніше, ніж використовувати автоматичне підтвердження"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Введіть PIN-код пристрою, щоб увімкнути автоматичне підтвердження"</string>
+diff --git a/res/values-ur/strings.xml b/res/values-ur/strings.xml
+index caaa559..89b97b0 100644
+--- a/res/values-ur/strings.xml
++++ b/res/values-ur/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"اسکرین لاک کے اختیارات"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"اسکرین لاک کے اختیارات"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"خودکار توثیق غیر مقفل کریں"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"‏اگر آپ 6 ہندسوں یا اس سے زیادہ والا درست PIN درج کرتے ہیں تو خودکار طور پر غیر مقفل ہو جائے گا۔ یہ توثیق کرنے کے لیے Enter کو تھپتھپانے سے نسبتاً کم محفوظ ہے۔"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"‏اگر آپ 4 ہندسوں یا اس سے زیادہ والا درست PIN درج کرتے ہیں تو خودکار طور پر غیر مقفل ہو جائے گا۔ یہ توثیق کرنے کے لیے Enter کو تھپتھپانے سے نسبتاً کم محفوظ ہے۔"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"‏درست PIN کی خودکار توثیق کریں"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"‏Enter کو تھپتھپا کر اپنے PIN کی توثیق کرنا خودکار توثیق استعمال کرنے سے زیادہ محفوظ ہے"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"خودکار تصدیق کو فعال کرنے کے لیے آلے کا پن درج کریں۔"</string>
+diff --git a/res/values-uz/strings.xml b/res/values-uz/strings.xml
+index 6f36c63..cd571c1 100644
+--- a/res/values-uz/strings.xml
++++ b/res/values-uz/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Ekran qulfi usullari"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Ekran qulfi usullari"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Qulfni ochishni avtomatik tasdiqlash"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Agar siz 6 yoki undan ortiq raqamdan iborat PIN kodni bexato kiritsangiz, avtomatik ravishda qulfdan chiqariladi. Tasdiqlash uchun Enter tugmasini bosgandan koʻra, bu xavfsizroq."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Agar siz 4 yoki undan ortiq raqamdan iborat PIN kodni bexato kiritsangiz, avtomatik ravishda qulfdan chiqariladi. Tasdiqlash uchun Enter tugmasini bosgandan koʻra, bu xavfsizroq."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Toʻgʻri PIN kodni avtomatik tasdiqlash"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Enter tugmasini bosish orqali PIN kodni tasdiqlash avtomatik tasdiqlashdan koʻra xavfsizroqdir"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Avtomatik tasdiqlashni yoqish uchun qurilmangiz PIN kodini kiriting."</string>
+diff --git a/res/values-vi/strings.xml b/res/values-vi/strings.xml
+index 3bbcd2b..a4c0744 100644
+--- a/res/values-vi/strings.xml
++++ b/res/values-vi/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Các phương thức khoá màn hình"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Các phương thức khoá màn hình"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Mở khoá bằng cách tự động xác nhận"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Tự động mở khoá nếu bạn nếu nhập đúng mã PIN gồm từ 6 chữ số trở lên. Cách này sẽ kém bảo mật hơn một chút so với việc nhấn Enter để xác nhận."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Tự động mở khoá nếu bạn nếu nhập đúng mã PIN gồm từ 4 chữ số trở lên. Cách này sẽ kém bảo mật hơn một chút so với việc nhấn Enter để xác nhận."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Tự động xác nhận bằng mã PIN chính xác"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Thao tác xác nhận mã PIN bằng cách nhấn Enter sẽ bảo mật hơn so với sử dụng tính năng tự động xác nhận"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Nhập mã PIN thiết bị để bật tuỳ chọn tự động xác nhận"</string>
+diff --git a/res/values-zh-rCN/strings.xml b/res/values-zh-rCN/strings.xml
+index 417fc4a..2c5663a 100644
+--- a/res/values-zh-rCN/strings.xml
++++ b/res/values-zh-rCN/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"屏锁方式"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"屏锁方式"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"自动确认解锁"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"如果输入的 PIN 码（6 位以上）正确，设备会自动解锁。与通过点按 Enter 键确认 PIN 相比，前者的安全性略低。"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"正确输入不低于 4 位数的数字密码后，设备会自动解锁。与通过点按 Enter 键来确认数字密码相比，此确认方式的安全性略低。"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"自动确认正确的 PIN 码"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"通过点按 Enter 键确认 PIN 码比使用自动确认功能更加安全"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"输入设备 PIN 码以启用自动确认功能"</string>
+diff --git a/res/values-zh-rHK/strings.xml b/res/values-zh-rHK/strings.xml
+index 688fb6e..97fa287 100644
+--- a/res/values-zh-rHK/strings.xml
++++ b/res/values-zh-rHK/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"螢幕鎖定選項"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"螢幕鎖定選項"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"自動確認解鎖"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"輸入正確的 PIN (至少 6 位數) 就會自動解鎖。安全性較輕按 Enter 鍵確認 PIN 為低。"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"輸入正確的 PIN (至少 4 位數) 就會自動解鎖。安全性較輕按 Enter 鍵確認 PIN 為低。"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"自動確認正確 PIN"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"輕按 Enter 鍵確認 PIN 比使用自動確認功能更安全"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"輸入裝置 PIN 即可啟用自動確認設定"</string>
+diff --git a/res/values-zh-rTW/strings.xml b/res/values-zh-rTW/strings.xml
+index d444008..39419fa 100644
+--- a/res/values-zh-rTW/strings.xml
++++ b/res/values-zh-rTW/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"螢幕鎖定選項"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"螢幕鎖定選項"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"自動確認解鎖"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"輸入正確 PIN 碼 (至少 6 位數)，系統就會自動解鎖。比起輕觸 Enter 鍵確認 PIN 碼，這個做法較不安全。"</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"輸入正確 PIN 碼 (至少 4 位數)，系統就會自動解鎖。比起輕觸 Enter 鍵確認 PIN 碼，這個做法較不安全。"</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"自動確認正確 PIN 碼"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"輕觸 Enter 鍵確認 PIN 碼比使用自動確認功能來得安全"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"如要啟用自動確認設定，請輸入裝置 PIN 碼"</string>
+diff --git a/res/values-zu/strings.xml b/res/values-zu/strings.xml
+index a8a2455..71fceb8 100644
+--- a/res/values-zu/strings.xml
++++ b/res/values-zu/strings.xml
+@@ -789,7 +789,7 @@
+     <string name="setup_lock_settings_options_button_label" msgid="6098297461618298505">"Izinketho zokukhiya isikrini"</string>
+     <string name="setup_lock_settings_options_dialog_title" msgid="7985107300517468569">"Izinketho zokukhiya isikrini"</string>
+     <string name="lock_screen_auto_pin_confirm_title" msgid="3012128112186088375">"Qinisekisa ngokuzenzakalelayo ukuvula"</string>
+-    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Vula ngokuzenzakalelayo uma ufaka iphinikhodi efanele enamadijithi ayi-6 noma ngaphezulu. Lokhu kuvikeleke kancane kunokuthepha u-Enter ukuze uqinisekise."</string>
++    <string name="lock_screen_auto_pin_confirm_summary" msgid="9050818870806580819">"Vula ngokuzenzakalelayo uma ufaka iphinikhodi efanele enamadijithi ayi-4 noma ngaphezulu. Lokhu kuvikeleke kancane kunokuthepha u-Enter ukuze uqinisekise."</string>
+     <string name="auto_pin_confirm_user_message" msgid="6194556173488939314">"Qinisekisa ngokuzenzakalelayo Iphinikhodi elungile"</string>
+     <string name="auto_pin_confirm_opt_in_security_message" msgid="580773976736184893">"Ukuqinisekisa Iphinikhodi yakho ngokuthepha u-Enter kuphephe kakhulu kunokusebenzisa ukuqinisekisa okuzenzakalelayo"</string>
+     <string name="auto_confirm_on_pin_verify_description" msgid="2052240431173223502">"Faka iphinikhodi yedivayisi ukuze unike amandla ukuqinisekisa okuzenzakalelayo"</string>
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index ccc591f..31ce259 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -1758,7 +1758,7 @@
+     <!-- Title of the lock screen auto pin confirm setting. [CHAR LIMIT=NONE] -->
+     <string name="lock_screen_auto_pin_confirm_title">Auto-confirm unlock</string>
+     <!-- Summary of the lock screen auto pin confirm setting. [CHAR LIMIT=NONE] -->
+-    <string name="lock_screen_auto_pin_confirm_summary">Unlock automatically if you input a correct PIN of 6 digits or more. This is slightly less secure than tapping Enter to confirm.</string>
++    <string name="lock_screen_auto_pin_confirm_summary">Unlock automatically if you input a correct PIN of 4 digits or more. This is slightly less secure than tapping Enter to confirm.</string>
+     <!-- Message shown to check auto pin confirmation feature when the user is updating the PIN. [CHAR LIMIT=NONE] -->
+     <string name="auto_pin_confirm_user_message">Auto-confirm correct PIN</string>
+     <!-- Message shown to explain the security concern if a user opts-in to the auto-pin feature. [CHAR LIMIT=NONE] -->
+diff --git a/src/com/android/settings/password/ChooseLockPassword.java b/src/com/android/settings/password/ChooseLockPassword.java
+index a51d906..1e3953b 100644
+--- a/src/com/android/settings/password/ChooseLockPassword.java
++++ b/src/com/android/settings/password/ChooseLockPassword.java
+@@ -245,7 +245,7 @@ public class ChooseLockPassword extends SettingsActivity {
+         private static final String KEY_IS_AUTO_CONFIRM_CHECK_MANUALLY_CHANGED =
+                 "auto_confirm_option_set_manually";
+ 
+-        private static final int MIN_AUTO_PIN_REQUIREMENT_LENGTH = 6;
++        private static final int RECOMMENDED_PIN_LENGTH = 6;
+ 
+         private LockscreenCredential mCurrentCredential;
+         private LockscreenCredential mChosenPassword;
+@@ -982,11 +982,11 @@ public class ChooseLockPassword extends SettingsActivity {
+                                                 ? R.string.supervision_pin_length_message
+                                                 : R.string.lockpassword_pin_too_short);
+                         if (!mIsAlphaMode
+-                                && error.requirement < MIN_AUTO_PIN_REQUIREMENT_LENGTH
++                                && error.requirement < RECOMMENDED_PIN_LENGTH
+                                 && !isSupervisingProfile) {
+                             Map<String, Object> arguments = new HashMap<>();
+                             arguments.put("count", error.requirement);
+-                            arguments.put("minAutoConfirmLen", MIN_AUTO_PIN_REQUIREMENT_LENGTH);
++                            arguments.put("minAutoConfirmLen", RECOMMENDED_PIN_LENGTH);
+                             message = StringUtil.getIcuPluralsString(getContext(),
+                                     arguments,
+                                     R.string.lockpassword_pin_too_short_autoConfirm_extra_message);
+@@ -1097,7 +1097,7 @@ public class ChooseLockPassword extends SettingsActivity {
+                 mAutoPinConfirmOption.setVisibility(View.VISIBLE);
+                 mAutoConfirmSecurityMessage.setVisibility(View.VISIBLE);
+                 if (!mIsAutoPinConfirmOptionSetManually) {
+-                    mAutoPinConfirmOption.setChecked(length == MIN_AUTO_PIN_REQUIREMENT_LENGTH);
++                    mAutoPinConfirmOption.setChecked(length == RECOMMENDED_PIN_LENGTH);
+                 }
+             } else {
+                 mAutoPinConfirmOption.setVisibility(View.GONE);
+@@ -1107,7 +1107,7 @@ public class ChooseLockPassword extends SettingsActivity {
+         }
+ 
+         private boolean isAutoPinConfirmPossible(int currentPinLength) {
+-            return currentPinLength >= MIN_AUTO_PIN_REQUIREMENT_LENGTH;
++            return currentPinLength >= LockPatternUtils.MIN_AUTO_PIN_REQUIREMENT_LENGTH;
+         }
+ 
+         private void setOnAutoConfirmOptionClickListener() {
+diff --git a/tests/robotests/src/com/android/settings/password/ChooseLockPasswordTest.java b/tests/robotests/src/com/android/settings/password/ChooseLockPasswordTest.java
+index d72e034..d083af0 100644
+--- a/tests/robotests/src/com/android/settings/password/ChooseLockPasswordTest.java
++++ b/tests/robotests/src/com/android/settings/password/ChooseLockPasswordTest.java
+@@ -486,8 +486,8 @@ public class ChooseLockPasswordTest {
+ 
+         passwordEntry.setText("1234");
+         fragment.updateUi();
+-        assertThat(pinAutoConfirmOption.getVisibility()).isEqualTo(View.GONE);
+-        assertThat(securityMessage.getVisibility()).isEqualTo(View.GONE);
++        assertThat(pinAutoConfirmOption.getVisibility()).isEqualTo(View.VISIBLE);
++        assertThat(securityMessage.getVisibility()).isEqualTo(View.VISIBLE);
+         assertThat(pinAutoConfirmOption.isChecked()).isFalse();
+ 
+         passwordEntry.setText("123456");
+diff --git a/tests/robotests/src/com/android/settings/security/screenlock/AutoPinConfirmPreferenceControllerTest.java b/tests/robotests/src/com/android/settings/security/screenlock/AutoPinConfirmPreferenceControllerTest.java
+index 0e0ed69..4920e91 100644
+--- a/tests/robotests/src/com/android/settings/security/screenlock/AutoPinConfirmPreferenceControllerTest.java
++++ b/tests/robotests/src/com/android/settings/security/screenlock/AutoPinConfirmPreferenceControllerTest.java
+@@ -72,14 +72,23 @@ public class AutoPinConfirmPreferenceControllerTest {
+     }
+ 
+     @Test
+-    public void isAvailable_featureEnabledAndLockSetToPIN_lengthLessThanSix_shouldReturnFalse() {
++    public void isAvailable_featureEnabledAndLockSetToPIN_lengthLessThanFour_shouldReturnFalse() {
+         when(mLockPatternUtils.getCredentialTypeForUser(TEST_USER_ID))
+                 .thenReturn(LockPatternUtils.CREDENTIAL_TYPE_PIN);
+-        when(mLockPatternUtils.getPinLength(TEST_USER_ID)).thenReturn(5);
++        when(mLockPatternUtils.getPinLength(TEST_USER_ID)).thenReturn(3);
+ 
+         assertThat(mController.isAvailable()).isFalse();
+     }
+ 
++    @Test
++    public void isAvailable_fourDigitPin_shouldReturnTrue() {
++        when(mLockPatternUtils.getCredentialTypeForUser(TEST_USER_ID))
++                .thenReturn(LockPatternUtils.CREDENTIAL_TYPE_PIN);
++        when(mLockPatternUtils.getPinLength(TEST_USER_ID)).thenReturn(4);
++
++        assertThat(mController.isAvailable()).isTrue();
++    }
++
+     @Test
+     public void isAvailable_featureEnabledAndLockSetToPIN_lengthMoreThanEqSix_shouldReturnTrue() {
+         when(mLockPatternUtils.isSecure(TEST_USER_ID)).thenReturn(true);
+-- 
+2.56.0
+

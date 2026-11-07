@@ -13,14 +13,6 @@ export CCACHE_DIR="$BRINGUP_ROOT/cache/ccache"
 export PYTHONDONTWRITEBYTECODE=1
 export GIT_TERMINAL_PROMPT=0
 export PATH="$BRINGUP_ROOT/tools/host/usr/bin:$BRINGUP_ROOT/tools/git-repo:$BRINGUP_ROOT/tools/git-lfs/git-lfs-3.8.0:$PATH"
-if [[ -z ${JAVA_HOME:-} ]]; then
- if command -v javac >/dev/null; then
-  JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")
- else
-  echo 'JDK 17 is required; install it and set JAVA_HOME.' >&2
-  return 1
- fi
-fi
-export JAVA_HOME
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH="$JAVA_HOME/bin:$PATH"
 mkdir -p "$REPO_CONFIG_DIR" "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME" "$TMPDIR" "$GRADLE_USER_HOME" "$ANDROID_USER_HOME"

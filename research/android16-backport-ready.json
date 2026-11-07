@@ -1,0 +1,25 @@
+{
+  "prepared_at": "2026-11-07T08:47:19.884626+00:00",
+  "lineage": "23.2",
+  "android": "16",
+  "variant": "gapps-minimal",
+  "patches": 24,
+  "features": [
+    "lapis native/JNI/Java vibrator instance discovery and reconnects",
+    "opt-in four-digit PIN auto-confirm",
+    "media mute button with retained volume",
+    "explicit media mute retained across reboot, including volume-group initialization",
+    "all prior display/FOD/audio/IMS/Bluetooth/geometry/gesture/power/Dolby fixes retained"
+  ],
+  "patch_replay": "24 patches passed",
+  "preflight": "passed",
+  "recipe_tests_passed": 8,
+  "native_selector_host_tests_passed": 5,
+  "java_selector_host_tests_passed": 5,
+  "changed_resources_compiled": 94,
+  "android_full_image_built": true,
+  "android_runtime_tested": false,
+  "command": "./build.sh --gapps minimal --jobs 4",
+  "offline_image_validation": "passed: filesystem, permissions, merged SELinux/contexts and VINTF with matching APEX modules",
+  "raw_image_sha256": "1e0016993e61975b2ba80dd5a30c903e5178d9d338d9666e4294678dfe8a7d40"
+}

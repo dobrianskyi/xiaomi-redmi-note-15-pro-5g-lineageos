@@ -1,3 +1,11 @@
+# November 7 Android16 update
+
+The refreshed Android16 image built successfully and passed offline filesystem,
+permissions, SELinux/context and VINTF/APEX checks. Its vibration/PIN/media fixes
+are backported from the tested Android17 implementation. Runtime verification of
+these exact Android16 bytes is pending. The observations below describe earlier
+Android16 images and are not a fresh hardware certification for this update.
+
 # Device status — 2026-09-18
 
 Test device: Xiaomi `lapis`, stock vendor/firmware OS3.0.307.0.WPPMIXM.

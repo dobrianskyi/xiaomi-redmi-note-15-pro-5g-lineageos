@@ -58,3 +58,10 @@ SELinux policy/context labels and VINTF. Full validation requires your own stock
 vendor/odm capture and the matching extracted APEX tree; private device captures
 are deliberately not published here. Use `--stock-dir` and `--apex-dir`.
 The published release metadata reports the checks actually performed by the builder.
+
+
+## November 7 build controls
+
+Use `./build.sh --gapps minimal --jobs 4`. Compilation runs in a systemd user
+scope with MemoryHigh=44G, MemoryMax=48G, MemorySwapMax=0 and Go soft limit30GiB.
+The target remains lineage_gsi_lapis-bp4a-user with pinned Android16 GApps.
