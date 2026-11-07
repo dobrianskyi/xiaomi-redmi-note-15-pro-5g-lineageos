@@ -1,0 +1,104 @@
+From e826ced5de7a469a440247eae0e0075c4c232a02 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Sat, 7 Nov 2026 09:45:03 +0200
+Subject: [PATCH] audio: restore explicit media mute into its volume group at
+ startup
+
+Change-Id: Id07510e89a6899be5163ea1f50af2ae850db4a49
+---
+ .../com/android/server/audio/AudioService.java | 13 ++++++-------
+ .../android/server/audio/AudioServiceTest.java |  3 ++-
+ .../android/server/audio/VolumeHelperTest.java | 18 ++++++++++++++++++
+ 3 files changed, 26 insertions(+), 8 deletions(-)
+
+diff --git a/services/core/java/com/android/server/audio/AudioService.java b/services/core/java/com/android/server/audio/AudioService.java
+index 14b90c6e0..951e47798 100644
+--- a/services/core/java/com/android/server/audio/AudioService.java
++++ b/services/core/java/com/android/server/audio/AudioService.java
+@@ -10466,8 +10466,7 @@ public class AudioService extends IAudioService.Stub
+                     index = mSettings.getSystemIntForUser(mContentResolver, name, defaultIndex,
+                             userId);
+                     boolean isMuted = false;
+-                    if (isPlatformPc()) {
+-                        // TODO(b/475861305): apply mute only for PC until bug is fixed
++                    if (isPlatformPc() || isMusic()) {
+                         isMuted = mSettings.getSystemIntForUser(mContentResolver, muteName,
+                                 /*def=*/0, userId) != 0;
+                     }
+@@ -10484,7 +10483,7 @@ public class AudioService extends IAudioService.Stub
+                                  + ", User=" + userId);
+                     }
+                     mIndexMap.put(device, getValidIndex(index));
+-                    if (isPlatformPc()) {
++                    if (isPlatformPc() || isMusic()) {
+                         mIsMuted = isMuted;
+                     }
+                 }
+@@ -11002,8 +11001,8 @@ public class AudioService extends IAudioService.Stub
+                         index = mSettings.getSystemIntForUser(
+                                 mContentResolver, getSettingNameForDevice(device), defaultIndex,
+                                 getVolumePersistenceUserId());
+-                        if (isPlatformPc() || sStreamVolumeAlias.get(mStreamType)
+-                            == AudioSystem.STREAM_MUSIC) {
++                        if (isPlatformPc() || (sStreamVolumeAlias.get(mStreamType)
++                            == AudioSystem.STREAM_MUSIC && isMutable())) {
+                             isMuted = mSettings.getSystemIntForUser(
+                                     mContentResolver, getSettingMuteName(), /*def=*/0,
+                                     getVolumePersistenceUserId()) != 0;
+@@ -11015,8 +11014,8 @@ public class AudioService extends IAudioService.Stub
+ 
+                     mIndexMap.put(device, getValidIndex(10 * index,
+                             true /*hasModifyAudioSettings*/));
+-                    if (isPlatformPc() || sStreamVolumeAlias.get(mStreamType)
+-                            == AudioSystem.STREAM_MUSIC) {
++                    if (isPlatformPc() || (sStreamVolumeAlias.get(mStreamType)
++                            == AudioSystem.STREAM_MUSIC && isMutable())) {
+                         mIsMuted = isMuted;
+                         mMediaUserMuted = mStreamType == AudioSystem.STREAM_MUSIC && isMuted;
+                     }
+diff --git a/services/tests/audio/src/com/android/server/audio/AudioServiceTest.java b/services/tests/audio/src/com/android/server/audio/AudioServiceTest.java
+index 84cf1ae6e..ba1c92864 100644
+--- a/services/tests/audio/src/com/android/server/audio/AudioServiceTest.java
++++ b/services/tests/audio/src/com/android/server/audio/AudioServiceTest.java
+@@ -134,7 +134,8 @@ public class AudioServiceTest {
+ 
+         createAudioService();
+         Assert.assertTrue(mAudioService.isStreamMute(STREAM_MUSIC));
+-        Assert.assertTrue(mAudioService.isStreamMute(AudioSystem.STREAM_TTS));
++        Assert.assertFalse(mAudioService.isStreamMute(AudioSystem.STREAM_TTS));
++        Assert.assertFalse(mAudioService.isStreamMute(AudioSystem.STREAM_ACCESSIBILITY));
+         Assert.assertEquals(7, mAudioService.getLastAudibleStreamVolume(STREAM_MUSIC));
+         mAudioService.adjustStreamVolume(STREAM_MUSIC,
+                 android.media.AudioManager.ADJUST_UNMUTE, 0, "test");
+diff --git a/services/tests/audio/src/com/android/server/audio/VolumeHelperTest.java b/services/tests/audio/src/com/android/server/audio/VolumeHelperTest.java
+index 472dd033a..d5f10695b 100644
+--- a/services/tests/audio/src/com/android/server/audio/VolumeHelperTest.java
++++ b/services/tests/audio/src/com/android/server/audio/VolumeHelperTest.java
+@@ -340,6 +340,24 @@ public class VolumeHelperTest {
+         return null;
+     }
+ 
++    @Test
++    public void mediaMute_savedMuteSurvivesVolumeGroupInitialization() {
++        org.junit.Assume.assumeNotNull(mAudioMusicVolumeGroup);
++        mAudioService.setStreamVolume(STREAM_MUSIC, DEFAULT_STREAM_VOLUME, 0, "test");
++        mTestLooper.dispatchAll();
++        mTestLooper.moveTimeForward(1000);
++        mTestLooper.dispatchAll();
++        mSettingsAdapter.putSystemIntForUser(mContext.getContentResolver(),
++                "volume_music_mute", 1, UserHandle.USER_SYSTEM);
++
++        // Start from an unmuted group cache, as on a fresh system-server boot.
++        mAudioService.reloadAudioSettings();
++        mTestLooper.dispatchAll();
++        assertTrue(mAudioService.isStreamMute(STREAM_MUSIC));
++        assertEquals(DEFAULT_STREAM_VOLUME,
++                mAudioService.getLastAudibleStreamVolume(STREAM_MUSIC));
++    }
++
+     @After
+     public void tearDown() {
+         InstrumentationRegistry.getInstrumentation().getUiAutomation()
+-- 
+2.56.0
+

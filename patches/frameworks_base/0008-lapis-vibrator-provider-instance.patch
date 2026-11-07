@@ -1,0 +1,81 @@
+From a087767561954e5202d2fa262be578b60e9070fe Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Fri, 6 Nov 2026 21:51:23 +0200
+Subject: [PATCH] vibrator: retain the selected instance in framework HAL
+ providers
+
+Change-Id: Ic0f487f52295d68ba85f79ba33b28d60200fe5ab
+---
+ ..._server_vibrator_VibratorManagerService.cpp |  4 +++-
+ ...id_server_vibrator_VibratorManagerService.h | 18 +++++++++++-------
+ 2 files changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/services/core/jni/com_android_server_vibrator_VibratorManagerService.cpp b/services/core/jni/com_android_server_vibrator_VibratorManagerService.cpp
+index 50755ed77..f0fe3da3b 100644
+--- a/services/core/jni/com_android_server_vibrator_VibratorManagerService.cpp
++++ b/services/core/jni/com_android_server_vibrator_VibratorManagerService.cpp
+@@ -30,6 +30,7 @@
+ #include <vibrationflinger/HapticGeneratorSession.h>
+ #include <vibrationflinger/HapticGeneratorStream.h>
+ #include <vibratorservice/VibratorManagerHalController.h>
++#include <vibratorservice/VibratorServiceName.h>
+ 
+ #include <unordered_map>
+ 
+@@ -197,7 +198,8 @@ public:
+         if (mVibratorHalProviders.find(vibratorId) == mVibratorHalProviders.end()) {
+             mVibratorHalProviders[vibratorId] = mManagerHalProvider
+                     ? std::make_unique<ManagedVibratorProvider>(mManagerHalProvider, vibratorId)
+-                    : defaultProviderForDeclaredService<IVibrator>();
++                    : defaultProviderForDeclaredService<IVibrator>(
++                              vibrator::getVibratorServiceName());
+         }
+         if (mVibratorHalProviders[vibratorId] == nullptr) {
+             return nullptr;
+diff --git a/services/core/jni/com_android_server_vibrator_VibratorManagerService.h b/services/core/jni/com_android_server_vibrator_VibratorManagerService.h
+index b97a79cce..c7c820e1d 100644
+--- a/services/core/jni/com_android_server_vibrator_VibratorManagerService.h
++++ b/services/core/jni/com_android_server_vibrator_VibratorManagerService.h
+@@ -170,16 +170,19 @@ private:
+     virtual std::shared_ptr<I> loadHal() = 0;
+ };
+ 
+-// Provides default service declared on the device, using link-to-death to reload dead objects.
++// Provides a declared service, using the same name when reloading dead objects.
+ template <typename I>
+ class DefaultProvider : public HalProvider<I> {
+ public:
+-    DefaultProvider() = default;
++    explicit DefaultProvider(std::string serviceName = std::string(I::descriptor) + "/default")
++          : mServiceName(std::move(serviceName)) {}
+     virtual ~DefaultProvider() = default;
+ 
+ private:
++    const std::string mServiceName;
++
+     std::shared_ptr<I> loadHal() override {
+-        auto halName = std::string(I::descriptor) + "/default";
++        const auto& halName = mServiceName;
+         auto hal = I::fromBinder(ndk::SpAIBinder(AServiceManager_checkService(halName.c_str())));
+         if (hal == nullptr) {
+             ALOGE("%s: Error connecting to %s", halName.c_str(), __func__);
+@@ -188,11 +191,12 @@ private:
+     }
+ };
+ 
+-// Returns a new provider for the default HAL service declared on the device, null if not declared.
++// Returns a provider for a declared HAL service, defaulting to the standard instance.
+ template <typename I>
+-std::unique_ptr<HalProvider<I>> defaultProviderForDeclaredService() {
+-    if (AServiceManager_isDeclared((std::string(I::descriptor) + "/default").c_str())) {
+-        return std::make_unique<DefaultProvider<I>>();
++std::unique_ptr<HalProvider<I>> defaultProviderForDeclaredService(
++        const std::string& serviceName = std::string(I::descriptor) + "/default") {
++    if (AServiceManager_isDeclared(serviceName.c_str())) {
++        return std::make_unique<DefaultProvider<I>>(serviceName);
+     }
+     return nullptr;
+ }
+-- 
+2.56.0
+

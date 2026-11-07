@@ -11,31 +11,29 @@ source-built Xiaomi kernel/vendor distribution. The tested firmware baseline is
 Images use public Android test signing keys, not private production
 release keys. Bootloader locking and official OTA updates are not supported.
 
-## Update — 2026-11-06: Android 17
+## Updated — 2026-11-07: vibration fixed
 
-**[Download LineageOS 24.0 / Android 17 — GApps minimal](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/24.0-lapis-20261106)**
+**[Download the updated Android 17 image — vibration fix, GApps minimal](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/24.0-lapis-20261106)**
 
-The new system image includes the existing lapis fixes and Bluetooth profile
-defaults, plus:
+The existing Android 17 release now contains the **November 7 image**. Its older
+image asset has been replaced; the release keeps one current system image.
 
-- **Four-digit PIN auto-confirm:** enable **Auto-confirm unlock** in the screen-lock
-  settings, then confirm your existing PIN on the phone. Entering the correct
-  fourth digit unlocks without pressing Enter. The option is off until enabled.
-- **One-tap media mute:** a separate speaker button beside the Quick Settings
-  media-volume slider mutes playback and restores the previous level on the next
-  tap. Android retains the volume; closing the shade does not lose it.
-- Android 17-compatible SystemUI resources, restored HIDL interface declarations
-  required by the Treble helpers, and memory-bounded compilation.
+- **Vibration restored:** Android now discovers the stock lapis vibrator service
+  in both Java and native paths, including reconnects. A real framework vibration
+  test passed, and the user confirmed the Ring vibration preview works.
+- **Media mute survives reboot:** the Quick Settings speaker button preserves
+  the muted state across a real restart; unmuting restores the prior volume.
+- **Four-digit PIN auto-confirm** and the existing display, fingerprint, audio,
+  IMS, geometry, gestures, Dolby, power-schedule and Bluetooth fixes are retained.
+  Auto-confirm remains an opt-in screen-lock setting.
 
-The exact downloadable image booted on the maintainer's lapis. An update preserving
-existing apps/data passed, SELinux remains Enforcing, and both new controls were
-user-confirmed. This is an **experimental GSI**, not official LineageOS support or
-full hardware certification. See [release details](docs/ANDROID17.md).
+The exact downloadable image booted on the maintainer's lapis. Updating preserved
+all 35 existing user-app identities and encrypted data directories; SELinux is
+Enforcing. This is an experimental GSI, with remaining hardware checks listed in
+[device status](docs/DEVICE_STATUS.md). See [release details](docs/ANDROID17.md).
 
-**Module installation update (2026-11-06):** exact build-date restrictions have
-been removed from the optional Android 16 Magisk ZIPs. Device/vendor and duplicate-fix
-checks remain. [Downloads and compatibility](rom/README.md). These modules are not
-needed on the integrated ROM and do not contain the pending vibration fix.
+The optional Android 16 [module ZIPs](rom/README.md) remain separate; the restored
+vibration support is included in this updated complete Android 17 system image.
 
 ## Build LineageOS for Xiaomi Redmi Note 15 Pro 5G
 
@@ -80,10 +78,11 @@ the newest archive for that variant. See [build variants](docs/BUILD_VARIANTS.md
 
 - MediaTek screen brightness and Power-button display wake-up.
 - Xiaomi fingerprint lifecycle and sensor geometry.
+- Stock lapis vibration discovery in native/JNI and Java VINTF paths.
 - Native speaker gain handling for calls and communication apps.
 - English Dolby audio controls and launcher icon using the stock vendor effect.
 - Media-only volume slider in Quick Settings, including its SystemUI theme fix
-  and a mute/unmute button that retains the previous level.
+  and a mute/unmute button that retains the previous level across reboot.
 - Optional PIN auto-confirm for four or more digits; enable it in screen-lock settings.
 - Power schedule under Settings → Battery, gated by RTC capability.
 - MediaTek IMS compatibility and carrier config matching for Kyivstar/lifecell.

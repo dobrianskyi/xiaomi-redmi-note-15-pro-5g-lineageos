@@ -1,12 +1,13 @@
-# Device status — updated 2026-11-06
+# Device status — updated 2026-11-07
 
-**Android 17 update:** the exact November 6 LineageOS 24.0 image booted on the
-maintainer's lapis. Updating from the earlier Android 17 build retained existing
-apps, identities and encrypted data directories; user unlock and SELinux Enforcing
-passed. The user confirmed four-digit PIN auto-confirm and the new media mute
-button work. The Android 16-to-17 transition was also tested earlier in the same
-session. These observations do not certify every hardware feature listed below.
-See [Android 17 release details](ANDROID17.md).
+**November 7 Android 17 update:** the exact refreshed image passed boot,
+encrypted unlock and enforcing SELinux checks, retaining all 35 existing user-app
+UIDs and data directories. Framework vibrator ID0 is present; a 1500ms one-shot
+completed and the user confirmed the Ring preview physically. Explicit media
+mute survived a real reboot with effective volume zero, then unmute restored the
+prior level4. Accessibility and TTS remained unmuted. Earlier PIN auto-confirm
+and other integrated fixes are retained. These observations do not certify every
+hardware path below. See [Android 17 release details](ANDROID17.md).
 
 ## Earlier hardware observations (Android 16)
 
@@ -40,6 +41,8 @@ clean-flash test. It passed all ten offline baseline checks.
 | Power schedule | Battery entry and private storage work; powered-off RTC boot still needs physical testing |
 | SELinux | Enforcing, no permissive domains in the merged policy checks |
 | Bluetooth | October hotfix: profile startup and controlled Classic/BLE discovery passed; pairing, sustained connections, battery use and reboot still require testing |
+| Vibration (Android 17) | Framework discovery and one-shot passed; user confirmed Ring preview; vibration strength remains vendor/settings dependent |
+| Media mute (Android 17) | Real reboot retained mute; unmute restored prior level |
 | Other hardware | Not comprehensively certified; camera, NFC, sensors and long-term suspend require further testing |
 
 The project does not claim all issues are closed. No Magisk, su, diagnostic ADB

@@ -1,5 +1,8 @@
 # Optional Magisk workarounds for Xiaomi lapis
 
+The [refreshed Android 17 system image](../docs/ANDROID17.md) now includes the
+vibration fix. These optional Android 16 ZIPs remain separate workarounds.
+
 ## Module installer update — 2026-11-06
 
 Exact build-date restrictions have been removed. This changes module eligibility,

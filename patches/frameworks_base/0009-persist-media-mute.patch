@@ -1,0 +1,196 @@
+From 72594d2f5d989621bbb36e270dbc41a5d56db709 Mon Sep 17 00:00:00 2001
+From: Oleksii Dobrianskyi <dobriansky777@gmail.com>
+Date: Sat, 7 Nov 2026 09:10:18 +0200
+Subject: [PATCH] audio: persist explicit media mute across service restarts
+
+Change-Id: Ia069f6432b60e84ac9c6817fb0b104140cbf23f6
+---
+ .../android/server/audio/AudioService.java    | 40 ++++++++---
+ .../server/audio/AudioServiceTest.java        | 69 +++++++++++++++++++
+ 2 files changed, 101 insertions(+), 8 deletions(-)
+
+diff --git a/services/core/java/com/android/server/audio/AudioService.java b/services/core/java/com/android/server/audio/AudioService.java
+index 7f9555c77..14b90c6e0 100644
+--- a/services/core/java/com/android/server/audio/AudioService.java
++++ b/services/core/java/com/android/server/audio/AudioService.java
+@@ -4729,6 +4729,9 @@ public class AudioService extends IAudioService.Stub
+                                 == AudioSystem.STREAM_SYSTEM_ENFORCED))) {
+                             boolean changed = vss.mute(state, /* apply= */ false,
+                                     "muteAliasStreams");
++                            if (vss.mIsMuted == state) {
++                                vss.rememberMediaMute(state);
++                            }
+                             if (changed) {
+                                 streamsToMute.add(vss.getStreamType());
+                             }
+@@ -7187,7 +7190,11 @@ public class AudioService extends IAudioService.Stub
+                     }
+                 }
+                 sRingerAndZenModeMutedStreams &= ~(1 << streamType);
+-                vss.mute(false, "updateStreamMuteFromRingerMode");
++                // Leaving DND must not clear the user's independently selected media mute.
++                final boolean userMutedMedia = !isPlatformPc()
++                        && sStreamVolumeAlias.get(streamType) == AudioSystem.STREAM_MUSIC
++                        && getVssForStreamOrDefault(AudioSystem.STREAM_MUSIC).mMediaUserMuted;
++                vss.mute(userMutedMedia, "updateStreamMuteFromRingerMode");
+             } else {
+                 // mute
+                 sRingerAndZenModeMutedStreams |= (1 << streamType);
+@@ -10680,6 +10687,8 @@ public class AudioService extends IAudioService.Stub
+         private float mIndexStepFactor = 1.f;
+ 
+         private boolean mIsMuted = false;
++        // Explicit media mute, independent of temporary ringer/Zen and internal muting.
++        private boolean mMediaUserMuted = false;
+         private boolean mIsMutedInternally = false;
+         private String mVolumeIndexSettingName;
+         @NonNull private Set<AudioDeviceAttributes> mObservedDeviceSet = Set.of();
+@@ -10993,8 +11002,8 @@ public class AudioService extends IAudioService.Stub
+                         index = mSettings.getSystemIntForUser(
+                                 mContentResolver, getSettingNameForDevice(device), defaultIndex,
+                                 getVolumePersistenceUserId());
+-                        if (isPlatformPc()) {
+-                            // TODO(b/475861305): apply mute only for PC until bug is fixed
++                        if (isPlatformPc() || sStreamVolumeAlias.get(mStreamType)
++                            == AudioSystem.STREAM_MUSIC) {
+                             isMuted = mSettings.getSystemIntForUser(
+                                     mContentResolver, getSettingMuteName(), /*def=*/0,
+                                     getVolumePersistenceUserId()) != 0;
+@@ -11006,8 +11015,10 @@ public class AudioService extends IAudioService.Stub
+ 
+                     mIndexMap.put(device, getValidIndex(10 * index,
+                             true /*hasModifyAudioSettings*/));
+-                    if (isPlatformPc()) {
++                    if (isPlatformPc() || sStreamVolumeAlias.get(mStreamType)
++                            == AudioSystem.STREAM_MUSIC) {
+                         mIsMuted = isMuted;
++                        mMediaUserMuted = mStreamType == AudioSystem.STREAM_MUSIC && isMuted;
+                     }
+                 }
+             }
+@@ -11403,6 +11414,18 @@ public class AudioService extends IAudioService.Stub
+             }
+         }
+ 
++        @GuardedBy("mVolumeStateLock")
++        private void rememberMediaMute(boolean state) {
++            if (mStreamType != AudioSystem.STREAM_MUSIC || isPlatformPc()
++                    || mUseFixedVolume || mMediaUserMuted == state) {
++                return;
++            }
++            mMediaUserMuted = state;
++            // Do not wait for the normal volume debounce before a possible reboot.
++            sendMsg(mAudioHandler, MSG_PERSIST_VOLUME, SENDMSG_QUEUE,
++                    getDeviceForStream(mStreamType), 0, this, 0);
++        }
++
+         /**
+          * Mute/unmute the stream
+          * @param state the new mute state
+@@ -11802,11 +11825,12 @@ public class AudioService extends IAudioService.Stub
+                             (streamState.getIndex(device) + 5) / 10,
+                             streamState.getVolumePersistenceUserId());
+                 }
+-                if (isPlatformPc()) {
+-                    // TODO(b/475861305): persist mute only for PC until bug is fixed
++                if (isPlatformPc() || streamState.mStreamType == AudioSystem.STREAM_MUSIC) {
++                    // Persist explicit media mute, never a temporary DND/internal mute.
++                    final boolean muted = isPlatformPc()
++                            ? streamState.mIsMuted : streamState.mMediaUserMuted;
+                     mSettings.putSystemIntForUser(mContentResolver,
+-                            streamState.getSettingMuteName(),
+-                            streamState.mIsMuted ? 1 : 0,
++                            streamState.getSettingMuteName(), muted ? 1 : 0,
+                             streamState.getVolumePersistenceUserId());
+                 }
+             }
+diff --git a/services/tests/audio/src/com/android/server/audio/AudioServiceTest.java b/services/tests/audio/src/com/android/server/audio/AudioServiceTest.java
+index 02e54e900..84cf1ae6e 100644
+--- a/services/tests/audio/src/com/android/server/audio/AudioServiceTest.java
++++ b/services/tests/audio/src/com/android/server/audio/AudioServiceTest.java
+@@ -103,6 +103,10 @@ public class AudioServiceTest {
+         mAudioVolumeGroupHelper = new AudioVolumeGroupHelperBase();
+         when(mMockAppOpsManager.noteOp(anyInt(), anyInt(), anyString(), anyString(), anyString()))
+                 .thenReturn(AppOpsManager.MODE_ALLOWED);
++        createAudioService();
++    }
++
++    private void createAudioService() {
+         mAudioService = new AudioService(mContext, mSpyAudioSystem, mSpySystemServer,
+                 mSettingsAdapter, mAudioVolumeGroupHelper, mMockAudioPolicy,
+                 mTestLooper.getLooper(), mMockAppOpsManager, mMockPermissionEnforcer,
+@@ -111,6 +115,71 @@ public class AudioServiceTest {
+         mTestLooper.dispatchAll();
+     }
+ 
++    private void persistAudioChanges() {
++        mTestLooper.dispatchAll();
++        mTestLooper.moveTimeForward(1000);
++        mTestLooper.dispatchAll();
++    }
++
++    @Test
++    public void mediaMute_survivesServiceRestartAndRestoresAudibleLevel() {
++        mAudioService.setStreamVolume(STREAM_MUSIC, 7, 0, "test");
++        persistAudioChanges();
++        mAudioService.adjustStreamVolume(STREAM_MUSIC,
++                android.media.AudioManager.ADJUST_MUTE, 0, "test");
++        persistAudioChanges();
++        Assert.assertTrue(mAudioService.isStreamMute(STREAM_MUSIC));
++        Assert.assertEquals(1, mSettingsAdapter.getSystemIntForUser(
++                mContext.getContentResolver(), "volume_music_mute", 0, UserHandle.USER_SYSTEM));
++
++        createAudioService();
++        Assert.assertTrue(mAudioService.isStreamMute(STREAM_MUSIC));
++        Assert.assertTrue(mAudioService.isStreamMute(AudioSystem.STREAM_TTS));
++        Assert.assertEquals(7, mAudioService.getLastAudibleStreamVolume(STREAM_MUSIC));
++        mAudioService.adjustStreamVolume(STREAM_MUSIC,
++                android.media.AudioManager.ADJUST_UNMUTE, 0, "test");
++        persistAudioChanges();
++        Assert.assertEquals(7, mAudioService.getStreamVolume(STREAM_MUSIC));
++        createAudioService();
++        Assert.assertFalse(mAudioService.isStreamMute(STREAM_MUSIC));
++    }
++
++    @Test
++    public void mediaMute_nonZeroSliderChangeClearsSavedMute() {
++        mAudioService.setStreamVolume(STREAM_MUSIC, 7, 0, "test");
++        mAudioService.adjustStreamVolume(STREAM_MUSIC,
++                android.media.AudioManager.ADJUST_MUTE, 0, "test");
++        persistAudioChanges();
++        mAudioService.setStreamVolume(STREAM_MUSIC, 9, 0, "test");
++        persistAudioChanges();
++        createAudioService();
++        Assert.assertFalse(mAudioService.isStreamMute(STREAM_MUSIC));
++        Assert.assertEquals(9, mAudioService.getStreamVolume(STREAM_MUSIC));
++    }
++
++    @Test
++    public void mediaMute_temporaryPolicyMuteIsNotSaved() {
++        mAudioService.setStreamVolume(STREAM_MUSIC, 7, 0, "test");
++        persistAudioChanges();
++        mAudioService.getVssForStream(STREAM_MUSIC).mute(true, "test-policy-mute");
++        persistAudioChanges();
++        Assert.assertTrue(mAudioService.isStreamMute(STREAM_MUSIC));
++        createAudioService();
++        Assert.assertFalse(mAudioService.isStreamMute(STREAM_MUSIC));
++        Assert.assertEquals(7, mAudioService.getStreamVolume(STREAM_MUSIC));
++    }
++
++    @Test
++    public void mediaMute_internalMuteIsNotSaved() {
++        mAudioService.setStreamVolume(STREAM_MUSIC, 7, 0, "test");
++        mAudioService.setMusicMute(true);
++        persistAudioChanges();
++        Assert.assertEquals(0, mSettingsAdapter.getSystemIntForUser(
++                mContext.getContentResolver(), "volume_music_mute", 0, UserHandle.USER_SYSTEM));
++        createAudioService();
++        Assert.assertFalse(mAudioService.isStreamMute(STREAM_MUSIC));
++    }
++
+     /**
+      * Test muting the mic reports the expected value, and the corresponding intent was fired
+      * @throws Exception
+-- 
+2.56.0
+

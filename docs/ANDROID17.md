@@ -1,4 +1,4 @@
-# Android 17 release — 2026-11-06
+# Android 17 release — refreshed 2026-11-07
 
 Release: [LineageOS 24.0 for lapis](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/24.0-lapis-20261106).
 
@@ -8,10 +8,26 @@ Release: [LineageOS 24.0 for lapis](https://github.com/dobrianskyi/xiaomi-redmi-
 - Stock Xiaomi kernel/vendor/firmware baseline: OS3.0.307.0.WPPMIXM.
 - MindTheGapps Android 17 `cinnamonbun`, pinned in `research/gapps-source.json`.
 - The exact downloadable raw image has SHA256
-  `d522e574dba8b99a463342c2368dffd4489299838554ca35394f395f84992499`
-  and size **2495295488 bytes**. The release supplies `.img.xz` and checksums.
+  `d89f019ca10b90277afa41b93f249f86a4911fb17c3e0b24a66fb2ea67944d92`
+  and size **2495303680 bytes**. The release supplies `.img.xz` and checksums.
 
-## New controls
+The existing release has been updated in place: its previous image asset was
+replaced with the November 7 build. The release contains one current image.
+
+## Vibration and persistent mute
+
+Stock lapis exposes `android.hardware.vibrator.IVibrator/vibratorfeature` rather
+than `/default`. The 27-patch recipe handles discovery and reconnects in Java,
+JNI and native clients, while keeping a declared default instance preferred.
+The framework now exposes vibrator ID0; a 1500ms one-shot completed and the user
+confirmed the Ring vibration preview. This restores access to the existing motor;
+its strength continues to follow vendor hardware and system intensity settings.
+
+Explicit media mute survives a real reboot and is restored before the shade is
+opened. Unmute restored the exact prior level (4/15 on the tested route). Temporary
+DND/internal muting is kept separate; accessibility and TTS remained unmuted.
+
+## Retained controls
 
 **Auto-confirm unlock:** open screen-lock settings, turn on the option, and enter
 your current PIN in the phone's confirmation screen. PINs of at least four digits
@@ -30,7 +46,8 @@ state; fixed-volume output and user restrictions disable adjustment.
 The exact release bytes booted on the maintainer's lapis and an update preserved
 existing apps/data. Encrypted-user unlock, existing package identities and data
 directories, Google services/Play Store identities and SELinux Enforcing were
-checked. The user confirmed the two new controls work. Offline checks passed for
+checked. The earlier PIN and media-button controls are retained. The user physically
+confirmed vibration in the updated image, and a real media-mute reboot test passed. Offline checks passed for
 EXT4, permissions, IMS carrier strings, merged SELinux, property/service contexts
 and VINTF using matching vendor/odm metadata and all image/vendor APEX modules.
 

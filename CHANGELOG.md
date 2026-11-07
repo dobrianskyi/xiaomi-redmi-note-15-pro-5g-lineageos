@@ -1,5 +1,16 @@
 # Updates
 
+## 2026-11-07 — Vibration restored; media mute retained after reboot
+
+Updated the existing Android 17 release in place with the tested November 7 image.
+The old image asset is replaced, keeping one current image in that release.
+Java and native vibrator clients now find the declared lapis stock instance and
+retain it on reconnect. A framework one-shot completed; the user physically confirmed the Ring preview. Explicit media mute is restored into both stream and volume-group
+state at startup; a real reboot retained mute, and unmute restored the prior
+volume without muting accessibility/TTS. The full 27-patch image passed offline
+checks, boot/unlock, enforcing SELinux and retention checks for 35 user apps.
+[Download and details](docs/ANDROID17.md).
+
 ## 2026-11-06 — Module installer compatibility
 
 Removed exact build-date gates from the five optional Magisk modules. Eligibility

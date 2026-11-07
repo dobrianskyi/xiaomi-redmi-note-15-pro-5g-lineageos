@@ -108,5 +108,30 @@
     "project": "frameworks/base",
     "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
     "patch": "frameworks_base/0007-media-volume-mute-toggle.patch"
+  },
+  {
+    "project": "frameworks/native",
+    "base": "a96adf2c6e62dbb22299cd83bbb9ea4bc569e985",
+    "patch": "frameworks_native/0002-lapis-vibrator-service-instance.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
+    "patch": "frameworks_base/0008-lapis-vibrator-provider-instance.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
+    "patch": "frameworks_base/0009-persist-media-mute.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
+    "patch": "frameworks_base/0010-lapis-java-vibrator-instance.patch"
+  },
+  {
+    "project": "frameworks/base",
+    "base": "696a5773fa284f53429dbb6c3e5dcc96bf5bd0b3",
+    "patch": "frameworks_base/0011-restore-media-group-mute.patch"
   }
 ]

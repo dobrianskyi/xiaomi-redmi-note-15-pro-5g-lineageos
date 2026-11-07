@@ -1,8 +1,8 @@
 {
-  "status": "pinned Android17 checkout and 22-patch series verified; minimal image built, booted and user-confirmed",
+  "status": "27-patch Android17 minimal image built, flashed and user-confirmed; vibration restored and media mute survives reboot",
   "projects": 1246,
-  "patches": 22,
+  "patches": 27,
   "release_config": "cp2a",
   "variant": "gapps-minimal",
-  "verified_at": "2026-11-06T19:09:07.977736+00:00"
+  "verified_at": "2026-11-07"
 }
