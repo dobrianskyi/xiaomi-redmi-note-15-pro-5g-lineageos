@@ -35,6 +35,18 @@ Enforcing. This is an experimental GSI, with remaining hardware checks listed in
 The optional Android 16 [module ZIPs](rom/README.md) remain separate; the restored
 vibration support is included in this updated complete Android 17 system image.
 
+## Android 16 also refreshed — 2026-11-07
+
+**[Download LineageOS 23.2 / Android 16 — GApps minimal](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/releases/tag/23.2-lapis-20260918)**
+
+The previous Android 16 image in its existing release has also been replaced.
+Its 24-patch build includes the vibration-discovery backport, four-digit PIN
+opt-in, media mute and reboot persistence, retaining the earlier lapis fixes.
+Compilation and offline compatibility/privacy checks passed; phone validation of
+these exact Android 16 bytes is pending. The pinned source snapshot has security
+patch level 2026-09-01. Use the [lineage-23.2 source branch](https://github.com/dobrianskyi/xiaomi-redmi-note-15-pro-5g-lineageos/tree/lineage-23.2)
+for Android 16; main continues to build Android 17. [Details](docs/ANDROID16.md).
+
 ## Build LineageOS for Xiaomi Redmi Note 15 Pro 5G
 
 Use Linux x86_64, Python 3.12+ (or 3.11 with tarfile extraction-filter support),

@@ -1,5 +1,14 @@
 # Updates
 
+## 2026-11-07 — Android16 image refreshed
+
+Replaced the old image in the existing Android16 release with the new 24-patch
+build. It includes the vibration-discovery backport, four-digit PIN opt-in and
+media mute/reboot persistence, retaining earlier device fixes. Full compilation
+and offline compatibility/privacy checks passed; exact-image phone validation is
+pending. Android16 source is on lineage-23.2; main remains Android17.
+[Download and details](docs/ANDROID16.md).
+
 ## 2026-11-07 — Vibration restored; media mute retained after reboot
 
 Updated the existing Android 17 release in place with the tested November 7 image.
